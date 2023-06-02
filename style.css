@@ -55,5 +55,49 @@ canvas {
 }
 
 .shown {
-  display: block !important;
+  display: flex !important;
+}
+
+.show {
+  display: block;
+}
+
+.dialogue-field__options {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  width: 200px;
+  display: none;
+  flex-direction: column;
+  background-color: white;
+  border: 3px solid black;
+  border-radius: 10px;
+  z-index: 100;
+}
+
+.dialogue-field__option {
+  padding: 0.5rem;
+  color: black;
+  z-index: 110;
+}
+
+.dialogue-field__option:focus {
+  background-color: black;
+  color: white;
+}
+
+input {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* unset all styles */
+  /* background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  outline: none;
+  /* custom styles */
+  font-size: 1.5rem;
+  font-family: 'Minecraft';
+  color: black;
 }
