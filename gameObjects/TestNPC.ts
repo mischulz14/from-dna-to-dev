@@ -45,6 +45,7 @@ export default class TestNPC extends InteractiveGameObject {
 
     // Play the initial idle animation
     this.anims.play('npc-idle-down', true);
+    this.shadow.fillEllipse(this.x, this.y + 35, 30, 16);
   }
 
   createAnimations(scene: Phaser.Scene) {
