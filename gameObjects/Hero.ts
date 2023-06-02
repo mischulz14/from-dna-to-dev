@@ -8,6 +8,7 @@ export default class Hero extends Phaser.Physics.Arcade.Sprite {
   speed: number;
   freeze: boolean;
   private shadow: Phaser.GameObjects.Graphics;
+  heroBounds: Phaser.Geom.Rectangle;
   // stateMachine: StateMachine;
 
   constructor(
@@ -23,6 +24,7 @@ export default class Hero extends Phaser.Physics.Arcade.Sprite {
     this.shadow = scene.add.graphics({
       fillStyle: { color: 0x000000, alpha: 0.25 },
     });
+    this.heroBounds = this.getBounds();
 
     // Add this instance to the scene's display list and update list
 
@@ -105,6 +107,8 @@ export default class Hero extends Phaser.Physics.Arcade.Sprite {
   update() {
     // Hero is frozen while talking or during a cuscene
     if (this.freeze) {
+      this.anims.play('idle-' + this.lastDirection, true);
+
       return;
     }
     this.shadow.clear();
@@ -131,28 +135,37 @@ export default class Hero extends Phaser.Physics.Arcade.Sprite {
     this.setVelocityX(this.speed);
     this.anims.play('run-right', true);
     this.lastDirection = 'right';
+    this.shadow.fillEllipse(this.x + 3, this.y + 30, 30, 16);
   }
 
   runLeft() {
     this.setVelocityX(-this.speed);
     this.anims.play('run-left', true);
     this.lastDirection = 'left';
+    this.shadow.fillEllipse(this.x - 3, this.y + 30, 30, 16);
   }
 
   runUp() {
     this.setVelocityY(-this.speed);
     this.anims.play('run-up', true);
     this.lastDirection = 'up';
+    this.shadow.fillEllipse(this.x, this.y + 23, 30, 18);
   }
 
   runDown() {
     this.setVelocityY(this.speed);
     this.anims.play('run-down', true);
     this.lastDirection = 'down';
+    this.shadow.fillEllipse(this.x, this.y + 30, 30, 16);
   }
 
   idle() {
     this.anims.play('idle-' + this.lastDirection, true);
     this.setVelocity(0);
+    if (this.lastDirection === 'up') {
+      this.shadow.fillEllipse(this.x, this.y + 28, 30, 16);
+    } else {
+      this.shadow.fillEllipse(this.x, this.y + 30, 30, 16);
+    }
   }
 }
