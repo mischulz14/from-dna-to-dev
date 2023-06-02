@@ -70,11 +70,10 @@ canvas {
 .dialogue-field__options {
   position: absolute;
   right: 50px;
-  bottom: 0px;
-  width: 200px;
+  bottom: 75px;
+  width: fit-content;
   height: fit-content;
   display: none;
-  gap: 0.5rem;
   flex-direction: column;
   background-color: #efefef;
   border: 3px solid black;
