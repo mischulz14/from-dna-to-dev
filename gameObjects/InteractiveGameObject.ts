@@ -106,7 +106,7 @@ export default class InteractiveGameObject extends Phaser.Physics.Arcade
     if (this.dialogueIndicator === null) {
       // Create the dialogue box
       this.dialogueIndicator = this.scene.add.dom(
-        this.x,
+        this.x + 20,
         this.y - 50,
         new DialogueIndication(
           this.dialogueIndictaorKey,

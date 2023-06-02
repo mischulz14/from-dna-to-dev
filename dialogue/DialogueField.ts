@@ -19,12 +19,13 @@ export default class DialogueField {
     dialogueField.style.display = 'none';
     dialogueField.style.position = 'absolute';
     dialogueField.style.bottom = '0';
-    dialogueField.style.width = window.innerWidth > 800 ? '775px' : '100%'; // use clamp between 100% and 775 px
+    dialogueField.style.left = '0';
+    dialogueField.style.width = 725 + 'px';
     dialogueField.style.height = '50px';
     dialogueField.style.fontWeight = 'bold';
     dialogueField.style.fontSize = '20px';
     dialogueField.style.letterSpacing = '2px';
-    dialogueField.style.backgroundColor = 'white';
+    dialogueField.style.backgroundColor = '#efefef';
     dialogueField.style.borderRadius = '10px';
     dialogueField.style.border = '3px solid black';
     dialogueField.style.padding = '10px 10px';

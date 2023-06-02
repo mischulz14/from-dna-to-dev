@@ -22,9 +22,14 @@ body {
   font-family: 'Minecraft';
 }
 
+#game {
+  width: 800px;
+  height: 600px;
+  position: relative;
+}
+
 canvas {
-  border: 1px solid #000;
-  background: #fff;
+  margin: 0 !important;
 }
 
 .dialogue-indicator {
@@ -64,21 +69,26 @@ canvas {
 
 .dialogue-field__options {
   position: absolute;
-  right: 10px;
-  bottom: 10px;
+  right: 50px;
+  bottom: 0px;
   width: 200px;
+  height: fit-content;
   display: none;
+  gap: 0.5rem;
   flex-direction: column;
-  background-color: white;
+  background-color: #efefef;
   border: 3px solid black;
   border-radius: 10px;
   z-index: 100;
+  overflow: hidden;
 }
 
 .dialogue-field__option {
-  padding: 0.5rem;
+  padding: 1rem;
   color: black;
   z-index: 110;
+  background-color: #efefef;
+  /* border: none !important; */
 }
 
 .dialogue-field__option:focus {
@@ -86,16 +96,9 @@ canvas {
   color: white;
 }
 
-input {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+button {
   /* unset all styles */
-  /* background: none;
   border: none;
-  padding: 0;
-  margin: 0;
-  outline: none;
   /* custom styles */
   font-size: 1.5rem;
   font-family: 'Minecraft';

@@ -27,7 +27,7 @@ export default class DialogueNode {
     this.currentlySelectedOption = null;
     this.alreadyShownOptions = false;
 
-    this.chooseOptionWithUpAndDownArrowsEventListener();
+    // this.chooseOptionWithUpAndDownArrowsEventListener();
   }
 
   showOptions() {
@@ -55,52 +55,73 @@ export default class DialogueNode {
     this.currentlySelectedOption = null;
   }
 
-  chooseOptionWithUpAndDownArrowsEventListener() {
-    document.addEventListener('keydown', (event) => {
-      if (event.key === 'ArrowDown') {
-        const nextOption = document.activeElement?.nextElementSibling;
-        if (nextOption) {
-          (nextOption as HTMLInputElement).focus();
-        }
-      }
-      if (event.key === 'ArrowUp') {
-        const previousOption = document.activeElement?.previousElementSibling;
-        if (previousOption) {
-          (previousOption as HTMLInputElement).focus();
-        }
-      }
-    });
-  }
+  // chooseOptionWithUpAndDownArrowsEventListener() {
+  //   document.addEventListener('keydown', (event) => {
+  //     if (event.key === 'ArrowDown') {
+  //       const nextOption = document.activeElement?.nextElementSibling;
+  //       console.log(nextOption);
+  //       if (nextOption) {
+  //         (nextOption as HTMLInputElement).focus();
+  //       }
+  //     }
+  //     if (event.key === 'ArrowUp') {
+  //       const previousOption = document.activeElement?.previousElementSibling;
+  //       console.log(previousOption);
+  //       if (previousOption) {
+  //         (previousOption as HTMLInputElement).focus();
+  //       }
+  //     }
+  //   });
+  // }
 
   addHTMLOptionsToDialogueField() {
     const optionsContainer = document.querySelector('.dialogue-field__options');
 
-    // zindex
     this.options.forEach((option) => {
       const optionElement = document.createElement('button');
-      // optionElement.type = 'button';
       optionElement.classList.add('dialogue-field__option');
       optionElement.textContent = option.text;
       optionElement.tabIndex = 0;
       optionsContainer.appendChild(optionElement);
 
+      // Create a copy of option because otherwise the event listener will always use the last option in the loop (because of closure)
+      const optionCopy = { ...option };
+
       // add event listener for click
       optionElement.addEventListener('click', () => {
-        this.currentlySelectedOption = option;
-        // focus on that option
+        this.currentlySelectedOption = optionCopy;
         optionElement.focus();
       });
 
-      // add event listener for focus
-      optionElement.addEventListener('focus', () => {
-        this.currentlySelectedOption = option;
-        optionElement.focus();
-      });
+      // add keydown event listener to each option
+      this.selectNextOptionWithArrowKeys(optionElement, optionCopy);
     });
   }
 
   removeHTMLOptionsFromDialogueField() {
     const optionsContainer = document.querySelector('.dialogue-field__options');
     optionsContainer.innerHTML = '';
+  }
+
+  selectNextOptionWithArrowKeys(option, optionCopy) {
+    option.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowDown') {
+        const nextOption = document.activeElement?.nextElementSibling;
+        if (nextOption) {
+          (nextOption as HTMLInputElement).focus();
+          this.currentlySelectedOption = optionCopy;
+        }
+      }
+      if (event.key === 'ArrowUp') {
+        const previousOption = document.activeElement?.previousElementSibling;
+        if (previousOption) {
+          (previousOption as HTMLInputElement).focus();
+          this.currentlySelectedOption = optionCopy;
+        }
+      }
+      if (event.key === 'Enter') {
+        this.currentlySelectedOption = optionCopy;
+      }
+    });
   }
 }
