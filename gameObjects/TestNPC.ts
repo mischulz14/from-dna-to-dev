@@ -1,5 +1,6 @@
 import * as Phaser from 'phaser';
 
+import DialogueNode from '../dialogue/DialogueNode';
 import Hero from './Hero';
 import InteractiveGameObject from './InteractiveGameObject';
 
@@ -9,7 +10,8 @@ export default class TestNPC extends InteractiveGameObject {
     x: number,
     y: number,
     texture: string,
-    dialogue: string[], // Add the dialogue parameter here
+    // dialogue: string[], // Add the dialogue parameter here
+    dialogueNodes: DialogueNode[],
     dialogueIndictaorKey: string,
     dialogueIndictaorText: string,
     frame?: string | number,
@@ -19,14 +21,15 @@ export default class TestNPC extends InteractiveGameObject {
       x,
       y,
       texture,
-      dialogue,
+      // dialogue,
+      dialogueNodes,
       dialogueIndictaorKey,
       dialogueIndictaorText,
       frame,
     );
     // Add this instance to the scene's display list and update list
     // this.behaviorLoop();
-    this.dialogue = dialogue; // Add the dialogue parameter here
+    // this.dialogue = dialogue; // Add the dialogue parameter here
 
     // You might want to adjust these values to fit your NPC sprite
     this.body?.setSize(17, 15);
@@ -68,7 +71,25 @@ export default class TestNPC extends InteractiveGameObject {
     });
   }
 
-  update() {}
+  update() {
+    // Other update logic...
+    // if (this.currentDialogue) {
+    //   // If the player presses the enter key
+    //   if (
+    //     Phaser.Input.Keyboard.JustDown(
+    //       this.scene.input.keyboard.addKey('ENTER'),
+    //     )
+    //   ) {
+    //     // If the current dialogue node is completed, end the dialogue
+    //     if (this.currentDialogue.isCompleted) {
+    //       this.currentDialogue = null;
+    //     } else {
+    //       // Otherwise, present the next piece of dialogue
+    //       this.presentDialogue(this.currentDialogue);
+    //     }
+    //   }
+    // }
+  }
 
   turnToHero(hero: Hero) {
     // based on the last held direction, turn to face the hero

@@ -1,4 +1,5 @@
 import DialogueManager from '../dialogue/DialogueManager';
+import DialogueNode from '../dialogue/DialogueNode';
 import Hero from '../gameObjects/Hero';
 import NPC from '../gameObjects/NPC';
 import TestNPC from '../gameObjects/TestNPC';
@@ -7,16 +8,14 @@ import areCollisionBoxesColliding from '../utils/collisonBoxCollison';
 export default class LabScene extends Phaser.Scene {
   private hero: Hero;
   private isDialoguePlaying: boolean;
-  dialogueProgressNumber: number;
   isSpeakingTriggerDown: boolean;
   dialogueManager: DialogueManager;
-  activeNPC: NPC | TestNPC | null;
+  activeNPC: TestNPC | null;
 
   // private npc: Phaser.GameObjects.Sprite;
   constructor() {
     super({ key: 'LabScene' });
     // this.dialogueManager = new DialogueManager(this);
-    this.dialogueProgressNumber = 0;
     this.activeNPC = null;
   }
 
@@ -25,13 +24,6 @@ export default class LabScene extends Phaser.Scene {
     this.load.spritesheet('hero', 'assets/labHeroSpriteSheet.png', {
       frameWidth: 32,
       frameHeight: 36,
-    });
-
-    document.addEventListener('keydown', (event) => {
-      if (event.key === 'Enter' && this.activeNPC) {
-        this.dialogueProgressNumber += 1;
-        console.log(this.dialogueProgressNumber);
-      }
     });
 
     // load the npc spritesheet
@@ -82,15 +74,49 @@ export default class LabScene extends Phaser.Scene {
     npc2.setScale(2);
     this.add.existing(npc2);
 
+    const dialogueNodes = [
+      new DialogueNode('what do you want to know?', [
+        {
+          text: 'how are you?',
+          nextNodeIndex: 1,
+          endDialogue: false,
+        },
+        {
+          text: 'whats up?',
+          nextNodeIndex: 2,
+          endDialogue: false,
+        },
+        {
+          text: 'nothing',
+          nextNodeIndex: null,
+          endDialogue: true,
+        },
+      ]),
+      new DialogueNode('I am fine thanks', [
+        {
+          text: '',
+          nextNodeIndex: null,
+          endDialogue: true,
+        },
+      ]),
+      new DialogueNode('Nothing much', [
+        {
+          text: '',
+          nextNodeIndex: null,
+          endDialogue: true,
+        },
+      ]),
+    ];
     const testNPC = new TestNPC(
       this,
       300,
       300,
       'npc',
-      ['Hello!', 'How are you?'],
+      dialogueNodes,
       'E',
       'Talk',
     );
+
     testNPC.play('npc-idle-left');
     testNPC.setScale(2);
     this.add.existing(testNPC);
@@ -117,16 +143,28 @@ export default class LabScene extends Phaser.Scene {
 
   update(time: number, delta: number) {
     // IF THE PLAYER IS TALKING TO AN NPC
+    // if (this.isDialoguePlaying) {
+    //   this.hero.freeze = true;
+    //   // if the player is talking to an NPC, the dialogue is played
+    //   this.activeNPC?.turnToHero(this.hero);
+    //   this.activeNPC?.talkToHero();
+
+    //   if (this.activeNPC?.dialogueEnded) {
+    //     this.hero.freeze = false;
+    //     // this.activeNPC?.turnBackToOriginalAnimation();
+    //     this.dialogueProgressNumber = 0;
+    //     this.isDialoguePlaying = false;
+    //     this.activeNPC = null;
+    //   }
+    // }
+
     if (this.isDialoguePlaying) {
       this.hero.freeze = true;
-      // if the player is talking to an NPC, the dialogue is played
       this.activeNPC?.turnToHero(this.hero);
-      this.activeNPC?.talkToHero(this.dialogueProgressNumber);
+      this.activeNPC?.talkToHero();
 
       if (this.activeNPC?.dialogueEnded) {
         this.hero.freeze = false;
-        // this.activeNPC?.turnBackToOriginalAnimation();
-        this.dialogueProgressNumber = 0;
         this.isDialoguePlaying = false;
         this.activeNPC = null;
       }
