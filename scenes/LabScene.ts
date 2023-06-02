@@ -74,39 +74,49 @@ export default class LabScene extends Phaser.Scene {
     npc2.setScale(2);
     this.add.existing(npc2);
 
+    // const dialogueNodes = [
+    //   new DialogueNode('what do you want to know?', [
+    //     {
+    //       text: 'how are you?',
+    //       nextNodeIndex: 1,
+    //       endDialogue: false,
+    //     },
+    //     {
+    //       text: 'whats up?',
+    //       nextNodeIndex: 2,
+    //       endDialogue: false,
+    //     },
+    //     {
+    //       text: 'nothing',
+    //       nextNodeIndex: null,
+    //       endDialogue: true,
+    //     },
+    //   ]),
+    //   new DialogueNode('I am fine thanks', [
+    //     {
+    //       text: '',
+    //       nextNodeIndex: null,
+    //       endDialogue: true,
+    //     },
+    //   ]),
+    //   new DialogueNode('Nothing much', [
+    //     {
+    //       text: '',
+    //       nextNodeIndex: null,
+    //       endDialogue: true,
+    //     },
+    //   ]),
+    // ];
+
     const dialogueNodes = [
-      new DialogueNode('what do you want to know?', [
-        {
-          text: 'how are you?',
-          nextNodeIndex: 1,
-          endDialogue: false,
-        },
-        {
-          text: 'whats up?',
-          nextNodeIndex: 2,
-          endDialogue: false,
-        },
-        {
-          text: 'nothing',
-          nextNodeIndex: null,
-          endDialogue: true,
-        },
-      ]),
+      new DialogueNode('what do you want to know?'),
       new DialogueNode('I am fine thanks', [
-        {
-          text: '',
-          nextNodeIndex: null,
-          endDialogue: true,
-        },
+        { text: 'choose me', nextNodeIndex: 2, endDialogue: false },
+        { text: 'choose me instead', nextNodeIndex: null, endDialogue: true },
       ]),
-      new DialogueNode('Nothing much', [
-        {
-          text: '',
-          nextNodeIndex: null,
-          endDialogue: true,
-        },
-      ]),
+      new DialogueNode('Nothing much'),
     ];
+
     const testNPC = new TestNPC(
       this,
       300,

@@ -5,6 +5,7 @@ import Hero from './Hero';
 import InteractiveGameObject from './InteractiveGameObject';
 
 export default class TestNPC extends InteractiveGameObject {
+  private shadow: Phaser.GameObjects.Graphics;
   constructor(
     scene: Phaser.Scene,
     x: number,
@@ -36,19 +37,17 @@ export default class TestNPC extends InteractiveGameObject {
     this.body?.setOffset(8, 22);
     // make body immovable so it doesn't get pushed around
     this.body!.immovable = true;
+    this.shadow = scene.add.graphics({
+      fillStyle: { color: 0x000000, alpha: 0.25 },
+    });
 
     this.createAnimations(scene);
 
     // Play the initial idle animation
-    // Replace 'idle' with the correct animation key for your NPC
     this.anims.play('npc-idle-down', true);
-
-    // set up event listener to listen for space bar press
   }
 
   createAnimations(scene: Phaser.Scene) {
-    // Define your animations here...
-    // Replace these values with the correct ones for your NPC
     scene.anims.create({
       key: 'npc-idle-down',
       frames: scene.anims.generateFrameNumbers('npc', { start: 14, end: 20 }),
@@ -71,25 +70,7 @@ export default class TestNPC extends InteractiveGameObject {
     });
   }
 
-  update() {
-    // Other update logic...
-    // if (this.currentDialogue) {
-    //   // If the player presses the enter key
-    //   if (
-    //     Phaser.Input.Keyboard.JustDown(
-    //       this.scene.input.keyboard.addKey('ENTER'),
-    //     )
-    //   ) {
-    //     // If the current dialogue node is completed, end the dialogue
-    //     if (this.currentDialogue.isCompleted) {
-    //       this.currentDialogue = null;
-    //     } else {
-    //       // Otherwise, present the next piece of dialogue
-    //       this.presentDialogue(this.currentDialogue);
-    //     }
-    //   }
-    // }
-  }
+  update() {}
 
   turnToHero(hero: Hero) {
     // based on the last held direction, turn to face the hero

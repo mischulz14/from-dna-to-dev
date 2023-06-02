@@ -1,3 +1,12 @@
+/*
+  DialogueNode class
+  This class represents a node in a dialogue tree. It contains the text that is shown to the player and the options that the player can choose from.
+  The options are represented as an array of objects. Each object has the following properties:
+  - text: the text that is shown to the player
+  - nextNodeIndex: the index of the next node in the dialogue tree
+  - endDialogue: a boolean that indicates whether the dialogue ends after the player chooses this option
+  */
+
 export default class DialogueNode {
   text: string;
   options: {
@@ -45,6 +54,7 @@ export default class DialogueNode {
 
       this.alreadyShownOptions = true;
     }
+    console.log('no text');
   }
 
   hideOptions() {
@@ -54,25 +64,6 @@ export default class DialogueNode {
     this.removeHTMLOptionsFromDialogueField();
     this.currentlySelectedOption = null;
   }
-
-  // chooseOptionWithUpAndDownArrowsEventListener() {
-  //   document.addEventListener('keydown', (event) => {
-  //     if (event.key === 'ArrowDown') {
-  //       const nextOption = document.activeElement?.nextElementSibling;
-  //       console.log(nextOption);
-  //       if (nextOption) {
-  //         (nextOption as HTMLInputElement).focus();
-  //       }
-  //     }
-  //     if (event.key === 'ArrowUp') {
-  //       const previousOption = document.activeElement?.previousElementSibling;
-  //       console.log(previousOption);
-  //       if (previousOption) {
-  //         (previousOption as HTMLInputElement).focus();
-  //       }
-  //     }
-  //   });
-  // }
 
   addHTMLOptionsToDialogueField() {
     const optionsContainer = document.querySelector('.dialogue-field__options');
@@ -94,7 +85,10 @@ export default class DialogueNode {
       });
 
       // add keydown event listener to each option
-      this.selectNextOptionWithArrowKeys(optionElement, optionCopy);
+      this.addSelectNextOptionWithArrowKeysEventListener(
+        optionElement,
+        optionCopy,
+      );
     });
   }
 
@@ -103,7 +97,7 @@ export default class DialogueNode {
     optionsContainer.innerHTML = '';
   }
 
-  selectNextOptionWithArrowKeys(option, optionCopy) {
+  addSelectNextOptionWithArrowKeysEventListener(option, optionCopy) {
     option.addEventListener('keydown', (event) => {
       if (event.key === 'ArrowDown') {
         const nextOption = document.activeElement?.nextElementSibling;
