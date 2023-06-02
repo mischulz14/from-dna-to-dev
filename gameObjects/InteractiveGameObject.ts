@@ -95,7 +95,6 @@ export default class InteractiveGameObject extends Phaser.Physics.Arcade
     document.addEventListener(
       'keydown',
       function (event) {
-        console.log(this.playerIsChosing);
         if (this.playerIsChosing && event.key === 'Enter') {
           if (
             this.currentDialogueNode.currentlySelectedOption === null ||

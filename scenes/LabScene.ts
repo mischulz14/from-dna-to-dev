@@ -65,14 +65,6 @@ export default class LabScene extends Phaser.Scene {
     this.cameras.main.startFollow(this.hero);
 
     // Create the NPC
-    const npc = new NPC(this, 150, 100, 'npc');
-    npc.setScale(2);
-    this.add.existing(npc);
-
-    const npc2 = new NPC(this, 300, 100, 'npc');
-    npc2.play('npc-idle-left');
-    npc2.setScale(2);
-    this.add.existing(npc2);
 
     // const dialogueNodes = [
     //   new DialogueNode('what do you want to know?', [
@@ -138,17 +130,21 @@ export default class LabScene extends Phaser.Scene {
       }
     });
 
-    // const collisionLayer = map.createLayer('Collisions', tileset);
-    // collisionLayer.setScale(3);
-    // collisionLayer.setVisible(false);
+    const tableLayer = map.createLayer('Tables', tileset);
+    tableLayer.setScale(1);
+
+    const collisionLayer = map.createLayer('Collisions', tileset);
+    collisionLayer.setScale(1);
+    collisionLayer.setVisible(false);
     // // Set up collisions with the specified tile
-    // collisionLayer.setCollisionByProperty({ collides: true });
+    collisionLayer.setCollisionByProperty({ collides: true });
+    console.log(collisionLayer);
 
     // const wallLayer = map.createLayer('Walls', tileset);
     // wallLayer.setScale(3);
 
     // // Set up collisions between the player and the specified tile
-    // this.physics.add.collider(this.hero, collisionLayer);
+    this.physics.add.collider(this.hero, collisionLayer);
   }
 
   update(time: number, delta: number) {
