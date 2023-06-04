@@ -11,31 +11,19 @@ export default class TestNPC extends InteractiveGameObject {
     x: number,
     y: number,
     texture: string,
-    // dialogue: string[], // Add the dialogue parameter here
-    dialogueNodes: DialogueNode[],
     dialogueIndictaorKey: string,
     dialogueIndictaorText: string,
-    frame?: string | number,
   ) {
-    super(
-      scene,
-      x,
-      y,
-      texture,
-      // dialogue,
-      dialogueNodes,
-      dialogueIndictaorKey,
-      dialogueIndictaorText,
-      frame,
-    );
-    // Add this instance to the scene's display list and update list
-    // this.behaviorLoop();
-    // this.dialogue = dialogue; // Add the dialogue parameter here
+    super(scene, x, y, texture, dialogueIndictaorKey, dialogueIndictaorText);
 
-    // You might want to adjust these values to fit your NPC sprite
+    // Here we create our dialogue nodes
+    this.dialogueNodes = this.createDialogueNodes();
+    this.behaviorLoop();
+
     this.body?.setSize(17, 15);
     this.body?.setOffset(8, 22);
-    // make body immovable so it doesn't get pushed around
+
+    // make body immovable so it doesn't get pushed around upon collision
     this.body!.immovable = true;
     this.shadow = scene.add.graphics({
       fillStyle: { color: 0x000000, alpha: 0.25 },
@@ -71,7 +59,10 @@ export default class TestNPC extends InteractiveGameObject {
     });
   }
 
-  update() {}
+  update() {
+    // if (!this.isSpeaking) this.behaviorLoop();
+    this.updateShadow();
+  }
 
   turnToHero(hero: Hero) {
     // based on the last held direction, turn to face the hero
@@ -87,9 +78,13 @@ export default class TestNPC extends InteractiveGameObject {
   }
 
   behaviorLoop = () => {
+    if (this.isSpeaking) {
+      this.setVelocity(0, 0);
+      return;
+    }
     // walk in a random direction for 2-6 seconds, then stop for 1-3 seconds
-    const walkTime = Phaser.Math.Between(2000, 6000);
-    const stopTime = Phaser.Math.Between(1000, 3000);
+    const walkTime = Phaser.Math.Between(800, 1200);
+    const stopTime = Phaser.Math.Between(500, 800);
 
     // pick a random direction (0-3)
     const direction = Phaser.Math.Between(0, 3);
@@ -116,4 +111,27 @@ export default class TestNPC extends InteractiveGameObject {
       this.scene.time.delayedCall(stopTime, this.behaviorLoop);
     });
   };
+
+  createDialogueNodes(): DialogueNode[] {
+    // Create your DialogueNodes here
+    const dialogueNodes = [
+      new DialogueNode('what do you want to know?'),
+      new DialogueNode('I am fine thanks', [
+        { text: 'where am I?', nextNodeIndex: 2, endDialogue: false },
+        { text: 'who made this game?', nextNodeIndex: 3, endDialogue: false },
+      ]),
+      new DialogueNode('You are in game', [
+        { text: '', nextNodeIndex: null, endDialogue: true },
+      ]),
+      new DialogueNode('a smart smart man'),
+      new DialogueNode('he made this game'),
+    ];
+
+    return dialogueNodes;
+  }
+
+  updateShadow() {
+    this.shadow.clear();
+    this.shadow.fillEllipse(this.x, this.y + 35, 30, 16);
+  }
 }
