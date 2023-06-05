@@ -46,56 +46,77 @@ export default class Hero extends Phaser.Physics.Arcade.Sprite {
     // Define your animations here...
     scene.anims.create({
       key: 'idle-down',
-      frames: scene.anims.generateFrameNumbers('hero', { start: 29, end: 33 }),
+      frames: scene.anims.generateFrameNumbers('labHero', {
+        start: 29,
+        end: 33,
+      }),
       frameRate: 6,
       repeat: -1,
     });
 
     scene.anims.create({
       key: 'run-down',
-      frames: scene.anims.generateFrameNumbers('hero', { start: 34, end: 41 }),
+      frames: scene.anims.generateFrameNumbers('labHero', {
+        start: 34,
+        end: 41,
+      }),
       frameRate: 10,
       repeat: -1,
     });
 
     scene.anims.create({
       key: 'idle-up',
-      frames: scene.anims.generateFrameNumbers('hero', { start: 42, end: 46 }),
+      frames: scene.anims.generateFrameNumbers('labHero', {
+        start: 42,
+        end: 46,
+      }),
       frameRate: 6,
       repeat: -1,
     });
 
     scene.anims.create({
       key: 'run-up',
-      frames: scene.anims.generateFrameNumbers('hero', { start: 47, end: 54 }),
+      frames: scene.anims.generateFrameNumbers('labHero', {
+        start: 47,
+        end: 54,
+      }),
       frameRate: 10,
       repeat: -1,
     });
 
     scene.anims.create({
       key: 'idle-left',
-      frames: scene.anims.generateFrameNumbers('hero', { start: 16, end: 20 }),
+      frames: scene.anims.generateFrameNumbers('labHero', {
+        start: 16,
+        end: 20,
+      }),
       frameRate: 6,
       repeat: -1,
     });
 
     scene.anims.create({
       key: 'run-left',
-      frames: scene.anims.generateFrameNumbers('hero', { start: 0, end: 7 }),
+      frames: scene.anims.generateFrameNumbers('labHero', { start: 0, end: 7 }),
       frameRate: 10,
       repeat: -1,
     });
 
     scene.anims.create({
       key: 'idle-right',
-      frames: scene.anims.generateFrameNumbers('hero', { start: 21, end: 25 }),
+      frames: scene.anims.generateFrameNumbers('labHero', {
+        start: 21,
+        end: 25,
+      }),
       frameRate: 6,
       repeat: -1,
     });
 
     scene.anims.create({
       key: 'run-right',
-      frames: scene.anims.generateFrameNumbers('hero', { start: 8, end: 15 }),
+      frames: scene.anims.generateFrameNumbers('labHero', {
+        start: 8,
+        end: 15,
+      }),
       frameRate: 10,
       repeat: -1,
     });
@@ -107,11 +128,13 @@ export default class Hero extends Phaser.Physics.Arcade.Sprite {
   update() {
     // Hero is frozen while talking or during a cuscene
     if (this.freeze) {
+      this.body.enable = false; // disable collision response
       this.anims.play('idle-' + this.lastDirection, true);
 
       return;
     }
     this.shadow.clear();
+    this.body.enable = true; // enable collision response
 
     // Reset the velocity
     this.setVelocity(0);
