@@ -3,6 +3,7 @@ import * as Phaser from 'phaser';
 import DialogueField from '../dialogue/DialogueField';
 import DialogueIndication from '../dialogue/DialogueIndication';
 import DialogueNode from '../dialogue/DialogueNode';
+import Hero from './Hero';
 
 export default class InteractiveGameObject extends Phaser.Physics.Arcade
   .Sprite {
@@ -19,23 +20,27 @@ export default class InteractiveGameObject extends Phaser.Physics.Arcade
   currentDialogueNodeIndex: number;
   playerIsChosing: boolean;
   isDialogueEnding: boolean;
+  bounds = new Phaser.Geom.Rectangle();
   constructor(
     scene: Phaser.Scene,
     x: number,
     y: number,
     texture: string,
-    dialogueNodes: DialogueNode[],
     dialogueIndictaorKey: string,
     dialogueIndictaorText: string,
-    frame?: string | number,
   ) {
-    super(scene, x, y, texture, frame);
+    super(scene, x, y, texture);
     this.dialogueIndicator = null;
     this.isSpeaking = false;
     this.dialogueField = new DialogueField();
     this.dialogueIndictaorKey = dialogueIndictaorKey;
     this.dialogueIndictaorText = dialogueIndictaorText;
-    this.dialogueNodes = dialogueNodes;
+    // Here we create our dialogue nodes
+    this.dialogueNodes = this.createDialogueNodes();
+    this.bounds = this.getBounds();
+
+    // Now we set the dialogueNodes of the parent class to our locally created ones
+    this.setDialogueNodes(this.dialogueNodes);
     this.currentDialogueNodeIndex = 0;
     this.playerIsChosing = false;
     this.isDialogueEnding = false;
@@ -77,8 +82,8 @@ export default class InteractiveGameObject extends Phaser.Physics.Arcade
     if (this.dialogueIndicator === null) {
       // Create the dialogue box
       this.dialogueIndicator = this.scene.add.dom(
-        this.x - 25,
-        this.y - 55,
+        this.getBounds().x,
+        this.getBounds().y - 55,
         new DialogueIndication(
           this.dialogueIndictaorKey,
           this.dialogueIndictaorText,
@@ -157,5 +162,32 @@ export default class InteractiveGameObject extends Phaser.Physics.Arcade
     for (let node of this.dialogueNodes) {
       node.alreadyShownOptions = false;
     }
+  }
+
+  createDialogueNodes(): DialogueNode[] {
+    return [];
+  }
+
+  setDialogueNodes(dialogueNodes: DialogueNode[]) {
+    this.dialogueNodes = dialogueNodes;
+  }
+
+  behaviorLoop() {}
+
+  updateSpeechIndicationPosition() {
+    if (this.dialogueIndicator !== null) {
+      this.dialogueIndicator.setPosition(this.x, this.y - 55);
+    }
+  }
+
+  update() {
+    this.updateSpeechIndicationPosition();
+  }
+
+  startDialogue(hero: Hero) {
+    // Assuming you have a startDialogue function like this in your NPC class,
+    // you would add this line:
+    this.scene.time.removeAllEvents();
+    // ... existing dialogue starting logic continues
   }
 }

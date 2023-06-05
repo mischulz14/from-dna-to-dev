@@ -21,7 +21,7 @@ export default class LabScene extends Phaser.Scene {
 
   preload() {
     // load the hero spritesheet
-    this.load.spritesheet('hero', 'assets/labHeroSpriteSheet.png', {
+    this.load.spritesheet('labHero', 'assets/labHeroSpriteSheet.png', {
       frameWidth: 32,
       frameHeight: 36,
     });
@@ -56,7 +56,7 @@ export default class LabScene extends Phaser.Scene {
       this,
       this.cameras.main.width / 2,
       this.cameras.main.height / 2,
-      'hero',
+      'labHero',
     );
     this.hero.setScale(2);
     this.add.existing(this.hero);
@@ -66,58 +66,20 @@ export default class LabScene extends Phaser.Scene {
 
     // Create the NPC
 
-    // const dialogueNodes = [
-    //   new DialogueNode('what do you want to know?', [
-    //     {
-    //       text: 'how are you?',
-    //       nextNodeIndex: 1,
-    //       endDialogue: false,
-    //     },
-    //     {
-    //       text: 'whats up?',
-    //       nextNodeIndex: 2,
-    //       endDialogue: false,
-    //     },
-    //     {
-    //       text: 'nothing',
-    //       nextNodeIndex: null,
-    //       endDialogue: true,
-    //     },
-    //   ]),
-    //   new DialogueNode('I am fine thanks', [
-    //     {
-    //       text: '',
-    //       nextNodeIndex: null,
-    //       endDialogue: true,
-    //     },
-    //   ]),
-    //   new DialogueNode('Nothing much', [
-    //     {
-    //       text: '',
-    //       nextNodeIndex: null,
-    //       endDialogue: true,
-    //     },
-    //   ]),
-    // ];
-
     const dialogueNodes = [
       new DialogueNode('what do you want to know?'),
       new DialogueNode('I am fine thanks', [
-        { text: 'choose me', nextNodeIndex: 2, endDialogue: false },
-        { text: 'choose me instead', nextNodeIndex: null, endDialogue: true },
+        { text: 'where am I?', nextNodeIndex: 2, endDialogue: false },
+        { text: 'who made this game?', nextNodeIndex: 3, endDialogue: false },
       ]),
-      new DialogueNode('Nothing much'),
+      new DialogueNode('You are in game', [
+        { text: '', nextNodeIndex: null, endDialogue: true },
+      ]),
+      new DialogueNode('a smart smart man'),
+      new DialogueNode('he made this game'),
     ];
 
-    const testNPC = new TestNPC(
-      this,
-      300,
-      300,
-      'npc',
-      dialogueNodes,
-      'E',
-      'Talk',
-    );
+    const testNPC = new TestNPC(this, 300, 300, 'npc', 'E', 'Talk');
 
     testNPC.play('npc-idle-left');
     testNPC.setScale(2);
@@ -135,16 +97,17 @@ export default class LabScene extends Phaser.Scene {
 
     const collisionLayer = map.createLayer('Collisions', tileset);
     collisionLayer.setScale(1);
-    collisionLayer.setVisible(false);
+    // collisionLayer.setVisible(false);
     // // Set up collisions with the specified tile
     collisionLayer.setCollisionByProperty({ collides: true });
     console.log(collisionLayer);
 
-    // const wallLayer = map.createLayer('Walls', tileset);
-    // wallLayer.setScale(3);
+    const wallLayer = map.createLayer('Walls', tileset);
+    wallLayer.setScale(1);
 
     // // Set up collisions between the player and the specified tile
     this.physics.add.collider(this.hero, collisionLayer);
+    this.physics.add.collider(testNPC, collisionLayer);
   }
 
   update(time: number, delta: number) {
@@ -165,13 +128,16 @@ export default class LabScene extends Phaser.Scene {
     // }
 
     if (this.isDialoguePlaying) {
+      this.time.removeAllEvents();
       this.hero.freeze = true;
       this.activeNPC?.turnToHero(this.hero);
+      this.activeNPC.startDialogue();
       this.activeNPC?.talkToHero();
 
       if (this.activeNPC?.dialogueEnded) {
         this.hero.freeze = false;
         this.isDialoguePlaying = false;
+        this.activeNPC.endDialogue();
         this.activeNPC = null;
       }
     }

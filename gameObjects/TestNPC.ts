@@ -6,6 +6,10 @@ import InteractiveGameObject from './InteractiveGameObject';
 
 export default class TestNPC extends InteractiveGameObject {
   private shadow: Phaser.GameObjects.Graphics;
+  private walkStopEvent: Phaser.Time.TimerEvent | null = null;
+  private isWalking: boolean = false;
+  private walkEndTime: number = 0;
+  private behaviorTimer?: Phaser.Time.TimerEvent;
   constructor(
     scene: Phaser.Scene,
     x: number,
@@ -60,11 +64,11 @@ export default class TestNPC extends InteractiveGameObject {
   }
 
   update() {
-    // if (!this.isSpeaking) this.behaviorLoop();
+    super.update();
     this.updateShadow();
   }
 
-  turnToHero(hero: Hero) {
+  turnToHero = (hero: Hero) => {
     // based on the last held direction, turn to face the hero
     if (hero.lastDirection === 'up') {
       this.anims.play('npc-idle-down', true);
@@ -75,7 +79,7 @@ export default class TestNPC extends InteractiveGameObject {
     } else if (hero.lastDirection === 'right') {
       this.anims.play('npc-idle-left', true);
     }
-  }
+  };
 
   behaviorLoop = () => {
     if (this.isSpeaking) {
@@ -90,29 +94,48 @@ export default class TestNPC extends InteractiveGameObject {
     const direction = Phaser.Math.Between(0, 3);
 
     // set velocity based on direction
-    if (direction === 0) {
-      this.setVelocity(0, -64);
-    }
-    if (direction === 1) {
-      this.setVelocity(64, 0);
-    }
-    if (direction === 2) {
-      this.setVelocity(0, 64);
-    }
-    if (direction === 3) {
-      this.setVelocity(-64, 0);
+    // Only set velocity if not speaking
+    if (!this.isSpeaking) {
+      if (direction === 0) {
+        this.setVelocity(0, -64);
+      }
+      if (direction === 1) {
+        this.setVelocity(64, 0);
+      }
+      if (direction === 2) {
+        this.setVelocity(0, 64);
+      }
+      if (direction === 3) {
+        this.setVelocity(-64, 0);
+      }
     }
 
     // stop moving after walkTime ms
-    this.scene.time.delayedCall(walkTime, () => {
+    this.behaviorTimer = this.scene.time.delayedCall(walkTime, () => {
       this.setVelocity(0, 0);
+      if (this.isSpeaking) {
+        this.setVelocity(0, 0);
+        return;
+      }
 
       // resume behavior after stopTime ms
-      this.scene.time.delayedCall(stopTime, this.behaviorLoop);
+      this.behaviorTimer = this.scene.time.delayedCall(
+        stopTime,
+        this.behaviorLoop,
+      );
     });
   };
 
-  createDialogueNodes(): DialogueNode[] {
+  // Call this function to immediately stop the NPC and the behavior loop
+  stopBehaviorLoop = () => {
+    if (this.behaviorTimer) {
+      this.behaviorTimer.destroy(); // This immediately stops the timer
+      this.behaviorTimer = undefined;
+      this.setVelocity(0, 0);
+    }
+  };
+
+  createDialogueNodes = (): DialogueNode[] => {
     // Create your DialogueNodes here
     const dialogueNodes = [
       new DialogueNode('what do you want to know?'),
@@ -128,10 +151,28 @@ export default class TestNPC extends InteractiveGameObject {
     ];
 
     return dialogueNodes;
-  }
+  };
 
-  updateShadow() {
+  updateShadow = () => {
     this.shadow.clear();
     this.shadow.fillEllipse(this.x, this.y + 35, 30, 16);
-  }
+  };
+
+  // Call this function when the hero initiates dialogue with the NPC
+  startDialogue = () => {
+    this.isSpeaking = true;
+    this.stopBehaviorLoop();
+    if (this.body instanceof Phaser.Physics.Arcade.Body) {
+      this.body.enable = false; // disable collision response
+    }
+  };
+
+  // Call this function when the dialogue ends
+  endDialogue = () => {
+    this.isSpeaking = false;
+    this.behaviorLoop(); // resume NPC movement after dialogue ends
+    if (this.body instanceof Phaser.Physics.Arcade.Body) {
+      this.body.enable = true; // re-enable collision response
+    }
+  };
 }
