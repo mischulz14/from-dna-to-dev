@@ -1,6 +1,7 @@
 import 'phaser';
 
 import BattleScene from '../scenes/BattleScene';
+import LabCutscene from '../scenes/LabCutscene';
 import LabScene from '../scenes/LabScene';
 import StartScene from '../scenes/StartScene';
 
@@ -12,7 +13,7 @@ const config: Phaser.Types.Core.GameConfig = {
     default: 'arcade',
     arcade: {
       gravity: { y: 0, x: 0 }, // Top down game, so no gravity
-      debug: false, // Change this to true to see hitboxes
+      debug: true, // Change this to true to see hitboxes
     },
   },
   width: 800,
@@ -27,7 +28,7 @@ const config: Phaser.Types.Core.GameConfig = {
   },
   //  make background color transparent
   backgroundColor: '#000',
-  scene: [LabScene, BattleScene, StartScene], // order of scenes does not matter
+  scene: [LabCutscene, LabScene, BattleScene, StartScene], // order of scenes does not matter
 };
 
 new Phaser.Game(config);
