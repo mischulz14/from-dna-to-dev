@@ -32,7 +32,33 @@ export default class BattleScene extends Phaser.Scene {
       { name: 'Attack 4', damage: 15, damageText: 'Au!' },
     ];
     this.gameEvents = new Events.EventEmitter();
-    this.playerAttackOptions = new AttackOptions(this, this.gameEvents);
+    const options = [
+      {
+        text: 'Attack 1',
+        damage: 30,
+        damageText: 'Nice!',
+      },
+      {
+        text: 'Attack 2',
+        damage: 5,
+        damageText: 'Ouch!',
+      },
+      {
+        text: 'Attack 3',
+        damage: 10,
+        damageText: 'Oof!',
+      },
+      {
+        text: 'Attack 4',
+        damage: 10,
+        damageText: 'Au!',
+      },
+    ];
+    this.playerAttackOptions = new AttackOptions(
+      this,
+      this.gameEvents,
+      options,
+    );
     this.gameEvents.on('battleStart', this.startBattle, this);
     this.gameEvents.on('showAttackOptions', this.showAttackOptions, this);
     this.gameEvents.on('playerAttackChosen', this.playerAttackChosen, this);
