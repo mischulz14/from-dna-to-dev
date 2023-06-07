@@ -3,7 +3,6 @@ import * as Phaser from 'phaser';
 import DialogueField from '../dialogue/DialogueField';
 import DialogueIndication from '../dialogue/DialogueIndication';
 import DialogueNode from '../dialogue/DialogueNode';
-import Hero from './Hero';
 
 export default class InteractiveGameObject extends Phaser.Physics.Arcade
   .Sprite {
@@ -31,6 +30,7 @@ export default class InteractiveGameObject extends Phaser.Physics.Arcade
     dialogueIndictaorText: string,
   ) {
     super(scene, x, y, texture);
+    this.scene = scene;
     this.dialogueIndicator = null;
     this.isSpeaking = false;
     this.dialogueField = new DialogueField();
@@ -59,7 +59,7 @@ export default class InteractiveGameObject extends Phaser.Physics.Arcade
 
     if (this.dialogueEnded && !this.eventTriggered) {
       // check if event has already been triggered
-      this.triggerEvent(this.scene);
+      this.triggerEventWhenDialogueEnds(this.scene);
       this.eventTriggered = true; // set this to true so it doesn't happen again
     }
   }
@@ -94,8 +94,8 @@ export default class InteractiveGameObject extends Phaser.Physics.Arcade
     if (this.dialogueIndicator === null) {
       // Create the dialogue box
       this.dialogueIndicator = this.scene.add.dom(
-        this.getBounds().x,
-        this.getBounds().y - 55,
+        this.x,
+        this.y - 55,
         new DialogueIndication(
           this.dialogueIndictaorKey,
           this.dialogueIndictaorText,
@@ -177,6 +177,8 @@ export default class InteractiveGameObject extends Phaser.Physics.Arcade
     for (let node of this.dialogueNodes) {
       node.alreadyShownOptions = false;
     }
+
+    this.triggerEventWhenDialogueEnds(this.scene);
   }
 
   createDialogueNodes(): DialogueNode[] {
@@ -195,7 +197,7 @@ export default class InteractiveGameObject extends Phaser.Physics.Arcade
     }
   }
 
-  triggerEvent = (scene) => {};
+  triggerEventWhenDialogueEnds = (scene) => {};
 
   stopBehaviorLoop() {}
 
@@ -207,7 +209,7 @@ export default class InteractiveGameObject extends Phaser.Physics.Arcade
     }
   };
 
-  endDialogue = () => {
+  endNPCDialogue = () => {
     this.isSpeaking = false;
     // this.behaviorLoop(); // resume NPC movement after dialogue ends
     if (this.body instanceof Phaser.Physics.Arcade.Body) {
