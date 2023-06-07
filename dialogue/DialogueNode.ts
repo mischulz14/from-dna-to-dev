@@ -14,7 +14,6 @@ export default class DialogueNode {
     nextNodeIndex: number;
     endDialogue?: boolean;
   }[];
-  isCompleted: boolean;
   currentlySelectedOption: {
     text: string;
     nextNodeIndex: number;
@@ -32,7 +31,6 @@ export default class DialogueNode {
   ) {
     this.text = text;
     this.options = options || [];
-    this.isCompleted = false;
     this.currentlySelectedOption = null;
     this.alreadyShownOptions = false;
 

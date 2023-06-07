@@ -24,7 +24,7 @@ body {
 
 #game {
   width: 800px;
-  height: 600px;
+  height: 500px;
   position: relative;
 }
 
@@ -40,9 +40,9 @@ canvas {
   gap: 0.5rem;
   color: black;
   border-radius: 5px;
-  padding-right: 5px;
+  padding: 2px 15px;
   box-shadow: 1px 2.5px 0px rgba(0, 0, 0);
-  width: 90px;
+  width: fit-content;
   height: 40px;
 }
 
@@ -63,8 +63,28 @@ canvas {
   display: flex !important;
 }
 
-.show {
-  display: block;
+.show-grid {
+  display: grid !important;
+}
+
+.dialogue-field__enter {
+  content: 'Enter' url('./assets/enter-outline.svg');
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  /* make it pixelated */
+  image-rendering: pixelated;
+  bottom: 10px;
+  right: 10px;
+  border-top-color: #efefef;
+  border-bottom: 0;
+  border-right: 0;
+}
+
+.enter {
+  padding-top: 5px;
 }
 
 .dialogue-field__options {
@@ -102,4 +122,30 @@ button {
   font-size: 1.5rem;
   font-family: 'Minecraft';
   color: black;
+}
+
+.attack-options {
+  display: none;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  height: 200px;
+  width: 500px;
+  color: black;
+  z-index: 110;
+  background-color: #efefef;
+  grid-template-columns: 1fr 1fr;
+  border: 3px solid black;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.active {
+  background-color: black;
+  color: white;
+}
+
+.attack-options__option:focus {
+  background-color: black;
+  color: white;
 }

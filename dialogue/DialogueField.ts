@@ -12,6 +12,10 @@ export default class DialogueField {
     const dialogueField = document.createElement('div');
     dialogueField.classList.add('dialogue-field');
     dialogueField.innerHTML = `
+      <div class="dialogue-field__enter">
+      <div class="enter">Enter</div>
+      <img src="assets/enter-outline.svg" alt="enter" />
+      </div>
       <div class="dialogue-field__content">
         <div class="dialogue-field__text"></div>
       </div>
@@ -20,8 +24,8 @@ export default class DialogueField {
     dialogueField.style.position = 'absolute';
     dialogueField.style.bottom = '0';
     dialogueField.style.left = '0';
-    dialogueField.style.width = 725 + 'px';
-    dialogueField.style.height = '50px';
+    dialogueField.style.width = 775 + 'px';
+    dialogueField.style.height = '70px';
     dialogueField.style.fontWeight = 'bold';
     dialogueField.style.fontSize = '20px';
     dialogueField.style.letterSpacing = '2px';

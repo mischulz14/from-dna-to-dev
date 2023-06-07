@@ -21,6 +21,7 @@ export default class InteractiveGameObject extends Phaser.Physics.Arcade
   playerIsChosing: boolean;
   isDialogueEnding: boolean;
   bounds = new Phaser.Geom.Rectangle();
+  eventTriggered: boolean;
   constructor(
     scene: Phaser.Scene,
     x: number,
@@ -44,6 +45,7 @@ export default class InteractiveGameObject extends Phaser.Physics.Arcade
     this.currentDialogueNodeIndex = 0;
     this.playerIsChosing = false;
     this.isDialogueEnding = false;
+    this.eventTriggered = false;
 
     scene.add.existing(this);
     scene.physics.add.existing(this);
@@ -51,6 +53,16 @@ export default class InteractiveGameObject extends Phaser.Physics.Arcade
   }
 
   preload() {}
+
+  update() {
+    this.updateSpeechIndicationPosition();
+
+    if (this.dialogueEnded && !this.eventTriggered) {
+      // check if event has already been triggered
+      this.triggerEvent(this.scene);
+      this.eventTriggered = true; // set this to true so it doesn't happen again
+    }
+  }
 
   talkToHero() {
     if (this.isDialogueEnding) {
@@ -78,7 +90,7 @@ export default class InteractiveGameObject extends Phaser.Physics.Arcade
     }
   }
 
-  showSpeechIndication(isColliding: boolean) {
+  showSpeechIndication() {
     if (this.dialogueIndicator === null) {
       // Create the dialogue box
       this.dialogueIndicator = this.scene.add.dom(
@@ -91,9 +103,11 @@ export default class InteractiveGameObject extends Phaser.Physics.Arcade
       );
       this.dialogueIndicator?.setDepth(1);
     }
+    this.dialogueIndicator.setVisible(true);
+  }
 
-    // Show or hide the dialogue box
-    this.dialogueIndicator.setVisible(isColliding);
+  hideSpeechIndication() {
+    this.dialogueIndicator && this.dialogueIndicator.setVisible(false);
   }
 
   advanceDialogueEventListener() {
@@ -158,6 +172,7 @@ export default class InteractiveGameObject extends Phaser.Physics.Arcade
     this.currentDialogueNode.hideOptions();
     this.currentDialogueNode.currentlySelectedOption = null;
     this.isDialogueEnding = false;
+    this.eventTriggered = false;
 
     for (let node of this.dialogueNodes) {
       node.alreadyShownOptions = false;
@@ -180,14 +195,23 @@ export default class InteractiveGameObject extends Phaser.Physics.Arcade
     }
   }
 
-  update() {
-    this.updateSpeechIndicationPosition();
-  }
+  triggerEvent = (scene) => {};
 
-  startDialogue(hero: Hero) {
-    // Assuming you have a startDialogue function like this in your NPC class,
-    // you would add this line:
-    this.scene.time.removeAllEvents();
-    // ... existing dialogue starting logic continues
-  }
+  stopBehaviorLoop() {}
+
+  startDialogue = () => {
+    this.isSpeaking = true;
+    this.stopBehaviorLoop();
+    if (this.body instanceof Phaser.Physics.Arcade.Body) {
+      this.body.enable = false; // disable collision response
+    }
+  };
+
+  endDialogue = () => {
+    this.isSpeaking = false;
+    // this.behaviorLoop(); // resume NPC movement after dialogue ends
+    if (this.body instanceof Phaser.Physics.Arcade.Body) {
+      this.body.enable = true; // re-enable collision response
+    }
+  };
 }

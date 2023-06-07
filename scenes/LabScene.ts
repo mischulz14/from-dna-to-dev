@@ -1,22 +1,22 @@
+import BattleTrigger from '../battle/BattleTrigger';
 import DialogueManager from '../dialogue/DialogueManager';
 import DialogueNode from '../dialogue/DialogueNode';
 import Hero from '../gameObjects/Hero';
-import NPC from '../gameObjects/NPC';
 import TestNPC from '../gameObjects/TestNPC';
 import areCollisionBoxesColliding from '../utils/collisonBoxCollison';
 
 export default class LabScene extends Phaser.Scene {
   private hero: Hero;
   private isDialoguePlaying: boolean;
-  isSpeakingTriggerDown: boolean;
-  dialogueManager: DialogueManager;
-  activeNPC: TestNPC | null;
+  activeInteractiveGameObject: TestNPC | BattleTrigger | null;
+  isEventTriggered: boolean;
 
   // private npc: Phaser.GameObjects.Sprite;
   constructor() {
     super({ key: 'LabScene' });
-    // this.dialogueManager = new DialogueManager(this);
-    this.activeNPC = null;
+    this.activeInteractiveGameObject = null;
+    this.isEventTriggered = false;
+    this.isDialoguePlaying = false;
   }
 
   preload() {
@@ -66,31 +66,22 @@ export default class LabScene extends Phaser.Scene {
 
     // Create the NPC
 
-    const dialogueNodes = [
-      new DialogueNode('what do you want to know?'),
-      new DialogueNode('I am fine thanks', [
-        { text: 'where am I?', nextNodeIndex: 2, endDialogue: false },
-        { text: 'who made this game?', nextNodeIndex: 3, endDialogue: false },
-      ]),
-      new DialogueNode('You are in game', [
-        { text: '', nextNodeIndex: null, endDialogue: true },
-      ]),
-      new DialogueNode('a smart smart man'),
-      new DialogueNode('he made this game'),
-    ];
-
-    const testNPC = new TestNPC(this, 300, 300, 'npc', 'E', 'Talk');
+    const testNPC = new TestNPC(this, 50, 50, 'npc', 'E', 'Talk');
+    const testNPC2 = new TestNPC(this, 100, 100, 'npc', 'E', 'Talk');
+    const testBattleTrigger = new BattleTrigger(
+      this,
+      350,
+      350,
+      'npc',
+      'I',
+      'Interact',
+    );
+    testBattleTrigger.setScale(2);
 
     testNPC.play('npc-idle-left');
     testNPC.setScale(2);
+    testNPC2.setScale(2);
     this.add.existing(testNPC);
-
-    // Set up collisions between the player and the NPC
-    this.children.each((child) => {
-      if (child instanceof NPC || child instanceof TestNPC) {
-        this.physics.add.collider(this.hero, child);
-      }
-    });
 
     const tableLayer = map.createLayer('Tables', tileset);
     tableLayer.setScale(1);
@@ -102,6 +93,14 @@ export default class LabScene extends Phaser.Scene {
     collisionLayer.setCollisionByProperty({ collides: true });
     console.log(collisionLayer);
 
+    // Set up collisions between the player and the NPC
+    this.children.each((child) => {
+      if (child instanceof TestNPC || child instanceof BattleTrigger) {
+        this.physics.add.collider(this.hero, child);
+        this.physics.add.collider(collisionLayer, child);
+      }
+    });
+
     const wallLayer = map.createLayer('Walls', tileset);
     wallLayer.setScale(1);
 
@@ -111,63 +110,56 @@ export default class LabScene extends Phaser.Scene {
   }
 
   update(time: number, delta: number) {
-    // IF THE PLAYER IS TALKING TO AN NPC
-    // if (this.isDialoguePlaying) {
-    //   this.hero.freeze = true;
-    //   // if the player is talking to an NPC, the dialogue is played
-    //   this.activeNPC?.turnToHero(this.hero);
-    //   this.activeNPC?.talkToHero();
-
-    //   if (this.activeNPC?.dialogueEnded) {
-    //     this.hero.freeze = false;
-    //     // this.activeNPC?.turnBackToOriginalAnimation();
-    //     this.dialogueProgressNumber = 0;
-    //     this.isDialoguePlaying = false;
-    //     this.activeNPC = null;
-    //   }
-    // }
-
+    // IF THE PLAYER IS TALKING TO AN NPC or a BattleTrigger
     if (this.isDialoguePlaying) {
-      this.time.removeAllEvents();
+      // this.time.removeAllEvents();
       this.hero.freeze = true;
-      this.activeNPC?.turnToHero(this.hero);
-      this.activeNPC.startDialogue();
-      this.activeNPC?.talkToHero();
+      this.activeInteractiveGameObject.showSpeechIndication();
+      this.activeInteractiveGameObject?.turnToHero(this.hero);
+      this.activeInteractiveGameObject.startDialogue();
+      this.activeInteractiveGameObject?.talkToHero();
 
-      if (this.activeNPC?.dialogueEnded) {
+      if (this.activeInteractiveGameObject?.dialogueEnded) {
         this.hero.freeze = false;
         this.isDialoguePlaying = false;
-        this.activeNPC.endDialogue();
-        this.activeNPC = null;
+        this.activeInteractiveGameObject.hideSpeechIndication();
+        this.activeInteractiveGameObject.endDialogue();
+        if (this.activeInteractiveGameObject instanceof BattleTrigger) {
+          this.isEventTriggered = true;
+        }
+        this.activeInteractiveGameObject = null;
       }
     }
 
     // Sort game objects by their y-coordinate
     this.children.sort('y');
 
-    this.children.each(async (child) => {
+    this.children.each((child) => {
       child.update();
 
       // CHECK FOR NPC COLLISION
       if (
-        child instanceof TestNPC &&
-        areCollisionBoxesColliding(this.hero, child)
+        (child instanceof TestNPC || child instanceof BattleTrigger) &&
+        areCollisionBoxesColliding(this.hero, child) &&
+        !this.isEventTriggered
       ) {
-        child.showSpeechIndication(true);
+        // if an event is triggered don't show anything
+        child.showSpeechIndication();
         // CHECK FOR DIALOGUE TRIGGER
-        if (Phaser.Input.Keyboard.JustDown(this.input.keyboard.addKey('E'))) {
-          this.activeNPC = child;
+        if (
+          Phaser.Input.Keyboard.JustDown(
+            this.input.keyboard.addKey(child.dialogueIndictaorKey),
+          )
+        ) {
+          this.activeInteractiveGameObject = child;
           this.isDialoguePlaying = true;
         }
       }
       if (
-        child instanceof TestNPC &&
-        !Phaser.Geom.Intersects.RectangleToRectangle(
-          this.hero.getBounds(),
-          child.getBounds(),
-        )
+        (child instanceof TestNPC || child instanceof BattleTrigger) &&
+        !areCollisionBoxesColliding(this.hero, child)
       ) {
-        child.showSpeechIndication(false);
+        child.hideSpeechIndication();
       }
     });
   }

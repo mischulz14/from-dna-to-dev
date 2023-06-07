@@ -1,0 +1,131 @@
+export default class AttackOptions {
+  options: any[];
+  optionsHTML: any;
+  currentPosition: number;
+  currentlySelectedOption: any;
+  alreadyShownOptions: boolean;
+  hasPlayerChosenAttack: boolean;
+  scene: Phaser.Scene;
+  gameEvents: Phaser.Events.EventEmitter;
+  constructor(scene: Phaser.Scene, gameEvents: Phaser.Events.EventEmitter) {
+    console.log('battle options initiated');
+    // this.optionsHTML = Array.from(document.querySelectorAll('.option'));
+    this.currentPosition = 0;
+    this.scene = scene;
+    this.gameEvents = gameEvents;
+    this.options = [
+      {
+        text: 'Attack 1',
+        damage: 30,
+        damageText: 'Nice!',
+      },
+      {
+        text: 'Attack 2',
+        damage: 5,
+        damageText: 'Ouch!',
+      },
+      {
+        text: 'Attack 3',
+        damage: 10,
+        damageText: 'Oof!',
+      },
+      {
+        text: 'Attack 4',
+        damage: 10,
+        damageText: 'Au!',
+      },
+    ];
+    this.currentlySelectedOption = this.options[0];
+    this.alreadyShownOptions = false;
+
+    // Change the handlePickOptionWithArrowKeys method to emit an event when Enter is pressed
+    window.addEventListener(
+      'keydown',
+      this.handlePickOptionWithArrowKeysAndEnter.bind(this),
+    );
+
+    this.hasPlayerChosenAttack = false;
+
+    this.addHTMLOptionsToDialogueField();
+  }
+
+  handlePickOptionWithArrowKeysAndEnter(event) {
+    if (this.hasPlayerChosenAttack) return;
+    // Remove active class from current option
+    const optionsHTML = Array.from(
+      document.querySelectorAll('.attack-options__option'),
+    );
+    // Use a switch statement to handle the arrow key inputs
+    switch (event.key) {
+      case 'ArrowDown':
+        // Move down by adding 2 to the current position
+        this.currentPosition = (this.currentPosition + 2) % optionsHTML.length;
+        console.log(this.currentPosition);
+        break;
+      case 'ArrowUp':
+        // Move up by subtracting 2 from the current position
+        this.currentPosition =
+          (this.currentPosition - 2 + optionsHTML.length) % optionsHTML.length;
+        console.log(this.currentPosition);
+
+        break;
+      case 'ArrowRight':
+        // Move right by adding 1 to the current position
+        this.currentPosition = (this.currentPosition + 1) % optionsHTML.length;
+        console.log(this.currentPosition);
+
+        break;
+      case 'ArrowLeft':
+        // Move left by subtracting 1 from the current position
+        this.currentPosition =
+          (this.currentPosition - 1 + optionsHTML.length) % optionsHTML.length;
+        console.log(this.currentPosition);
+        break;
+    }
+
+    // Add active class to the new current option
+    this.currentlySelectedOption = this.options[this.currentPosition];
+    console.log(this.currentlySelectedOption);
+    // @ts-ignore
+    optionsHTML[this.currentPosition].focus();
+  }
+
+  addHTMLOptionsToDialogueField() {
+    const optionsContainer = document.querySelector('.attack-options');
+
+    this.options.forEach((option, index) => {
+      const optionElement = document.createElement('button');
+      optionElement.classList.add('attack-options__option');
+      optionElement.textContent = option.text;
+      // optionElement.tabIndex = 0;
+      optionsContainer.appendChild(optionElement);
+
+      // add event listener for click
+      optionElement.addEventListener('click', () => {
+        this.currentlySelectedOption = option;
+
+        // update current position
+        this.currentPosition = index;
+        console.log(this.currentPosition);
+        console.log(this.options.indexOf(option));
+        console.log(this.currentlySelectedOption);
+        optionElement.focus();
+      });
+    });
+  }
+
+  showOptions() {
+    document.querySelector('.attack-options').classList.add('show-grid');
+
+    // select currently selected option in the html structure and focus on it
+    const optionsHTML = Array.from(
+      document.querySelectorAll('.attack-options__option'),
+    ) as HTMLElement[];
+
+    optionsHTML[this.currentPosition].focus();
+  }
+
+  hideOptions() {
+    document.querySelector('.attack-options').classList.remove('show-grid');
+  }
+}

@@ -1,5 +1,6 @@
 import 'phaser';
 
+import BattleScene from '../scenes/BattleScene';
 import LabScene from '../scenes/LabScene';
 import StartScene from '../scenes/StartScene';
 
@@ -15,7 +16,7 @@ const config: Phaser.Types.Core.GameConfig = {
     },
   },
   width: 800,
-  height: 640,
+  height: 500,
   parent: 'game',
   scale: {
     mode: Phaser.Scale.FIT,
@@ -26,8 +27,7 @@ const config: Phaser.Types.Core.GameConfig = {
   },
   //  make background color transparent
   backgroundColor: '#000',
-
-  scene: [LabScene], // order of scenes does not matter
+  scene: [LabScene, BattleScene, StartScene], // order of scenes does not matter
 };
 
 new Phaser.Game(config);
