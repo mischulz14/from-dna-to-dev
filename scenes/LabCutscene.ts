@@ -7,7 +7,7 @@ export default class LabCutscene extends Phaser.Scene {
     super({ key: 'LabCutscene' });
     const dialogueField = new DialogueField();
     const gameEvents = new Phaser.Events.EventEmitter();
-    dialogueField.show();
+    // dialogueField.show();
   }
 
   preload() {

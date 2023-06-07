@@ -1,14 +1,17 @@
+import { Game } from 'phaser';
+
 import BattleTrigger from '../battle/BattleTrigger';
 import DialogueManager from '../dialogue/DialogueManager';
 import DialogueNode from '../dialogue/DialogueNode';
-import Hero from '../gameObjects/Hero';
-import TestNPC from '../gameObjects/TestNPC';
+import LabHero from '../gameObjects/LabHero';
+import LabNPC from '../gameObjects/LabNPC';
+import LabNPCA from '../gameObjects/LabNPCA';
 import areCollisionBoxesColliding from '../utils/collisonBoxCollison';
 
 export default class LabScene extends Phaser.Scene {
-  private hero: Hero;
+  private hero: LabHero;
   private isDialoguePlaying: boolean;
-  activeInteractiveGameObject: TestNPC | BattleTrigger | null;
+  activeInteractiveGameObject: LabNPC | BattleTrigger | null;
   isEventTriggered: boolean;
 
   // private npc: Phaser.GameObjects.Sprite;
@@ -20,23 +23,7 @@ export default class LabScene extends Phaser.Scene {
   }
 
   preload() {
-    // load the hero spritesheet
-    this.load.spritesheet('labHero', 'assets/labHeroSpriteSheet.png', {
-      frameWidth: 32,
-      frameHeight: 36,
-    });
-
-    // load the npc spritesheet
-    this.load.spritesheet('npc', 'assets/LabNPC.png', {
-      frameWidth: 32,
-      frameHeight: 38,
-    });
-
-    // Load the Tiled JSON file
-    this.load.tilemapTiledJSON('map', 'assets/labMapJson.json');
-
-    // Load the tileset image
-    this.load.image('lab_tiles', 'assets/labTileset.png');
+    this.loadSpriteSheetsImagesAndTileMaps();
   }
 
   create() {
@@ -52,7 +39,7 @@ export default class LabScene extends Phaser.Scene {
 
     groundLayer.setScale(1);
 
-    this.hero = new Hero(
+    this.hero = new LabHero(
       this,
       this.cameras.main.width / 2,
       this.cameras.main.height / 2,
@@ -66,8 +53,8 @@ export default class LabScene extends Phaser.Scene {
 
     // Create the NPC
 
-    const testNPC = new TestNPC(this, 50, 50, 'npc', 'E', 'Talk');
-    const testNPC2 = new TestNPC(this, 100, 100, 'npc', 'E', 'Talk');
+    const testNPC = new LabNPC(this, 50, 50, 'npc', 'E', 'Talk');
+    const testNPC2 = new LabNPCA(this, 250, 150, 'npc', 'E', 'Talk');
     const testBattleTrigger = new BattleTrigger(
       this,
       350,
@@ -95,7 +82,7 @@ export default class LabScene extends Phaser.Scene {
 
     // Set up collisions between the player and the NPC
     this.children.each((child) => {
-      if (child instanceof TestNPC || child instanceof BattleTrigger) {
+      if (child instanceof LabNPC || child instanceof BattleTrigger) {
         this.physics.add.collider(this.hero, child);
         this.physics.add.collider(collisionLayer, child);
       }
@@ -113,54 +100,93 @@ export default class LabScene extends Phaser.Scene {
     // IF THE PLAYER IS TALKING TO AN NPC or a BattleTrigger
     if (this.isDialoguePlaying) {
       // this.time.removeAllEvents();
-      this.hero.freeze = true;
-      this.activeInteractiveGameObject.showSpeechIndication();
-      this.activeInteractiveGameObject?.turnToHero(this.hero);
-      this.activeInteractiveGameObject.startDialogue();
-      this.activeInteractiveGameObject?.talkToHero();
-
-      if (this.activeInteractiveGameObject?.dialogueEnded) {
-        this.hero.freeze = false;
-        this.isDialoguePlaying = false;
-        this.activeInteractiveGameObject.hideSpeechIndication();
-        this.activeInteractiveGameObject.endDialogue();
-        if (this.activeInteractiveGameObject instanceof BattleTrigger) {
-          this.isEventTriggered = true;
-        }
-        this.activeInteractiveGameObject = null;
-      }
+      this.handleDialogueLogic();
     }
 
     // Sort game objects by their y-coordinate
-    this.children.sort('y');
+    this.sortGameObjectsByYCoordinate();
 
     this.children.each((child) => {
       child.update();
 
       // CHECK FOR NPC COLLISION
       if (
-        (child instanceof TestNPC || child instanceof BattleTrigger) &&
+        (child instanceof LabNPC || child instanceof BattleTrigger) &&
         areCollisionBoxesColliding(this.hero, child) &&
         !this.isEventTriggered
       ) {
-        // if an event is triggered don't show anything
         child.showSpeechIndication();
         // CHECK FOR DIALOGUE TRIGGER
-        if (
-          Phaser.Input.Keyboard.JustDown(
-            this.input.keyboard.addKey(child.dialogueIndictaorKey),
-          )
-        ) {
-          this.activeInteractiveGameObject = child;
-          this.isDialoguePlaying = true;
-        }
+        this.handleDialogueTrigger(child);
       }
-      if (
-        (child instanceof TestNPC || child instanceof BattleTrigger) &&
-        !areCollisionBoxesColliding(this.hero, child)
-      ) {
-        child.hideSpeechIndication();
-      }
+      // @ts-ignore
+      this.hideSpeechIndication(child);
     });
+  }
+
+  loadSpriteSheetsImagesAndTileMaps() {
+    // load the hero spritesheet
+    this.load.spritesheet('labHero', 'assets/labHeroSpriteSheet.png', {
+      frameWidth: 32,
+      frameHeight: 36,
+    });
+
+    // load the npc spritesheet
+    this.load.spritesheet('npc', 'assets/LabNPC.png', {
+      frameWidth: 32,
+      frameHeight: 38,
+    });
+
+    // Load the Tiled JSON file
+    this.load.tilemapTiledJSON('map', 'assets/labMapJson.json');
+
+    // Load the tileset image
+    this.load.image('lab_tiles', 'assets/labTileset.png');
+  }
+
+  handleDialogueTrigger(child: LabNPC | BattleTrigger) {
+    if (
+      Phaser.Input.Keyboard.JustDown(
+        this.input.keyboard.addKey(child.dialogueIndictaorKey),
+      )
+    ) {
+      this.activeInteractiveGameObject = child;
+      this.isDialoguePlaying = true;
+    }
+  }
+
+  handleDialogueLogic() {
+    this.hero.freeze = true;
+    this.activeInteractiveGameObject.showSpeechIndication();
+    this.activeInteractiveGameObject?.turnToHero(this.hero);
+    this.activeInteractiveGameObject.startDialogue();
+    this.activeInteractiveGameObject?.talkToHero();
+
+    if (this.activeInteractiveGameObject?.dialogueEnded) {
+      this.hero.freeze = false;
+      this.isDialoguePlaying = false;
+      this.activeInteractiveGameObject.hideSpeechIndication();
+      this.activeInteractiveGameObject.endNPCDialogue();
+      if (
+        this.activeInteractiveGameObject instanceof BattleTrigger
+        //&& !this.activeInteractiveGameObject.isDeactivated
+      ) {
+        this.isEventTriggered = true;
+      }
+      this.activeInteractiveGameObject = null;
+    }
+  }
+
+  hideSpeechIndication(child: LabNPC | BattleTrigger) {
+    if (
+      (child instanceof LabNPC || child instanceof BattleTrigger) &&
+      !areCollisionBoxesColliding(this.hero, child)
+    ) {
+      child.hideSpeechIndication();
+    }
+  }
+
+  sortGameObjectsByYCoordinate() {
+    this.children.sort('y');
   }
 }

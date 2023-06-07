@@ -1,7 +1,5 @@
 import * as Phaser from 'phaser';
 
-import { StateMachine } from '../state/State';
-
 export default class LabHero extends Phaser.Physics.Arcade.Sprite {
   private cursors: Phaser.Types.Input.Keyboard.CursorKeys;
   lastDirection: string;
@@ -10,6 +8,8 @@ export default class LabHero extends Phaser.Physics.Arcade.Sprite {
   private shadow: Phaser.GameObjects.Graphics;
   heroBounds: Phaser.Geom.Rectangle;
   hasKey: boolean;
+  hasBattledVirus: boolean;
+  hasBattledSleepDepression: boolean;
   // stateMachine: StateMachine;
 
   constructor(
