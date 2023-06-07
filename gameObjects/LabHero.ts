@@ -2,13 +2,14 @@ import * as Phaser from 'phaser';
 
 import { StateMachine } from '../state/State';
 
-export default class Hero extends Phaser.Physics.Arcade.Sprite {
+export default class LabHero extends Phaser.Physics.Arcade.Sprite {
   private cursors: Phaser.Types.Input.Keyboard.CursorKeys;
   lastDirection: string;
   speed: number;
   freeze: boolean;
   private shadow: Phaser.GameObjects.Graphics;
   heroBounds: Phaser.Geom.Rectangle;
+  hasKey: boolean;
   // stateMachine: StateMachine;
 
   constructor(
@@ -25,6 +26,7 @@ export default class Hero extends Phaser.Physics.Arcade.Sprite {
       fillStyle: { color: 0x000000, alpha: 0.25 },
     });
     this.heroBounds = this.getBounds();
+    this.hasKey = false;
 
     // Add this instance to the scene's display list and update list
 

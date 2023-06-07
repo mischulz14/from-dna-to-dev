@@ -1,15 +1,13 @@
 import * as Phaser from 'phaser';
 
 import DialogueNode from '../dialogue/DialogueNode';
-import Hero from './Hero';
 import InteractiveGameObject from './InteractiveGameObject';
+import Hero from './LabHero';
 
-export default class TestNPC extends InteractiveGameObject {
+export default class LabNPC extends InteractiveGameObject {
   private shadow: Phaser.GameObjects.Graphics;
-  private walkStopEvent: Phaser.Time.TimerEvent | null = null;
-  private isWalking: boolean = false;
-  private walkEndTime: number = 0;
   private behaviorTimer?: Phaser.Time.TimerEvent;
+
   constructor(
     scene: Phaser.Scene,
     x: number,
@@ -22,7 +20,7 @@ export default class TestNPC extends InteractiveGameObject {
 
     // Here we create our dialogue nodes
     this.dialogueNodes = this.createDialogueNodes();
-    this.behaviorLoop();
+    // this.behaviorLoop();
 
     this.body?.setSize(17, 15);
     this.body?.setOffset(8, 22);
@@ -86,9 +84,9 @@ export default class TestNPC extends InteractiveGameObject {
       this.setVelocity(0, 0);
       return;
     }
-    // walk in a random direction for 2-6 seconds, then stop for 1-3 seconds
+    // walk in a random direction then stop
     const walkTime = Phaser.Math.Between(800, 1200);
-    const stopTime = Phaser.Math.Between(500, 800);
+    const stopTime = Phaser.Math.Between(1200, 3000);
 
     // pick a random direction (0-3)
     const direction = Phaser.Math.Between(0, 3);
@@ -126,7 +124,7 @@ export default class TestNPC extends InteractiveGameObject {
     });
   };
 
-  // Call this function to immediately stop the NPC and the behavior loop
+  // function to immediately stop the NPC and the behavior loop. If this is not implemented it leads to bugs.
   stopBehaviorLoop = () => {
     if (this.behaviorTimer) {
       this.behaviorTimer.destroy(); // This immediately stops the timer
@@ -136,18 +134,9 @@ export default class TestNPC extends InteractiveGameObject {
   };
 
   createDialogueNodes = (): DialogueNode[] => {
-    // Create your DialogueNodes here
     const dialogueNodes = [
-      new DialogueNode('what do you want to know?'),
-      new DialogueNode('I am fine thanks', [
-        { text: 'where am I?', nextNodeIndex: 2, endDialogue: false },
-        { text: 'who made this game?', nextNodeIndex: 3, endDialogue: false },
-      ]),
-      new DialogueNode('You are in game', [
-        { text: '', nextNodeIndex: null, endDialogue: true },
-      ]),
-      new DialogueNode('a smart smart man'),
-      new DialogueNode('he made this game'),
+      new DialogueNode('Hi! I am LabNPC!'),
+      new DialogueNode('I am a test NPC!'),
     ];
 
     return dialogueNodes;
@@ -156,23 +145,5 @@ export default class TestNPC extends InteractiveGameObject {
   updateShadow = () => {
     this.shadow.clear();
     this.shadow.fillEllipse(this.x, this.y + 35, 30, 16);
-  };
-
-  // Call this function when the hero initiates dialogue with the NPC
-  startDialogue = () => {
-    this.isSpeaking = true;
-    this.stopBehaviorLoop();
-    if (this.body instanceof Phaser.Physics.Arcade.Body) {
-      this.body.enable = false; // disable collision response
-    }
-  };
-
-  // Call this function when the dialogue ends
-  endDialogue = () => {
-    this.isSpeaking = false;
-    this.behaviorLoop(); // resume NPC movement after dialogue ends
-    if (this.body instanceof Phaser.Physics.Arcade.Body) {
-      this.body.enable = true; // re-enable collision response
-    }
   };
 }
