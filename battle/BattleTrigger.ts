@@ -28,7 +28,7 @@ export default class BattleTrigger extends InteractiveGameObject {
     return dialogueNodes;
   };
 
-  triggerEvent = (scene: any) => {
+  triggerEventWhenDialogueEnds = (scene: any) => {
     // this.showSpeechIndication();
     scene.scene.pause('LabScene'); // Pause the LabScene
     scene.scene.launch('BattleScene'); // Launch the StartScene alongside LabScene
