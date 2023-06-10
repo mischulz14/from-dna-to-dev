@@ -28,7 +28,7 @@ const config: Phaser.Types.Core.GameConfig = {
   },
   //  make background color transparent
   backgroundColor: '#000',
-  scene: [LabCutscene, LabScene, BattleScene, StartScene], // order of scenes does not matter
+  scene: [LabScene, LabCutscene, BattleScene, StartScene], // order of scenes does not matter
 };
 
 new Phaser.Game(config);

@@ -1,7 +1,7 @@
 import { Game } from 'phaser';
 
 import BattleTrigger from '../battle/BattleTrigger';
-import DialogueManager from '../dialogue/DialogueManager';
+import DialogueController from '../dialogue/DialogueController';
 import DialogueNode from '../dialogue/DialogueNode';
 import LabHero from '../gameObjects/LabHero';
 import LabNPC from '../gameObjects/LabNPC';
@@ -13,6 +13,7 @@ export default class LabScene extends Phaser.Scene {
   private isDialoguePlaying: boolean;
   activeInteractiveGameObject: LabNPC | BattleTrigger | null;
   isEventTriggered: boolean;
+  dialogueController: DialogueController;
 
   // private npc: Phaser.GameObjects.Sprite;
   constructor() {
@@ -20,13 +21,27 @@ export default class LabScene extends Phaser.Scene {
     this.activeInteractiveGameObject = null;
     this.isEventTriggered = false;
     this.isDialoguePlaying = false;
+    this.dialogueController = new DialogueController(this);
   }
 
   preload() {
     this.loadSpriteSheetsImagesAndTileMaps();
+    this.input.keyboard.on(
+      'keydown-ENTER',
+      this.dialogueController.playerPressesEnterEventListener,
+    );
   }
 
   create() {
+    this.events.on('dialogueEnded', () => {
+      this.activeInteractiveGameObject.triggerEventWhenDialogueEnds(this);
+      this.isEventTriggered = true;
+      console.log(
+        'current npc',
+        this.activeInteractiveGameObject.triggerEventWhenDialogueEnds,
+      );
+      console.log('dialogue ended and event got triggered');
+    });
     const hero = this.hero;
     const map = this.make.tilemap({ key: 'map' });
     // console.log(map);
@@ -54,7 +69,7 @@ export default class LabScene extends Phaser.Scene {
     // Create the NPC
 
     const testNPC = new LabNPC(this, 50, 50, 'npc', 'E', 'Talk');
-    const testNPC2 = new LabNPCA(this, 250, 150, 'npc', 'E', 'Talk');
+    const testNPC2 = new LabNPCA(this, 400, 150, 'npc', 'E', 'Talk');
     const testBattleTrigger = new BattleTrigger(
       this,
       350,
@@ -97,10 +112,13 @@ export default class LabScene extends Phaser.Scene {
   }
 
   update(time: number, delta: number) {
-    // IF THE PLAYER IS TALKING TO AN NPC or a BattleTrigger
-    if (this.isDialoguePlaying) {
-      // this.time.removeAllEvents();
-      this.handleDialogueLogic();
+    if (this.dialogueController.dialogueInProgress) {
+      this.hero.freeze = true;
+    }
+
+    if (!this.dialogueController.dialogueInProgress) {
+      this.hero.freeze = false;
+      this.isEventTriggered = false;
     }
 
     // Sort game objects by their y-coordinate
@@ -112,10 +130,9 @@ export default class LabScene extends Phaser.Scene {
       // CHECK FOR NPC COLLISION
       if (
         (child instanceof LabNPC || child instanceof BattleTrigger) &&
-        areCollisionBoxesColliding(this.hero, child) &&
-        !this.isEventTriggered
+        areCollisionBoxesColliding(this.hero, child)
       ) {
-        child.showSpeechIndication();
+        !this.isEventTriggered && child.showSpeechIndication();
         // CHECK FOR DIALOGUE TRIGGER
         this.handleDialogueTrigger(child);
       }
@@ -151,29 +168,10 @@ export default class LabScene extends Phaser.Scene {
       )
     ) {
       this.activeInteractiveGameObject = child;
-      this.isDialoguePlaying = true;
-    }
-  }
-
-  handleDialogueLogic() {
-    this.hero.freeze = true;
-    this.activeInteractiveGameObject.showSpeechIndication();
-    this.activeInteractiveGameObject?.turnToHero(this.hero);
-    this.activeInteractiveGameObject.startDialogue();
-    this.activeInteractiveGameObject?.talkToHero();
-
-    if (this.activeInteractiveGameObject?.dialogueEnded) {
-      this.hero.freeze = false;
-      this.isDialoguePlaying = false;
-      this.activeInteractiveGameObject.hideSpeechIndication();
-      this.activeInteractiveGameObject.endNPCDialogue();
-      if (
-        this.activeInteractiveGameObject instanceof BattleTrigger
-        //&& !this.activeInteractiveGameObject.isDeactivated
-      ) {
-        this.isEventTriggered = true;
-      }
-      this.activeInteractiveGameObject = null;
+      this.hero.freeze = true;
+      this.dialogueController.dialogueInProgress = true;
+      this.isEventTriggered = true;
+      this.dialogueEvent(child.dialogueNodesObj.nodes);
     }
   }
 
@@ -188,5 +186,12 @@ export default class LabScene extends Phaser.Scene {
 
   sortGameObjectsByYCoordinate() {
     this.children.sort('y');
+  }
+
+  dialogueEvent(dialogue: DialogueNode[]) {
+    this.activeInteractiveGameObject.hideSpeechIndication();
+    this.dialogueController.dialogueField.show();
+    this.dialogueController.initiateDialogueNodesArray(dialogue);
+    this.dialogueController.typeText();
   }
 }

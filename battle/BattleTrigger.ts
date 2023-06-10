@@ -2,6 +2,7 @@ import DialogueNode from '../dialogue/DialogueNode';
 import InteractiveGameObject from '../gameObjects/InteractiveGameObject';
 
 export default class BattleTrigger extends InteractiveGameObject {
+  dialogueNodesObj: { nodes: DialogueNode[] };
   constructor(
     scene: Phaser.Scene,
     x: number,
@@ -15,7 +16,9 @@ export default class BattleTrigger extends InteractiveGameObject {
     this.body?.setSize(17, 15);
     this.body?.setOffset(8, 22);
 
-    this.dialogueNodes = this.createDialogueNodes();
+    this.dialogueNodesObj = {
+      nodes: [new DialogueNode('battle triggered')],
+    };
   }
 
   turnToHero() {

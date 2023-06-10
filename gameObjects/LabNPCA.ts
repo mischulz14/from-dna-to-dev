@@ -61,21 +61,21 @@ export default class LabNPCA extends LabNPC {
     // npcB.x = 200;
   };
 
-  triggerEventWhenDialogueEnds = (scene: any) => {
-    this.moveAnotherNPC();
-    // @ts-ignore
-    // this.incrementTalkingCount();
-    // if (this.talkingCount === 1) {
-    //   this.dialogueNodes = [new DialogueNode('You talked once!')];
-    // }
-    // if (this.talkingCount === 2) {
-    //   this.dialogueNodes = [new DialogueNode('You talked twice!')];
-    // }
-    // if (this.talkingCount === 3) {
-    //   this.dialogueNodes = [new DialogueNode('This is too much')];
-    // }
-    // if (this.talkingCount >= 4) {
-    //   this.dialogueNodes = [new DialogueNode('I am done talking')];
-    // }
-  };
+  // triggerEventWhenDialogueEnds = (scene: any) => {
+  //   // this.moveAnotherNPC();
+  //   // @ts-ignore
+  //   // this.incrementTalkingCount();
+  //   // if (this.talkingCount === 1) {
+  //   //   this.dialogueNodes = [new DialogueNode('You talked once!')];
+  //   // }
+  //   // if (this.talkingCount === 2) {
+  //   //   this.dialogueNodes = [new DialogueNode('You talked twice!')];
+  //   // }
+  //   // if (this.talkingCount === 3) {
+  //   //   this.dialogueNodes = [new DialogueNode('This is too much')];
+  //   // }
+  //   // if (this.talkingCount >= 4) {
+  //   //   this.dialogueNodes = [new DialogueNode('I am done talking')];
+  //   // }
+  // };
 }

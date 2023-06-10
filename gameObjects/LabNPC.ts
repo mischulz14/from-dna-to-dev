@@ -7,6 +7,8 @@ import Hero from './LabHero';
 export default class LabNPC extends InteractiveGameObject {
   private shadow: Phaser.GameObjects.Graphics;
   private behaviorTimer?: Phaser.Time.TimerEvent;
+  dialogueNodesObj: { nodes: DialogueNode[] };
+  hasEventAfterDialogue: boolean;
 
   constructor(
     scene: Phaser.Scene,
@@ -19,8 +21,26 @@ export default class LabNPC extends InteractiveGameObject {
     super(scene, x, y, texture, dialogueIndictaorKey, dialogueIndictaorText);
 
     // Here we create our dialogue nodes
-    this.dialogueNodes = this.createDialogueNodes();
     // this.behaviorLoop();
+    this.hasEventAfterDialogue = true;
+
+    // I am instantiating the dialogue nodes here as an object because phaser is weird and deletes the options in the update function when I instantiate them as an array
+    this.dialogueNodesObj = {
+      nodes: [
+        new DialogueNode('Hello, I am a scientist.', [
+          {
+            text: 'bla',
+            nextNodeIndex: 1,
+          },
+          {
+            text: 'bla 2',
+            nextNodeIndex: null,
+            endDialogue: true,
+          },
+        ]),
+        new DialogueNode('I am working on a cure for the virus.', []),
+      ],
+    };
 
     this.body?.setSize(17, 15);
     this.body?.setOffset(8, 22);
@@ -37,6 +57,8 @@ export default class LabNPC extends InteractiveGameObject {
     this.anims.play('npc-idle-down', true);
     this.shadow.fillEllipse(this.x, this.y + 35, 30, 16);
   }
+
+  preload() {}
 
   createAnimations(scene: Phaser.Scene) {
     scene.anims.create({
@@ -133,13 +155,8 @@ export default class LabNPC extends InteractiveGameObject {
     }
   };
 
-  createDialogueNodes = (): DialogueNode[] => {
-    const dialogueNodes = [
-      new DialogueNode('Hi! I am LabNPC!'),
-      new DialogueNode('I am a test NPC!'),
-    ];
-
-    return dialogueNodes;
+  triggerEventWhenDialogueEnds = (scene: any) => {
+    console.log('triggerEventWhenDialogueEnds');
   };
 
   updateShadow = () => {
