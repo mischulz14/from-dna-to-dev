@@ -8,14 +8,12 @@ export default class AttackOptions {
   scene: Phaser.Scene;
   gameEvents: Phaser.Events.EventEmitter;
   constructor(
+    options: any[],
     scene: Phaser.Scene,
     gameEvents: Phaser.Events.EventEmitter,
-    options: any[],
   ) {
-    // this.optionsHTML = Array.from(document.querySelectorAll('.option'));
     this.currentPosition = 0;
     this.scene = scene;
-    this.gameEvents = gameEvents;
     this.options = options;
     this.currentlySelectedOption = this.options[0];
     this.alreadyShownOptions = false;
@@ -32,7 +30,6 @@ export default class AttackOptions {
   }
 
   handlePickOptionWithArrowKeysAndEnter(event) {
-    if (this.hasPlayerChosenAttack) return;
     // Remove active class from current option
     const optionsHTML = Array.from(
       document.querySelectorAll('.attack-options__option'),
@@ -77,7 +74,6 @@ export default class AttackOptions {
       const optionElement = document.createElement('button');
       optionElement.classList.add('attack-options__option');
       optionElement.textContent = option.text;
-      // optionElement.tabIndex = 0;
       optionsContainer.appendChild(optionElement);
 
       // add event listener for click
