@@ -1,11 +1,14 @@
 import { Game } from 'phaser';
 
 import BattleTrigger from '../battle/BattleTrigger';
+import Refrigerator from '../battle/Refrigerator';
+import { battleTriggerData } from '../data/battleTriggerData';
 import DialogueController from '../dialogue/DialogueController';
 import DialogueNode from '../dialogue/DialogueNode';
 import LabHero from '../gameObjects/LabHero';
 import LabNPC from '../gameObjects/LabNPC';
 import LabNPCA from '../gameObjects/LabNPCA';
+import LevelIntro from '../levelIntro/LevelIntro';
 import areCollisionBoxesColliding from '../utils/collisonBoxCollison';
 
 export default class LabScene extends Phaser.Scene {
@@ -14,6 +17,8 @@ export default class LabScene extends Phaser.Scene {
   activeInteractiveGameObject: LabNPC | BattleTrigger | null;
   isEventTriggered: boolean;
   dialogueController: DialogueController;
+  hasLevelIntroPlayed: any;
+  levelIntro: LevelIntro;
 
   // private npc: Phaser.GameObjects.Sprite;
   constructor() {
@@ -69,16 +74,10 @@ export default class LabScene extends Phaser.Scene {
     // Create the NPC
 
     const testNPC = new LabNPC(this, 50, 50, 'npc', 'E', 'Talk');
-    const testNPC2 = new LabNPCA(this, 400, 150, 'npc', 'E', 'Talk');
-    const testBattleTrigger = new BattleTrigger(
-      this,
-      350,
-      350,
-      'npc',
-      'I',
-      'Interact',
-    );
-    testBattleTrigger.setScale(2);
+    const testNPC2 = new LabNPCA(this, 500, 150, 'npc', 'E', 'Talk');
+    const testBattleTrigger = new Refrigerator(this, 500, 500);
+
+    testBattleTrigger.setScale(3);
 
     testNPC.play('npc-idle-left');
     testNPC.setScale(2);
@@ -90,7 +89,7 @@ export default class LabScene extends Phaser.Scene {
 
     const collisionLayer = map.createLayer('Collisions', tileset);
     collisionLayer.setScale(1);
-    // collisionLayer.setVisible(false);
+    collisionLayer.setVisible(false);
     // // Set up collisions with the specified tile
     collisionLayer.setCollisionByProperty({ collides: true });
     console.log(collisionLayer);
@@ -112,6 +111,8 @@ export default class LabScene extends Phaser.Scene {
   }
 
   update(time: number, delta: number) {
+    this.playLevelIntroOnce();
+
     if (this.dialogueController.dialogueInProgress) {
       this.hero.freeze = true;
     }
@@ -159,6 +160,15 @@ export default class LabScene extends Phaser.Scene {
 
     // Load the tileset image
     this.load.image('lab_tiles', 'assets/labTileset.png');
+
+    this.load.spritesheet(
+      'refrigeratorBattleTrigger',
+      'assets/refrigeratorBattleTrigger.png',
+      {
+        frameWidth: 32,
+        frameHeight: 32,
+      },
+    );
   }
 
   handleDialogueTrigger(child: LabNPC | BattleTrigger) {
@@ -193,5 +203,17 @@ export default class LabScene extends Phaser.Scene {
     this.dialogueController.dialogueField.show();
     this.dialogueController.initiateDialogueNodesArray(dialogue);
     this.dialogueController.typeText();
+  }
+
+  playLevelIntroOnce() {
+    if (this.hasLevelIntroPlayed) {
+      return;
+    }
+    this.hasLevelIntroPlayed = true;
+    this.levelIntro = new LevelIntro({
+      levelNr: 1,
+      levelName: 'The Lab',
+    });
+    this.levelIntro.createHTML();
   }
 }
