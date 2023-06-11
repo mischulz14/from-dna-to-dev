@@ -10,15 +10,12 @@ export default class BattleTrigger extends InteractiveGameObject {
     texture: string,
     dialogueIndictaorKey: string,
     dialogueIndictaorText: string,
+    dialogueNodesObj: { nodes: DialogueNode[] },
   ) {
     super(scene, x, y, texture, dialogueIndictaorKey, dialogueIndictaorText);
     this.setImmovable(true);
-    this.body?.setSize(17, 15);
-    this.body?.setOffset(8, 22);
 
-    this.dialogueNodesObj = {
-      nodes: [new DialogueNode('battle triggered')],
-    };
+    this.dialogueNodesObj = dialogueNodesObj;
   }
 
   turnToHero() {
@@ -31,9 +28,5 @@ export default class BattleTrigger extends InteractiveGameObject {
     return dialogueNodes;
   };
 
-  triggerEventWhenDialogueEnds = (scene: any) => {
-    // this.showSpeechIndication();
-    scene.scene.pause('LabScene'); // Pause the LabScene
-    scene.scene.launch('BattleScene'); // Launch the StartScene alongside LabScene
-  };
+  triggerEventWhenDialogueEnds = (scene: any) => {};
 }
