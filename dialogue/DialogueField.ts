@@ -12,10 +12,6 @@ export default class DialogueField {
     const dialogueField = document.createElement('div');
     dialogueField.classList.add('dialogue-field');
     dialogueField.innerHTML = `
-      <div class="dialogue-field__enter">
-      <div class="enter">Enter</div>
-      <img src="assets/enter-outline.svg" alt="enter" />
-      </div>
       <div class="dialogue-field__content">
         <div class="dialogue-field__text"></div>
       </div>

@@ -63,6 +63,7 @@ export default class DialogueController {
   }
 
   playerPressesEnterEventListener = () => {
+    if (!this.dialogueInProgress) return;
     if (!this.isTextComplete) {
       this.isTextComplete = true;
       clearTimeout(this.typeTimeoutId);
