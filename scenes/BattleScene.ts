@@ -21,6 +21,11 @@ export default class BattleScene extends Phaser.Scene {
   hasPlayerAttacked: boolean = false;
   gameEvents: Events.EventEmitter;
   deactivateKeydown: boolean = false;
+  dialogueText: string = '';
+  fullText: string = '';
+  isTextFullyRevealed: boolean = true;
+  typeWriteEvent: Phaser.Time.TimerEvent;
+
   constructor() {
     super({ key: 'BattleScene' });
     this.playerHealth = 100;
@@ -54,11 +59,7 @@ export default class BattleScene extends Phaser.Scene {
         damageText: 'Au!',
       },
     ];
-    this.playerAttackOptions = new AttackOptions(
-      this,
-      this.gameEvents,
-      options,
-    );
+    this.playerAttackOptions = new AttackOptions(options);
     this.gameEvents.on('battleStart', this.startBattle, this);
     this.gameEvents.on('showAttackOptions', this.showAttackOptions, this);
     this.gameEvents.on('playerAttackChosen', this.playerAttackChosen, this);
@@ -92,6 +93,31 @@ export default class BattleScene extends Phaser.Scene {
     this.addPlayerHealthBar();
   }
 
+  typeWriterEffect(text: string, delay: number = 50) {
+    this.isTextFullyRevealed = false;
+    this.fullText = text;
+    this.dialogueText = '';
+
+    if (this.typeWriteEvent) {
+      this.typeWriteEvent.remove();
+    }
+
+    this.typeWriteEvent = this.time.addEvent({
+      delay: delay,
+      callback: () => {
+        if (this.dialogueText.length < this.fullText.length) {
+          this.dialogueText += this.fullText[this.dialogueText.length];
+          this.dialogueField.setText(this.dialogueText);
+        } else {
+          this.isTextFullyRevealed = true;
+          this.typeWriteEvent.remove();
+        }
+      },
+      callbackScope: this,
+      loop: true,
+    });
+  }
+
   update() {}
 
   addDialogueField() {
@@ -101,19 +127,25 @@ export default class BattleScene extends Phaser.Scene {
 
   startBattle() {
     this.addDialogueField();
-    this.dialogueField.setText('You are being attacked!');
+    this.typeWriterEffect('You are being attacked!');
     this.gameObjectsEnterTheScene();
 
     this.input.keyboard.on('keydown', (event: any) => {
       if (this.deactivateKeydown) return;
       if (event.key === 'Enter') {
-        this.gameEvents.emit('showAttackOptions');
+        if (!this.isTextFullyRevealed) {
+          this.dialogueField.setText(this.fullText);
+          this.isTextFullyRevealed = true;
+          this.typeWriteEvent.remove();
+        } else {
+          this.gameEvents.emit('showAttackOptions');
+        }
       }
     });
   }
 
   showAttackOptions() {
-    this.dialogueField.setText('Choose an attack!');
+    this.typeWriterEffect('Choose an attack!');
     this.playerAttackOptions.showOptions();
     // The 'playerAttack' event is emitted when the player chooses an option
     this.input.keyboard.on('keydown', (event: any) => {
@@ -128,9 +160,10 @@ export default class BattleScene extends Phaser.Scene {
 
   playerAttackChosen() {
     // this.playerAttackOptions.hideOptions();
-    this.dialogueField.setText(
+    this.typeWriterEffect(
       `You chose ${this.playerAttackOptions.currentlySelectedOption.text}!`,
     );
+
     // Play attack animation, then emit 'reduceEnemyHealth' event
     this.gameEvents.emit('playPlayerAttackAnimation');
   }
@@ -168,7 +201,7 @@ export default class BattleScene extends Phaser.Scene {
     // Reduce enemy health, play damage animation, then emit 'checkBattleEnd' event
     this.enemyHealth -= this.playerAttackOptions.currentlySelectedOption.damage;
     this.updateEnemyHealthBar();
-    this.dialogueField.setText(
+    this.typeWriterEffect(
       this.playerAttackOptions.currentlySelectedOption.damageText,
     );
 
@@ -182,7 +215,8 @@ export default class BattleScene extends Phaser.Scene {
     // randomly choose an attack from the enemyAttacks array
     this.randomEnemyAttack =
       this.enemyAttacks[Math.floor(Math.random() * this.enemyAttacks.length)];
-    this.dialogueField.setText(`Enemy chose ${this.randomEnemyAttack.name}!`);
+    this.typeWriterEffect(`Enemy chose ${this.randomEnemyAttack.name}!`);
+
     setTimeout(() => {
       this.gameEvents.emit('playEnemyAttackAnimation');
     }, 2000);
@@ -212,7 +246,7 @@ export default class BattleScene extends Phaser.Scene {
     // Emit 'checkBattleEnd' event when done
     this.playerHealth -= this.randomEnemyAttack.damage;
     this.updatePlayerHealthBar();
-    this.dialogueField.setText(this.randomEnemyAttack.damageText);
+    this.typeWriterEffect(this.randomEnemyAttack.damageText);
 
     setTimeout(() => {
       this.checkBattleEnd('showAttackOptions');
@@ -268,7 +302,7 @@ export default class BattleScene extends Phaser.Scene {
 
   checkBattleEnd(emittedEventAfterCheck: string) {
     if (this.enemyHealth <= 0) {
-      this.dialogueField.setText('Battle over!');
+      this.typeWriterEffect('Battle over!');
       // Stop the scene, etc.
       setTimeout(() => {
         this.scene.stop('BattleScene');
