@@ -56,10 +56,7 @@ export default class LabCutscene extends Phaser.Scene {
       repeat: -1,
     });
 
-    // Add sprite
     const sprite = this.add.sprite(0, 0, 'LabCutsceneSprite').setOrigin(0, 0);
-
-    // Scale the sprite
     sprite.setScale(8.2);
 
     // Start the animation
@@ -76,7 +73,7 @@ export default class LabCutscene extends Phaser.Scene {
       }, 2000);
     });
 
-    // create transitions
+    // rectangle for transitions
     this.transitionRect = this.add
       .rectangle(0, 0, this.scale.width, this.scale.height, 0x000000)
       .setOrigin(0, 0);
