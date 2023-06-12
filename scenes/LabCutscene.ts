@@ -45,6 +45,7 @@ export default class LabCutscene extends Phaser.Scene {
   create() {
     this.dialogueController.dialogueField.show();
     this.dialogueController.typeText();
+    this.dialogueController.isDialogueInCutscene = true;
 
     this.anims.create({
       key: 'labCutsceneSprite',
@@ -63,8 +64,10 @@ export default class LabCutscene extends Phaser.Scene {
     sprite.play('labCutsceneSprite');
 
     this.events.on('dialogueEnded', () => {
-      this.input.keyboard.removeAllListeners('keydown-ENTER');
+      // this.input.keyboard.removeAllListeners('keydown-ENTER');
       this.dialogueController.dialogueField.hide();
+      this.dialogueController.isDialogueInCutscene = false;
+
       this.cutsceneTransitionNormal();
 
       setTimeout(() => {
