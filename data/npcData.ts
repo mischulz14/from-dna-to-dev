@@ -44,7 +44,10 @@ export const npcLabData = {
             new DialogueNode('I will now be able to continue my research.'),
             new DialogueNode('But I need a new favor now.'),
             new DialogueNode(
-              'I need you to go to the computer room and evaluate some DNA sequences for me.',
+              'I need you to evaluate some DNA sequences for me.',
+            ),
+            new DialogueNode(
+              'Please go to the computer room and report the results to me.',
             ),
           ],
         };
@@ -61,47 +64,39 @@ export const npcLabData = {
               'You have evaluated the DNA sequences, thank you!',
             ),
             new DialogueNode('I hope it was not too much trouble!'),
-            new DialogueNode('I will now be able to continue my research.'),
-            new DialogueNode('But I need a new favor now.'),
-            new DialogueNode(
-              'I need you to go to the computer room and evaluate some RNA sequences for me.',
-            ),
           ],
         };
       }
     },
     triggerEventWhenDialogueEnds: (scene, npc) => {
       console.log('triggerEventWhenDialogueEnds in labnpc');
-      if (npc.talkCount === 0 && !scene.hero.hasKey) {
-        console.log('triggerEventWhenDialogueEnds in labnpc');
-        console.log(scene.events.addObjective);
+      if (
+        !scene.hero.hasBattledVirus &&
+        !scene.hero.hasKey &&
+        !scene.hero.hasBattledSleepDeprivation &&
+        !scene.hero.hasTalkedToMainNPC
+      ) {
         scene.hero.hasTalkedToMainNPC = true;
 
         scene.events.emit('addObjective', {
           textBesidesCheckbox: 'Find the key to the fridge',
           checkedCondition: 'hasKey',
         });
+      }
 
-        if (npc.talkCount === 0) {
-          npc.talkCount++;
-        }
-      } else if (npc.talkCount === 1 && scene.hero.hasKey) {
-        scene.events.emit('addObjective', {
-          textBesidesCheckbox: 'Get the probe from the fridge',
-          checkedCondition: 'hasBattledVirus',
-        });
-
-        if (npc.talkCount === 1) {
-          npc.talkCount++;
-        }
-      } else if (npc.talkCount === 2 && scene.hero.hasBattledVirus) {
-        scene.events.emit('addObjective', {
-          textBesidesCheckbox: 'Objective 3',
-          checkedCondition: 'hasKey',
-        });
-        npc.talkCount++;
-      } else {
+      if (scene.hero.hasKey && !scene.hero.hasBattledVirus) {
         return;
+      }
+
+      if (
+        scene.hero.hasKey &&
+        scene.hero.hasBattledVirus &&
+        !scene.hero.hasBattledSleepDeprivation
+      ) {
+        scene.events.emit('addObjective', {
+          textBesidesCheckbox: 'Evaluate DNA sequences',
+          checkedCondition: 'hasBattledSleepDeprivation',
+        });
       }
     },
   },

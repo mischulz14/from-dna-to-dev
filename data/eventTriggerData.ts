@@ -60,6 +60,10 @@ export const eventTriggerData = {
             new DialogueNode('Maybe this opens the fridge! I should take it.'),
           ],
         };
+        scene.events.emit('addObjective', {
+          textBesidesCheckbox: 'Get a probe from the fridge',
+          checkedCondition: 'hasBattledVirus',
+        });
       } else if (scene.hero.hasKey) {
         eventtrigger.dialogueNodesObj = {
           nodes: [new DialogueNode('That key was hidden well!')],
