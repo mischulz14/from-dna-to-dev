@@ -75,14 +75,14 @@ canvas {
   display: none;
   position: absolute;
   bottom: 0;
-  left: 0;
+  left: 10;
   width: 775px;
   height: 70px;
   font-weight: bold;
   font-size: 20px;
   letter-spacing: 2px;
   background-color: #efefef;
-  border-radius: 10px;
+  box-shadow: -8px -8px 0px rgba(0, 0, 0);
   border: 3px solid black;
   padding: 10px 10px;
   align-items: start;
