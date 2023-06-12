@@ -26,6 +26,7 @@ export const eventTriggerData = {
         return;
       }
 
+      scene.scene.pause('UIScene');
       scene.scene.pause('LabScene'); // Pause the LabScene
       scene.scene.launch('VirusBattleScene'); // Launch the StartScene alongside LabScene
     },
