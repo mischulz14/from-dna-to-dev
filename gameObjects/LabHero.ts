@@ -7,9 +7,10 @@ export default class LabHero extends Phaser.Physics.Arcade.Sprite {
   freeze: boolean;
   private shadow: Phaser.GameObjects.Graphics;
   heroBounds: Phaser.Geom.Rectangle;
+  hasTalkedToMainNPC: boolean;
   hasKey: boolean;
   hasBattledVirus: boolean;
-  hasBattledSleepDepression: boolean;
+  hasBattledSleepDeprivation: boolean;
   // stateMachine: StateMachine;
 
   constructor(
@@ -27,6 +28,8 @@ export default class LabHero extends Phaser.Physics.Arcade.Sprite {
     });
     this.heroBounds = this.getBounds();
     this.hasKey = false;
+    this.hasBattledVirus = false;
+    this.hasBattledSleepDeprivation = false;
 
     // Add this instance to the scene's display list and update list
 
