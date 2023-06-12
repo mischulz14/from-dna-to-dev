@@ -9,6 +9,8 @@ export default class DialogueController {
   typeTimeoutId: NodeJS.Timeout;
   currentDialogueNode: DialogueNode;
   dialogueInProgress: boolean = false;
+  isDialogueInCutscene: boolean = false;
+  isActiveNPCTalking: boolean = false;
   scene: Phaser.Scene;
 
   constructor(scene: Phaser.Scene) {
@@ -63,7 +65,7 @@ export default class DialogueController {
   }
 
   playerPressesEnterEventListener = () => {
-    if (!this.dialogueInProgress) return;
+    if (!this.isActiveNPCTalking && !this.isDialogueInCutscene) return;
     if (!this.isTextComplete) {
       this.isTextComplete = true;
       clearTimeout(this.typeTimeoutId);

@@ -45,15 +45,15 @@ canvas {
 /* DIALOGUE */
 
 .dialogue-indicator {
-  background-color: #e0e4ed;
+  background-color: #fff;
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 0.5rem;
   color: black;
-  border-radius: 5px;
+
   padding: 2px 15px;
-  box-shadow: 1px 2.5px 0px rgba(0, 0, 0);
+  box-shadow: -8px -8px 0px rgba(0, 0, 0);
   width: fit-content;
   height: 40px;
 }
@@ -69,6 +69,24 @@ canvas {
   padding-top: 2px;
   align-items: center;
   text-align: center;
+}
+
+.dialogue-field {
+  display: none;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 775px;
+  height: 70px;
+  font-weight: bold;
+  font-size: 20px;
+  letter-spacing: 2px;
+  background-color: #efefef;
+  border-radius: 10px;
+  border: 3px solid black;
+  padding: 10px 10px;
+  align-items: start;
+  justify-content: start;
 }
 
 .dialogue-field__enter {

@@ -11,12 +11,12 @@ export default class DialogueNode {
   text: string;
   options: {
     text: string;
-    nextNodeIndex?: number;
+    nextNodeIndex?: number | null;
     endDialogue?: boolean;
   }[];
   currentlySelectedOption: {
     text: string;
-    nextNodeIndex?: number;
+    nextNodeIndex?: number | null;
     endDialogue?: boolean;
   };
   alreadyShownOptions: boolean;
@@ -25,7 +25,7 @@ export default class DialogueNode {
     text: string,
     options?: {
       text: string;
-      nextNodeIndex?: number;
+      nextNodeIndex?: number | null;
       endDialogue?: boolean;
     }[],
   ) {
