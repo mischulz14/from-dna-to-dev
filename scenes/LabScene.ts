@@ -1,20 +1,20 @@
 import { Game } from 'phaser';
 
-import BattleTrigger from '../battle/BattleTrigger';
-import Refrigerator from '../battle/Refrigerator';
-import { battleTriggerData } from '../data/battleTriggerData';
+import { eventTriggerData } from '../data/eventTriggerData';
+import { npcLabData } from '../data/npcData';
 import DialogueController from '../dialogue/DialogueController';
 import DialogueNode from '../dialogue/DialogueNode';
+import EventTrigger from '../gameObjects/EventTrigger';
+import InteractiveGameObject from '../gameObjects/InteractiveGameObject';
 import LabHero from '../gameObjects/LabHero';
 import LabNPC from '../gameObjects/LabNPC';
-import LabNPCA from '../gameObjects/LabNPCA';
 import LevelIntro from '../levelIntro/LevelIntro';
 import areCollisionBoxesColliding from '../utils/collisonBoxCollison';
 
 export default class LabScene extends Phaser.Scene {
   private hero: LabHero;
   private isDialoguePlaying: boolean;
-  activeInteractiveGameObject: LabNPC | BattleTrigger | null;
+  activeInteractiveGameObject: InteractiveGameObject | null;
   isEventTriggered: boolean;
   dialogueController: DialogueController;
   hasLevelIntroPlayed: any;
@@ -38,15 +38,36 @@ export default class LabScene extends Phaser.Scene {
   }
 
   create() {
+    this.scene.launch('UIScene');
+
     this.events.on('dialogueEnded', () => {
-      this.activeInteractiveGameObject.triggerEventWhenDialogueEnds(this);
+      this.activeInteractiveGameObject.triggerEventWhenDialogueEnds(
+        this,
+        this.activeInteractiveGameObject,
+      );
       this.isEventTriggered = true;
+      this.dialogueController.isActiveNPCTalking = false;
       console.log(
         'current npc',
         this.activeInteractiveGameObject.triggerEventWhenDialogueEnds,
       );
       console.log('dialogue ended and event got triggered');
     });
+
+    // this.events.on('addObjective', () => {
+    //   console.log(this.scene.get('UIScene'), 'this.scene.get(UIScene)');
+    //   this.scene.get('UIScene').events.emit('addObjective');
+    // });
+
+    this.events.on('addObjective', (data) => {
+      // check if the UIScene is active
+      if (this.scene.isActive('UIScene')) {
+        console.log(this.scene.get('UIScene'), 'this.scene.get(UIScene)');
+        // Emit the event
+        this.scene.get('UIScene').events.emit('addObjective', data);
+      }
+    });
+
     const hero = this.hero;
     const map = this.make.tilemap({ key: 'map' });
     // console.log(map);
@@ -72,16 +93,45 @@ export default class LabScene extends Phaser.Scene {
     this.cameras.main.startFollow(this.hero);
 
     // Create the NPC
-
-    const testNPC = new LabNPC(this, 50, 50, 'npc', 'E', 'Talk');
-    const testNPC2 = new LabNPCA(this, 500, 150, 'npc', 'E', 'Talk');
-    const testBattleTrigger = new Refrigerator(this, 500, 500);
+    const fridgeKey = new EventTrigger(
+      this,
+      100,
+      400,
+      'npc',
+      'I',
+      'Interact',
+      eventTriggerData.fridgeKeyContainer.dialogueNodesObj,
+      eventTriggerData.fridgeKeyContainer.triggerEventWhenDialogueEnds,
+      eventTriggerData.fridgeKeyContainer.updateDialogueNodeBasedOnPlayerState,
+    );
+    fridgeKey.setScale(2);
+    const testNPC = new LabNPC(
+      this,
+      480,
+      200,
+      'npc',
+      'E',
+      'Talk',
+      npcLabData.npcA.dialogueNodesObj,
+      npcLabData.npcA.triggerEventWhenDialogueEnds,
+      npcLabData.npcA.updateDialogueNodeBasedOnHeroState,
+    );
+    const testBattleTrigger = new EventTrigger(
+      this,
+      500,
+      500,
+      'refrigerator',
+      'I',
+      'Interact',
+      eventTriggerData.refrigerator.dialogueNodesObj,
+      eventTriggerData.refrigerator.triggerEventWhenDialogueEnds,
+      eventTriggerData.refrigerator.updateDialogueNodeBasedOnPlayerState,
+    );
 
     testBattleTrigger.setScale(3);
 
     testNPC.play('npc-idle-left');
     testNPC.setScale(2);
-    testNPC2.setScale(2);
     this.add.existing(testNPC);
 
     const tableLayer = map.createLayer('Tables', tileset);
@@ -94,9 +144,11 @@ export default class LabScene extends Phaser.Scene {
     collisionLayer.setCollisionByProperty({ collides: true });
     console.log(collisionLayer);
 
+    this.physics.add.collider(this.hero, fridgeKey);
+
     // Set up collisions between the player and the NPC
     this.children.each((child) => {
-      if (child instanceof LabNPC || child instanceof BattleTrigger) {
+      if (child instanceof LabNPC || child instanceof EventTrigger) {
         this.physics.add.collider(this.hero, child);
         this.physics.add.collider(collisionLayer, child);
       }
@@ -111,7 +163,7 @@ export default class LabScene extends Phaser.Scene {
   }
 
   update(time: number, delta: number) {
-    this.playLevelIntroOnce();
+    // this.playLevelIntroOnce();
 
     if (this.dialogueController.dialogueInProgress) {
       this.hero.freeze = true;
@@ -130,7 +182,7 @@ export default class LabScene extends Phaser.Scene {
 
       // CHECK FOR NPC COLLISION
       if (
-        (child instanceof LabNPC || child instanceof BattleTrigger) &&
+        child instanceof InteractiveGameObject &&
         areCollisionBoxesColliding(this.hero, child)
       ) {
         !this.isEventTriggered && child.showSpeechIndication();
@@ -162,7 +214,7 @@ export default class LabScene extends Phaser.Scene {
     this.load.image('lab_tiles', 'assets/labTileset.png');
 
     this.load.spritesheet(
-      'refrigeratorBattleTrigger',
+      'refrigerator',
       'assets/refrigeratorBattleTrigger.png',
       {
         frameWidth: 32,
@@ -171,23 +223,26 @@ export default class LabScene extends Phaser.Scene {
     );
   }
 
-  handleDialogueTrigger(child: LabNPC | BattleTrigger) {
+  handleDialogueTrigger(child: InteractiveGameObject) {
     if (
       Phaser.Input.Keyboard.JustDown(
         this.input.keyboard.addKey(child.dialogueIndictaorKey),
       )
     ) {
+      child.updateDialogueNodeBasedOnPlayerState(this, child);
+
       this.activeInteractiveGameObject = child;
       this.hero.freeze = true;
       this.dialogueController.dialogueInProgress = true;
+      this.dialogueController.isActiveNPCTalking = true;
       this.isEventTriggered = true;
       this.dialogueEvent(child.dialogueNodesObj.nodes);
     }
   }
 
-  hideSpeechIndication(child: LabNPC | BattleTrigger) {
+  hideSpeechIndication(child: LabNPC | EventTrigger) {
     if (
-      (child instanceof LabNPC || child instanceof BattleTrigger) &&
+      (child instanceof LabNPC || child instanceof EventTrigger) &&
       !areCollisionBoxesColliding(this.hero, child)
     ) {
       child.hideSpeechIndication();

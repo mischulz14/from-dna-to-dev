@@ -10,7 +10,11 @@ export default class InteractiveGameObject extends Phaser.Physics.Arcade
   dialogueIndictaorKey: string;
   dialogueIndictaorText: string;
   isSpeaking: boolean;
-  dialogueNodes: DialogueNode[];
+  dialogueNodesObj: { nodes: DialogueNode[] };
+  updateDialogueNodeBasedOnPlayerState: (
+    scene: Phaser.Scene,
+    interactiveGameObject: InteractiveGameObject,
+  ) => void;
   bounds = new Phaser.Geom.Rectangle();
   dialogueEnded: boolean;
 
@@ -73,7 +77,7 @@ export default class InteractiveGameObject extends Phaser.Physics.Arcade
     }
   }
 
-  triggerEventWhenDialogueEnds = (scene) => {};
+  triggerEventWhenDialogueEnds = (scene: Phaser.Scene, gameObject?: any) => {};
 
   stopBehaviorLoop() {}
 

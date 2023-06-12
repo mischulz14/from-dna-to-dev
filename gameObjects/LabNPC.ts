@@ -1,6 +1,7 @@
 import * as Phaser from 'phaser';
 
 import DialogueNode from '../dialogue/DialogueNode';
+import ObjectiveIndicator from '../gameObjects/ObjectiveIndicator';
 import InteractiveGameObject from './InteractiveGameObject';
 import Hero from './LabHero';
 
@@ -9,6 +10,12 @@ export default class LabNPC extends InteractiveGameObject {
   private behaviorTimer?: Phaser.Time.TimerEvent;
   dialogueNodesObj: { nodes: DialogueNode[] };
   hasEventAfterDialogue: boolean;
+  firstEncounter: boolean;
+  talkCount: number;
+  updateDialogueNodeBasedOnPlayerState: (
+    scene: Phaser.Scene,
+    labNPC: LabNPC,
+  ) => void;
 
   constructor(
     scene: Phaser.Scene,
@@ -17,30 +24,29 @@ export default class LabNPC extends InteractiveGameObject {
     texture: string,
     dialogueIndictaorKey: string,
     dialogueIndictaorText: string,
+    dialogueNodesObj: { nodes: DialogueNode[] },
+    triggerEventWhenDialogueEnds: (
+      scene: Phaser.Scene,
+      labNPC: InteractiveGameObject,
+    ) => void,
+    updateDialogueNodeBasedOnPlayerState: (
+      scene: Phaser.Scene,
+      labNPC: LabNPC,
+    ) => void,
   ) {
     super(scene, x, y, texture, dialogueIndictaorKey, dialogueIndictaorText);
 
     // Here we create our dialogue nodes
     // this.behaviorLoop();
     this.hasEventAfterDialogue = true;
+    this.firstEncounter = true;
+    this.talkCount = 0;
+    this.triggerEventWhenDialogueEnds = triggerEventWhenDialogueEnds;
+    this.updateDialogueNodeBasedOnPlayerState =
+      updateDialogueNodeBasedOnPlayerState;
 
     // I am instantiating the dialogue nodes here as an object because phaser is weird and deletes the options in the update function when I instantiate them as an array
-    this.dialogueNodesObj = {
-      nodes: [
-        new DialogueNode('Hello, I am a scientist.', [
-          {
-            text: 'bla',
-            nextNodeIndex: 1,
-          },
-          {
-            text: 'bla 2',
-            nextNodeIndex: null,
-            endDialogue: true,
-          },
-        ]),
-        new DialogueNode('I am working on a cure for the virus.', []),
-      ],
-    };
+    this.dialogueNodesObj = dialogueNodesObj;
 
     this.body?.setSize(17, 15);
     this.body?.setOffset(8, 22);
@@ -155,12 +161,18 @@ export default class LabNPC extends InteractiveGameObject {
     }
   };
 
-  triggerEventWhenDialogueEnds = (scene: any) => {
-    console.log('triggerEventWhenDialogueEnds');
-  };
-
   updateShadow = () => {
     this.shadow.clear();
     this.shadow.fillEllipse(this.x, this.y + 35, 30, 16);
+  };
+
+  incrementTalkingCount = () => {
+    this.talkCount += 1;
+  };
+
+  moveAnotherNPC = () => {
+    // @ts-ignore
+    const npcB = this.scene.children.list[8] as LabNPC;
+    // npcB.x = 200;
   };
 }
