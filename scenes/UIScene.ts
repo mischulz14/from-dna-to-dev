@@ -55,7 +55,6 @@ export default class UIScene extends Phaser.Scene {
       .get('LabScene')
       .events.on('objectiveMet', this.handleObjectiveMet, this);
 
-    this.scene.bringToTop('UIScene');
     // Listen for the 'addObjective' event
     this.events.on('addObjective', this.handleAddObjective, this);
 

@@ -33,8 +33,9 @@ export default class VirusBattleScene extends Phaser.Scene {
 
   constructor() {
     super({ key: 'VirusBattleScene' });
+
     this.playerHealth = 100;
-    this.enemyHealth = 30;
+    this.enemyHealth = 100;
     this.enemyAttacks = [
       {
         name: 'Fever Flare',
@@ -386,8 +387,11 @@ export default class VirusBattleScene extends Phaser.Scene {
         setTimeout(() => {
           this.scene.stop('VirusBattleScene');
           this.scene.resume('LabScene');
+          this.scene.resume('UIScene');
           // @ts-ignore
           this.scene.get('LabScene').isEventTriggered = false;
+          // @ts-ignore
+          this.scene.get('LabScene').hero.hasBattledVirus = true;
         }, 2000);
       });
     } else if (emittedEventAfterCheck === 'showAttackOptions') {
