@@ -2,7 +2,6 @@ import DialogueNode from '../dialogue/DialogueNode';
 
 export const npcLabData = {
   npcA: {
-    dialogue: ['Test'],
     dialogueNodesObj: {
       nodes: [
         new DialogueNode('Hey there!'),
@@ -98,6 +97,51 @@ export const npcLabData = {
           checkedCondition: 'hasBattledSleepDeprivation',
         });
       }
+    },
+  },
+  npcB: {
+    dialogueNodesObj: {
+      nodes: [
+        new DialogueNode('Hey, Do you need anything?', [
+          {
+            text: 'Where am I?',
+            nextNodeIndex: 1,
+            endDialogue: false,
+          },
+          {
+            text: 'Who made this game?',
+            nextNodeIndex: 2,
+            endDialogue: false,
+          },
+          {
+            text: 'No, I am good.',
+            nextNodeIndex: null,
+            endDialogue: true,
+          },
+        ]),
+        new DialogueNode(
+          "You're in a lab, you should know that! You're the one who works here!",
+          [
+            {
+              text: 'Ok ...',
+              nextNodeIndex: null,
+              endDialogue: true,
+            },
+          ],
+        ),
+        new DialogueNode(
+          'This game was made by Michael, a fullstack webdeveloper from Vienna who is also a coding enthusiast.',
+        ),
+        new DialogueNode(
+          'He made this to tell the story of how he got into coding, but in a fun and engaging way.',
+        ),
+      ],
+    },
+    updateDialogueNodeBasedOnHeroState: (scene, npc) => {
+      return;
+    },
+    triggerEventWhenDialogueEnds: (scene, npc) => {
+      return;
     },
   },
 };

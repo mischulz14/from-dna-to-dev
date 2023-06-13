@@ -63,7 +63,7 @@ export default class LabScene extends Phaser.Scene {
       // check if the UIScene is active
       if (this.scene.isActive('UIScene')) {
         console.log(this.scene.get('UIScene'), 'this.scene.get(UIScene)');
-        // Emit the event
+        // Emit the event in the ui scene
         this.scene.get('UIScene').events.emit('addObjective', data);
       }
     });
@@ -98,7 +98,7 @@ export default class LabScene extends Phaser.Scene {
       100,
       400,
       'npc',
-      'I',
+      'E',
       'Interact',
       eventTriggerData.fridgeKeyContainer.dialogueNodesObj,
       eventTriggerData.fridgeKeyContainer.triggerEventWhenDialogueEnds,
@@ -116,12 +116,26 @@ export default class LabScene extends Phaser.Scene {
       npcLabData.npcA.triggerEventWhenDialogueEnds,
       npcLabData.npcA.updateDialogueNodeBasedOnHeroState,
     );
+
+    const testNPC2 = new LabNPC(
+      this,
+      550,
+      300,
+      'npc',
+      'E',
+      'Talk',
+      npcLabData.npcB.dialogueNodesObj,
+      npcLabData.npcB.triggerEventWhenDialogueEnds,
+      npcLabData.npcB.updateDialogueNodeBasedOnHeroState,
+    );
+    testNPC2.setScale(2);
+
     const testBattleTrigger = new EventTrigger(
       this,
       500,
       500,
       'refrigerator',
-      'I',
+      'E',
       'Interact',
       eventTriggerData.refrigerator.dialogueNodesObj,
       eventTriggerData.refrigerator.triggerEventWhenDialogueEnds,

@@ -4,8 +4,8 @@ export const eventTriggerData = {
   refrigerator: {
     dialogueNodesObj: {
       nodes: [
-        new DialogueNode('The fridge is locked.'),
-        new DialogueNode('Maybe there is a key around here somewhere?'),
+        new DialogueNode('The fridge is full of probes.'),
+        new DialogueNode('But it is locked.'),
       ],
     },
     updateDialogueNodeBasedOnPlayerState: (scene, eventtrigger) => {
