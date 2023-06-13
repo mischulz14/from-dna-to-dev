@@ -26,7 +26,7 @@ export default class UIScene extends Phaser.Scene {
   }
 
   create() {
-    this.add.rectangle(10, 8, 185, 40, 0x000).setOrigin(0, 0);
+    this.add.rectangle(12, 10, 185, 40, 0x000).setOrigin(0, 0);
     // white color: 0xffffff
     let button = this.add.rectangle(20, 18, 185, 40, 0xffffff).setOrigin(0, 0);
     button.setInteractive();
@@ -45,7 +45,7 @@ export default class UIScene extends Phaser.Scene {
       });
     });
 
-    this.buttonText = this.add.text(32, 30, 'Hide Objectives', {
+    this.buttonText = this.add.text(32, 30, 'Show Objectives', {
       fontSize: '18px',
       fontFamily: 'Minecraft',
       color: '#000',
@@ -61,6 +61,10 @@ export default class UIScene extends Phaser.Scene {
     this.currentScene = this.scene.get('LabScene');
 
     this.addInitialObjective();
+    // set objectives invisible at first
+    this.objectives.forEach((objective) => {
+      objective.setVisible(false);
+    });
   }
 
   update(time: number, delta: number): void {
@@ -89,6 +93,10 @@ export default class UIScene extends Phaser.Scene {
       'checkBoxEmpty',
       'checkBoxChecked',
     );
+
+    if (!this.objectives[0].visible) {
+      objectiveIndicator.setVisible(false);
+    }
 
     this.currentPosition.y += 60;
 

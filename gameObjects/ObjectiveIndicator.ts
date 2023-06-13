@@ -3,7 +3,7 @@ import * as Phaser from 'phaser';
 export default class ObjectiveIndicator extends Phaser.GameObjects.Container {
   checkboxEmptyImage: Phaser.GameObjects.Image;
   checkboxCheckedImage: Phaser.GameObjects.Image;
-  textBesidesCheckbox: Phaser.GameObjects.Text;
+  textBesidesCheckbox: Phaser.GameObjects.DOMElement;
   checkedCondition: string;
 
   constructor(
@@ -22,17 +22,16 @@ export default class ObjectiveIndicator extends Phaser.GameObjects.Container {
 
     // add rectangles to make it more readable
 
-    // Add text besides checkbox
-    this.textBesidesCheckbox = this.scene.add.text(
-      20,
-      -8,
-      textBesidesCheckbox,
-      {
-        fontFamily: 'Minecraft',
-        fontSize: 16,
-        color: '#000000',
-      },
-    );
+    // Add text besides checkbox as dom element
+    this.textBesidesCheckbox = this.scene.add
+      .dom(
+        25,
+        -12,
+        'div',
+        `color: #000; background-color: #fff; padding:6px; box-shadow: -6px -6px 0px rgba(0, 0, 0); font-size: 18px; font-family: Minecraft;`,
+        textBesidesCheckbox,
+      )
+      .setOrigin(0, 0);
 
     // Add checkbox images
     this.checkboxEmptyImage = this.scene.add.image(0, 0, checkBoxEmptyKey);

@@ -111,15 +111,15 @@ canvas {
 
 .dialogue-field__options {
   position: absolute;
-  right: 50px;
-  bottom: 75px;
+  right: 5px;
+  bottom: 105px;
   width: fit-content;
   height: fit-content;
   display: none;
   flex-direction: column;
   background-color: #efefef;
   border: 3px solid black;
-  border-radius: 10px;
+  box-shadow: -8px -8px 0px rgba(0, 0, 0);
   z-index: 100;
   overflow: hidden;
 }
@@ -151,8 +151,8 @@ button {
 .attack-options {
   display: none;
   position: absolute;
-  bottom: 0;
-  right: 0;
+  bottom: 10px;
+  right: 10px;
   height: 200px;
   width: 500px;
   color: black;
@@ -160,7 +160,7 @@ button {
   background-color: #efefef;
   grid-template-columns: 1fr 1fr;
   border: 3px solid black;
-  border-radius: 10px;
+  box-shadow: -8px -8px 0px rgba(0, 0, 0);
   overflow: hidden;
 }
 
