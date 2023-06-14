@@ -6,7 +6,7 @@ import InteractiveGameObject from './InteractiveGameObject';
 import Hero from './LabHero';
 
 export default class LabNPC extends InteractiveGameObject {
-  private shadow: Phaser.GameObjects.Graphics;
+  shadow: Phaser.GameObjects.Graphics;
   private behaviorTimer?: Phaser.Time.TimerEvent;
   dialogueNodesObj: { nodes: DialogueNode[] };
   hasEventAfterDialogue: boolean;
@@ -22,6 +22,7 @@ export default class LabNPC extends InteractiveGameObject {
     x: number,
     y: number,
     texture: string,
+    initialAnimation: string,
     dialogueIndictaorKey: string,
     dialogueIndictaorText: string,
     dialogueNodesObj: { nodes: DialogueNode[] },
@@ -57,37 +58,12 @@ export default class LabNPC extends InteractiveGameObject {
       fillStyle: { color: 0x000000, alpha: 0.25 },
     });
 
-    this.createAnimations(scene);
-
     // Play the initial idle animation
-    this.anims.play('npc-idle-down', true);
+    this.anims.play(initialAnimation, true);
     this.shadow.fillEllipse(this.x, this.y + 35, 30, 16);
   }
 
   preload() {}
-
-  createAnimations(scene: Phaser.Scene) {
-    scene.anims.create({
-      key: 'npc-idle-down',
-      frames: scene.anims.generateFrameNumbers('npc', { start: 14, end: 20 }),
-      frameRate: 6,
-      repeat: -1,
-    });
-
-    scene.anims.create({
-      key: 'npc-idle-right',
-      frames: scene.anims.generateFrameNumbers('npc', { start: 0, end: 6 }),
-      frameRate: 6,
-      repeat: -1,
-    });
-
-    scene.anims.create({
-      key: 'npc-idle-left',
-      frames: scene.anims.generateFrameNumbers('npc', { start: 7, end: 13 }),
-      frameRate: 6,
-      repeat: -1,
-    });
-  }
 
   update() {
     super.update();
