@@ -39,8 +39,9 @@ stats.json
 # Ignore Mac OS files
 .DS_Store
 
-# ignore minecraft fonts folder
+# ignore fonts
 minecraftFont
+rainyhearts
 
 # ignore tsconfig
 tsconfig.json
