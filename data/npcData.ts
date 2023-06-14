@@ -99,18 +99,23 @@ export const npcLabData = {
       }
     },
   },
-  npcB: {
+  infoNpc: {
     dialogueNodesObj: {
       nodes: [
         new DialogueNode('Hey, Do you need anything?', [
           {
             text: 'Where am I?',
-            nextNodeIndex: 1,
+            nextNodeIndex: 3,
             endDialogue: false,
           },
           {
             text: 'Who made this game?',
-            nextNodeIndex: 2,
+            nextNodeIndex: 4,
+            endDialogue: false,
+          },
+          {
+            text: 'What do I have to do?',
+            nextNodeIndex: 1,
             endDialogue: false,
           },
           {
@@ -119,6 +124,19 @@ export const npcLabData = {
             endDialogue: true,
           },
         ]),
+        new DialogueNode(
+          'Do you see that button over there in the top left corner?',
+        ),
+        new DialogueNode(
+          'If you click on it, you will see your current objectives.',
+          [
+            {
+              text: 'Ok thanks!',
+              nextNodeIndex: null,
+              endDialogue: true,
+            },
+          ],
+        ),
         new DialogueNode(
           "You're in a lab, you should know that! You're the one who works here!",
           [
@@ -131,6 +149,12 @@ export const npcLabData = {
         ),
         new DialogueNode(
           'This game was made by Michael, a fullstack webdeveloper from Vienna who is also a coding enthusiast.',
+        ),
+        new DialogueNode(
+          'He learned how to draw pixel art game assets, how to draw character animations and how to design and code game levels.',
+        ),
+        new DialogueNode(
+          "If you're wondering: Yes, he learned it from scratch and it took him a while. (;",
         ),
         new DialogueNode(
           'He made this to tell the story of how he got into coding, but in a fun and engaging way.',
