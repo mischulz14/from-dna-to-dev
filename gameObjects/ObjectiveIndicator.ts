@@ -28,7 +28,7 @@ export default class ObjectiveIndicator extends Phaser.GameObjects.Container {
         25,
         -12,
         'div',
-        `color: #000; background-color: #fff; padding:6px; box-shadow: -6px -6px 0px rgba(0, 0, 0); font-size: 18px; font-family: Minecraft;`,
+        `color: #000; background-color: #fff; padding:6px; box-shadow: -6px -6px 0px rgba(0, 0, 0); font-size: 20px; font-family: Rainyhearts;`,
         textBesidesCheckbox,
       )
       .setOrigin(0, 0);

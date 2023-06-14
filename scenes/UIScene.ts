@@ -45,9 +45,9 @@ export default class UIScene extends Phaser.Scene {
       });
     });
 
-    this.buttonText = this.add.text(32, 30, 'Show Objectives', {
-      fontSize: '18px',
-      fontFamily: 'Minecraft',
+    this.buttonText = this.add.text(32, 26, 'Show Objectives', {
+      fontSize: '1.5rem',
+      fontFamily: 'Rainyhearts',
       color: '#000',
     });
     // Listen for the 'objectiveMet' event
