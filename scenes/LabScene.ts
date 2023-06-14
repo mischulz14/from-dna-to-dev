@@ -19,6 +19,7 @@ export default class LabScene extends Phaser.Scene {
   dialogueController: DialogueController;
   hasLevelIntroPlayed: any;
   levelIntro: LevelIntro;
+  foregroundLayer: Phaser.Tilemaps.TilemapLayer;
 
   // private npc: Phaser.GameObjects.Sprite;
   constructor() {
@@ -38,6 +39,7 @@ export default class LabScene extends Phaser.Scene {
   }
 
   create() {
+    this.createAnimations(this);
     this.scene.launch('UIScene');
 
     this.events.on('dialogueEnded', () => {
@@ -53,11 +55,6 @@ export default class LabScene extends Phaser.Scene {
       );
       console.log('dialogue ended and event got triggered');
     });
-
-    // this.events.on('addObjective', () => {
-    //   console.log(this.scene.get('UIScene'), 'this.scene.get(UIScene)');
-    //   this.scene.get('UIScene').events.emit('addObjective');
-    // });
 
     this.events.on('addObjective', (data) => {
       // check if the UIScene is active
@@ -105,11 +102,13 @@ export default class LabScene extends Phaser.Scene {
       eventTriggerData.fridgeKeyContainer.updateDialogueNodeBasedOnPlayerState,
     );
     fridgeKey.setScale(2);
+
     const testNPC = new LabNPC(
       this,
       480,
       200,
       'npc',
+      'npc-idle-down',
       'E',
       'Talk',
       npcLabData.npcA.dialogueNodesObj,
@@ -117,18 +116,39 @@ export default class LabScene extends Phaser.Scene {
       npcLabData.npcA.updateDialogueNodeBasedOnHeroState,
     );
 
-    const testNPC2 = new LabNPC(
+    // const testNPC2 = new LabNPC(
+    //   this,
+    //   550,
+    //   300,
+    //   'npc',
+    //   'npc-idle-down',
+    //   'E',
+    //   'Talk',
+    //   npcLabData.npcB.dialogueNodesObj,
+    //   npcLabData.npcB.triggerEventWhenDialogueEnds,
+    //   npcLabData.npcB.updateDialogueNodeBasedOnHeroState,
+    // );
+    // testNPC2.setScale(2);
+
+    const infoNPC = new LabNPC(
       this,
-      550,
-      300,
-      'npc',
+      200,
+      70,
+      'infoNpc',
+      'infoNpc-idle-down',
       'E',
       'Talk',
-      npcLabData.npcB.dialogueNodesObj,
-      npcLabData.npcB.triggerEventWhenDialogueEnds,
-      npcLabData.npcB.updateDialogueNodeBasedOnHeroState,
+      npcLabData.infoNpc.dialogueNodesObj,
+      npcLabData.infoNpc.triggerEventWhenDialogueEnds,
+      npcLabData.infoNpc.updateDialogueNodeBasedOnHeroState,
     );
-    testNPC2.setScale(2);
+
+    infoNPC.setBodySize(40, 30);
+    infoNPC.setScale(2);
+    infoNPC.turnToHero = () => {
+      return;
+    };
+    infoNPC.shadow.alpha = 0;
 
     const testBattleTrigger = new EventTrigger(
       this,
@@ -144,12 +164,12 @@ export default class LabScene extends Phaser.Scene {
 
     testBattleTrigger.setScale(3);
 
-    testNPC.play('npc-idle-left');
     testNPC.setScale(2);
     this.add.existing(testNPC);
 
     const tableLayer = map.createLayer('Tables', tileset);
     tableLayer.setScale(1);
+    const computerLayer = map.createLayer('Computers', tileset, 0, 0);
 
     const collisionLayer = map.createLayer('Collisions', tileset);
     collisionLayer.setScale(1);
@@ -170,10 +190,15 @@ export default class LabScene extends Phaser.Scene {
 
     const wallLayer = map.createLayer('Walls', tileset);
     wallLayer.setScale(1);
+    this.foregroundLayer = map.createLayer('Foreground', tileset);
+    this.foregroundLayer.setDepth(1000);
+    // this.foregroundLayer.setVisible(false);
 
     // // Set up collisions between the player and the specified tile
     this.physics.add.collider(this.hero, collisionLayer);
     this.physics.add.collider(testNPC, collisionLayer);
+
+    console.log(this.children, 'this.children');
   }
 
   update(time: number, delta: number) {
@@ -221,6 +246,11 @@ export default class LabScene extends Phaser.Scene {
       frameHeight: 38,
     });
 
+    this.load.spritesheet('infoNpc', 'assets/LabNPCInfoGuy.png', {
+      frameWidth: 50,
+      frameHeight: 45,
+    });
+
     // Load the Tiled JSON file
     this.load.tilemapTiledJSON('map', 'assets/labMapJson.json');
 
@@ -264,10 +294,21 @@ export default class LabScene extends Phaser.Scene {
   }
 
   sortGameObjectsByYCoordinate() {
-    this.children.sort('y');
+    this.children.each((child) => {
+      if (
+        child !== this.foregroundLayer &&
+        (child instanceof Phaser.GameObjects.Sprite ||
+          child instanceof Phaser.GameObjects.Image)
+      ) {
+        child.setDepth(child.y);
+      }
+    });
   }
 
   dialogueEvent(dialogue: DialogueNode[]) {
+    if (this.activeInteractiveGameObject instanceof LabNPC) {
+      this.activeInteractiveGameObject.turnToHero(this.hero);
+    }
     this.activeInteractiveGameObject.hideSpeechIndication();
     this.dialogueController.dialogueField.show();
     this.dialogueController.initiateDialogueNodesArray(dialogue);
@@ -284,5 +325,48 @@ export default class LabScene extends Phaser.Scene {
       levelName: 'The Lab',
     });
     this.levelIntro.createHTML();
+  }
+
+  createAnimations(scene: Phaser.Scene) {
+    this.anims.create({
+      key: 'npc-idle-down',
+      frames: this.anims.generateFrameNumbers('npc', {
+        start: 14,
+        end: 20,
+      }),
+      frameRate: 6,
+      repeat: -1,
+    });
+
+    this.anims.create({
+      key: 'npc-idle-up',
+      frames: this.anims.generateFrameNumbers('npc', { start: 21, end: 27 }),
+      frameRate: 6,
+      repeat: -1,
+    });
+
+    this.anims.create({
+      key: 'npc-idle-right',
+      frames: this.anims.generateFrameNumbers('npc', { start: 0, end: 6 }),
+      frameRate: 6,
+      repeat: -1,
+    });
+
+    this.anims.create({
+      key: 'npc-idle-left',
+      frames: this.anims.generateFrameNumbers('npc', { start: 7, end: 13 }),
+      frameRate: 6,
+      repeat: -1,
+    });
+
+    this.anims.create({
+      key: 'infoNpc-idle-down',
+      frames: this.anims.generateFrameNumbers('infoNpc', {
+        start: 0,
+        end: 7,
+      }),
+      frameRate: 6,
+      repeat: -1,
+    });
   }
 }
