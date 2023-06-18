@@ -27,6 +27,8 @@ export default class UIScene extends Phaser.Scene {
 
   create() {
     this.add.rectangle(12, 10, 185, 40, 0x000).setOrigin(0, 0);
+    this.add.rectangle(19, 17, 187, 42, 0x000).setOrigin(0, 0);
+
     // white color: 0xffffff
     let button = this.add.rectangle(20, 18, 185, 40, 0xffffff).setOrigin(0, 0);
     button.setInteractive();
