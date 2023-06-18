@@ -5,11 +5,12 @@ export default class LabHero extends Phaser.Physics.Arcade.Sprite {
   lastDirection: string;
   speed: number;
   freeze: boolean;
-  private shadow: Phaser.GameObjects.Graphics;
+  shadow: Phaser.GameObjects.Graphics;
   heroBounds: Phaser.Geom.Rectangle;
   hasTalkedToMainNPC: boolean;
   hasKey: boolean;
   hasBattledVirus: boolean;
+  hasDeliveredProbe: boolean;
   hasBattledSleepDeprivation: boolean;
   // stateMachine: StateMachine;
 
@@ -24,11 +25,12 @@ export default class LabHero extends Phaser.Physics.Arcade.Sprite {
     // this.stateMachine = new StateMachine();
     this.freeze = false;
     this.shadow = scene.add.graphics({
-      fillStyle: { color: 0x000000, alpha: 0.25 },
+      fillStyle: { color: 0x000000, alpha: 0.1 },
     });
     this.heroBounds = this.getBounds();
     this.hasKey = false;
     this.hasBattledVirus = false;
+    this.hasDeliveredProbe = false;
     this.hasBattledSleepDeprivation = false;
 
     // Add this instance to the scene's display list and update list
@@ -36,7 +38,7 @@ export default class LabHero extends Phaser.Physics.Arcade.Sprite {
     scene.add.existing(this);
     scene.physics.add.existing(this);
 
-    this.body.setSize(17, 10);
+    this.body.setSize(16, 10);
     this.body.setOffset(8, 24);
 
     // Initialize the cursors object and the lastDirection string
@@ -135,7 +137,6 @@ export default class LabHero extends Phaser.Physics.Arcade.Sprite {
     if (this.freeze) {
       this.body.enable = false; // disable collision response
       this.anims.play('idle-' + this.lastDirection, true);
-
       return;
     }
     this.shadow.clear();

@@ -1,6 +1,7 @@
-import { Game } from 'phaser';
+import { DOM, Game } from 'phaser';
 
 import { eventTriggerData } from '../data/eventTriggerData';
+import { interactiveGameObjectData } from '../data/interactiveGameObjectData';
 import { npcLabData } from '../data/npcData';
 import DialogueController from '../dialogue/DialogueController';
 import DialogueNode from '../dialogue/DialogueNode';
@@ -12,14 +13,16 @@ import LevelIntro from '../levelIntro/LevelIntro';
 import areCollisionBoxesColliding from '../utils/collisonBoxCollison';
 
 export default class LabScene extends Phaser.Scene {
-  private hero: LabHero;
-  private isDialoguePlaying: boolean;
+  hero: LabHero;
+  isDialoguePlaying: boolean;
   activeInteractiveGameObject: InteractiveGameObject | null;
   isEventTriggered: boolean;
   dialogueController: DialogueController;
   hasLevelIntroPlayed: any;
   levelIntro: LevelIntro;
   foregroundLayer: Phaser.Tilemaps.TilemapLayer;
+  wallLayer: Phaser.Tilemaps.TilemapLayer;
+  transitionRect: any | object[];
 
   // private npc: Phaser.GameObjects.Sprite;
   constructor() {
@@ -64,37 +67,49 @@ export default class LabScene extends Phaser.Scene {
         this.scene.get('UIScene').events.emit('addObjective', data);
       }
     });
-
-    const hero = this.hero;
     const map = this.make.tilemap({ key: 'map' });
     // console.log(map);
 
     const tileset = map.addTilesetImage('labTileset', 'lab_tiles');
     // console.log(tileset);
 
-    // Create layers, add objects, etc.
+    // CREATE LAYERS
     const groundLayer = map.createLayer('Floor', tileset, 0, 0);
 
-    groundLayer.setScale(1);
+    const tableLayer = map.createLayer('Tables', tileset);
+    // tableLayer.setDepth(2);
 
-    this.hero = new LabHero(
-      this,
-      this.cameras.main.width / 2,
-      this.cameras.main.height / 2,
-      'labHero',
-    );
+    const computerLayer = map.createLayer('Computers', tileset, 0, 0);
+    const chairLayer = map.createLayer('Chairs', tileset, 0, 0);
+
+    const collisionLayer = map.createLayer('Collisions', tileset);
+    collisionLayer.setVisible(false);
+    collisionLayer.setCollisionByProperty({ collides: true });
+
+    this.wallLayer = map.createLayer('Walls', tileset);
+    this.wallLayer.setDepth(2);
+
+    const otherGameObjectsLayer = map.createLayer('OtherGameobjects', tileset);
+    otherGameObjectsLayer.setDepth(2);
+
+    this.foregroundLayer = map.createLayer('Foreground', tileset);
+    this.foregroundLayer.setDepth(10000);
+
+    // ADD HERO
+    this.hero = new LabHero(this, 1400, 600, 'labHero');
     this.hero.setScale(2);
+    this.hero.shadow.setDepth(1);
     this.add.existing(this.hero);
 
     // Make the camera follow the hero
     this.cameras.main.startFollow(this.hero);
 
-    // Create the NPC
+    // ADD EVENT TRIGGERS
     const fridgeKey = new EventTrigger(
       this,
-      100,
-      400,
-      'npc',
+      1532,
+      580,
+      'fridgeKeyContainer',
       'E',
       'Interact',
       eventTriggerData.fridgeKeyContainer.dialogueNodesObj,
@@ -103,12 +118,43 @@ export default class LabScene extends Phaser.Scene {
     );
     fridgeKey.setScale(2);
 
-    const testNPC = new LabNPC(
+    const refrigeratorBattleTrigger = new EventTrigger(
       this,
-      480,
-      200,
+      1532,
+      70,
+      'refrigerator',
+      'E',
+      'Interact',
+      eventTriggerData.refrigerator.dialogueNodesObj,
+      eventTriggerData.refrigerator.triggerEventWhenDialogueEnds,
+      eventTriggerData.refrigerator.updateDialogueNodeBasedOnPlayerState,
+    );
+
+    refrigeratorBattleTrigger.setScale(3);
+
+    const computerBattleTrigger = new EventTrigger(
+      this,
+      96,
+      128,
+      'computerBattleTrigger',
+      'E',
+      'Interact',
+      eventTriggerData.computer.dialogueNodesObj,
+      eventTriggerData.computer.triggerEventWhenDialogueEnds,
+      eventTriggerData.computer.updateDialogueNodeBasedOnPlayerState,
+    );
+    computerBattleTrigger.setScale(2);
+    computerBattleTrigger.play('computer');
+    computerBattleTrigger.setBodySize(20, 10);
+    computerBattleTrigger.setOffset(5, 20);
+
+    // ADD NPCS
+    const mainNPC = new LabNPC(
+      this,
+      880,
+      615,
       'npc',
-      'npc-idle-down',
+      'npc-idle-up',
       'E',
       'Talk',
       npcLabData.npcA.dialogueNodesObj,
@@ -116,23 +162,9 @@ export default class LabScene extends Phaser.Scene {
       npcLabData.npcA.updateDialogueNodeBasedOnHeroState,
     );
 
-    // const testNPC2 = new LabNPC(
-    //   this,
-    //   550,
-    //   300,
-    //   'npc',
-    //   'npc-idle-down',
-    //   'E',
-    //   'Talk',
-    //   npcLabData.npcB.dialogueNodesObj,
-    //   npcLabData.npcB.triggerEventWhenDialogueEnds,
-    //   npcLabData.npcB.updateDialogueNodeBasedOnHeroState,
-    // );
-    // testNPC2.setScale(2);
-
     const infoNPC = new LabNPC(
       this,
-      200,
+      800,
       70,
       'infoNpc',
       'infoNpc-idle-down',
@@ -150,60 +182,59 @@ export default class LabScene extends Phaser.Scene {
     };
     infoNPC.shadow.alpha = 0;
 
-    const testBattleTrigger = new EventTrigger(
-      this,
-      500,
-      500,
-      'refrigerator',
-      'E',
-      'Interact',
-      eventTriggerData.refrigerator.dialogueNodesObj,
-      eventTriggerData.refrigerator.triggerEventWhenDialogueEnds,
-      eventTriggerData.refrigerator.updateDialogueNodeBasedOnPlayerState,
-    );
+    mainNPC.setScale(2);
 
-    testBattleTrigger.setScale(3);
+    // ADD OTHER GAME OBJECTS
+    const janus = new InteractiveGameObject(this, 870, 580, 'janus');
+    janus.setScale(4);
+    janus.playAfterDelay('janus-idle', 1000);
+    janus.setBodySize(30, 15);
+    janus.setOffset(1.5, 13);
+    janus.setImmovable(true);
+    janus.showSpeechIndication = () => {
+      return;
+    };
 
-    testNPC.setScale(2);
-    this.add.existing(testNPC);
+    const janus2 = new InteractiveGameObject(this, 1000, 580, 'janus');
+    janus2.setScale(4);
+    janus2.play('janus-idle');
+    janus2.setBodySize(30, 15);
+    janus2.setOffset(1.5, 13);
+    janus2.setImmovable(true);
+    janus2.showSpeechIndication = () => {
+      return;
+    };
 
-    const tableLayer = map.createLayer('Tables', tileset);
-    tableLayer.setScale(1);
-    const computerLayer = map.createLayer('Computers', tileset, 0, 0);
+    const janus3 = new InteractiveGameObject(this, 1130, 580, 'janus');
+    janus3.setScale(4);
+    janus3.playAfterDelay('janus-idle', 2000);
+    janus3.setBodySize(30, 15);
+    janus3.setOffset(1.5, 13);
+    janus3.setImmovable(true);
+    janus3.showSpeechIndication = () => {
+      return;
+    };
 
-    const collisionLayer = map.createLayer('Collisions', tileset);
-    collisionLayer.setScale(1);
-    collisionLayer.setVisible(false);
-    // // Set up collisions with the specified tile
-    collisionLayer.setCollisionByProperty({ collides: true });
-    console.log(collisionLayer);
-
-    this.physics.add.collider(this.hero, fridgeKey);
-
-    // Set up collisions between the player and the NPC
+    // SET UP COLLISIONS
     this.children.each((child) => {
-      if (child instanceof LabNPC || child instanceof EventTrigger) {
+      if (child instanceof InteractiveGameObject) {
         this.physics.add.collider(this.hero, child);
         this.physics.add.collider(collisionLayer, child);
       }
     });
 
-    const wallLayer = map.createLayer('Walls', tileset);
-    wallLayer.setScale(1);
-    this.foregroundLayer = map.createLayer('Foreground', tileset);
-    this.foregroundLayer.setDepth(1000);
-    // this.foregroundLayer.setVisible(false);
-
-    // // Set up collisions between the player and the specified tile
+    // Set up collisions
     this.physics.add.collider(this.hero, collisionLayer);
-    this.physics.add.collider(testNPC, collisionLayer);
+    this.physics.add.collider(mainNPC, collisionLayer);
+    this.physics.add.collider(this.hero, this.foregroundLayer, () => {
+      console.log('foreground collision');
+    });
 
     console.log(this.children, 'this.children');
+    // this.playLevelIntroOnce();
   }
 
   update(time: number, delta: number) {
-    // this.playLevelIntroOnce();
-
     if (this.dialogueController.dialogueInProgress) {
       this.hero.freeze = true;
     }
@@ -231,40 +262,6 @@ export default class LabScene extends Phaser.Scene {
       // @ts-ignore
       this.hideSpeechIndication(child);
     });
-  }
-
-  loadSpriteSheetsImagesAndTileMaps() {
-    // load the hero spritesheet
-    this.load.spritesheet('labHero', 'assets/labHeroSpriteSheet.png', {
-      frameWidth: 32,
-      frameHeight: 36,
-    });
-
-    // load the npc spritesheet
-    this.load.spritesheet('npc', 'assets/LabNPC.png', {
-      frameWidth: 32,
-      frameHeight: 38,
-    });
-
-    this.load.spritesheet('infoNpc', 'assets/LabNPCInfoGuy.png', {
-      frameWidth: 50,
-      frameHeight: 45,
-    });
-
-    // Load the Tiled JSON file
-    this.load.tilemapTiledJSON('map', 'assets/labMapJson.json');
-
-    // Load the tileset image
-    this.load.image('lab_tiles', 'assets/labTileset.png');
-
-    this.load.spritesheet(
-      'refrigerator',
-      'assets/refrigeratorBattleTrigger.png',
-      {
-        frameWidth: 32,
-        frameHeight: 32,
-      },
-    );
   }
 
   handleDialogueTrigger(child: InteractiveGameObject) {
@@ -311,7 +308,11 @@ export default class LabScene extends Phaser.Scene {
     }
     this.activeInteractiveGameObject.hideSpeechIndication();
     this.dialogueController.dialogueField.show();
-    this.dialogueController.initiateDialogueNodesArray(dialogue);
+    this.dialogueController.initiateDialogueNodesArray(
+      dialogue,
+      this.activeInteractiveGameObject,
+      this.hero,
+    );
     this.dialogueController.typeText();
   }
 
@@ -320,11 +321,72 @@ export default class LabScene extends Phaser.Scene {
       return;
     }
     this.hasLevelIntroPlayed = true;
+    this.hero.freeze = true;
     this.levelIntro = new LevelIntro({
       levelNr: 1,
       levelName: 'The Lab',
     });
     this.levelIntro.createHTML();
+    setTimeout(() => {
+      this.hero.freeze = false;
+    }, 3000);
+  }
+
+  loadSpriteSheetsImagesAndTileMaps() {
+    // load the hero spritesheet
+    this.load.spritesheet('labHero', 'assets/labHeroSpriteSheet.png', {
+      frameWidth: 32,
+      frameHeight: 36,
+    });
+
+    // load the npc spritesheet
+    this.load.spritesheet('npc', 'assets/LabNPC.png', {
+      frameWidth: 32,
+      frameHeight: 38,
+    });
+
+    this.load.spritesheet('infoNpc', 'assets/LabNPCInfoGuy.png', {
+      frameWidth: 50,
+      frameHeight: 45,
+    });
+
+    // Load the Tiled JSON file
+    this.load.tilemapTiledJSON('map', 'assets/labMapJson.json');
+
+    // Load the tileset image
+    this.load.image('lab_tiles', 'assets/labTileset.png');
+
+    this.load.spritesheet(
+      'refrigerator',
+      'assets/refrigeratorBattleTrigger.png',
+      {
+        frameWidth: 32,
+        frameHeight: 32,
+      },
+    );
+
+    this.load.spritesheet(
+      'computerBattleTrigger',
+      'assets/computerBattleTrigger.png',
+      {
+        frameHeight: 32,
+        frameWidth: 32,
+      },
+    );
+
+    this.load.spritesheet(
+      'fridgeKeyContainer',
+      'assets/fridgeKeyContainer.png',
+      {
+        frameHeight: 32,
+        frameWidth: 32,
+      },
+    );
+
+    this.load.spritesheet('janus', 'assets/janus.png', {
+      frameHeight: 32,
+      frameWidth: 32,
+    });
   }
 
   createAnimations(scene: Phaser.Scene) {
@@ -367,6 +429,36 @@ export default class LabScene extends Phaser.Scene {
       }),
       frameRate: 6,
       repeat: -1,
+    });
+
+    this.anims.create({
+      key: 'computer',
+      frames: this.anims.generateFrameNumbers('computerBattleTrigger', {
+        start: 0,
+        end: 4,
+      }),
+      frameRate: 3,
+      repeat: -1,
+    });
+
+    this.anims.create({
+      key: 'janus-idle',
+      frames: this.anims.generateFrameNumbers('janus', {
+        start: 0,
+        end: 70,
+      }),
+      frameRate: 8,
+      repeat: -1,
+    });
+  }
+
+  cutsceneTransitionReverse() {
+    this.tweens.add({
+      targets: this.transitionRect,
+      alpha: { from: 1, to: 0 },
+      ease: 'Linear',
+      duration: 3000,
+      repeat: 0,
     });
   }
 }

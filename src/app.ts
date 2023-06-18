@@ -1,9 +1,11 @@
 import 'phaser';
 
-import BattleScene from '../scenes/BattleScene';
 import LabCutscene from '../scenes/LabCutscene';
 import LabScene from '../scenes/LabScene';
+import SleepDeprivationBattleScene from '../scenes/SleepDeprivationBattleScene';
 import StartScene from '../scenes/StartScene';
+import UIScene from '../scenes/UIScene';
+import VirusBattleScene from '../scenes/VirusBattleScene';
 
 const config: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
@@ -13,7 +15,7 @@ const config: Phaser.Types.Core.GameConfig = {
     default: 'arcade',
     arcade: {
       gravity: { y: 0, x: 0 }, // Top down game, so no gravity
-      debug: true, // Change this to true to see hitboxes
+      debug: false, // Change this to true to see hitboxes
     },
   },
   width: 800,
@@ -27,8 +29,16 @@ const config: Phaser.Types.Core.GameConfig = {
     createContainer: true,
   },
   //  make background color transparent
-  backgroundColor: '#000',
-  scene: [LabScene, LabCutscene, BattleScene, StartScene], // order of scenes does not matter
+  backgroundColor: '#e7e7e7',
+  scene: [
+    LabScene,
+    StartScene,
+
+    UIScene,
+    SleepDeprivationBattleScene,
+    VirusBattleScene,
+    LabCutscene,
+  ], // order of scenes does not matter
 };
 
 new Phaser.Game(config);

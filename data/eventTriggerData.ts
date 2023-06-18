@@ -27,6 +27,10 @@ export const eventTriggerData = {
       }
 
       scene.scene.pause('UIScene');
+      scene.scene.get('UIScene').objectives.forEach((objective) => {
+        objective.setVisible(false);
+      });
+
       scene.scene.pause('LabScene'); // Pause the LabScene
       scene.scene.launch('VirusBattleScene'); // Launch the StartScene alongside LabScene
     },
@@ -40,9 +44,18 @@ export const eventTriggerData = {
         console.log('triggerEventWhenDialogueEnds in fridgeKeyContainer');
         return;
       }
+
+      if (scene.hero.hasTalkedToMainNPC && !scene.hero.hasKey) {
+        scene.events.emit('addObjective', {
+          textBesidesCheckbox: 'Get a probe from the fridge',
+          checkedCondition: 'hasBattledVirus',
+        });
+
+        scene.hero.hasKey = true;
+        return;
+      }
+
       if (scene.hero.hasKey) return;
-      scene.hero.hasKey = true;
-      console.log('scene.hero.hasKey', scene.hero.hasKey);
     },
     updateDialogueNodeBasedOnPlayerState: (scene, eventtrigger) => {
       if (!scene.hero.hasTalkedToMainNPC) {
@@ -60,15 +73,48 @@ export const eventTriggerData = {
             new DialogueNode('Maybe this opens the fridge! I should take it.'),
           ],
         };
-        scene.events.emit('addObjective', {
-          textBesidesCheckbox: 'Get a probe from the fridge',
-          checkedCondition: 'hasBattledVirus',
-        });
       } else if (scene.hero.hasKey) {
         eventtrigger.dialogueNodesObj = {
           nodes: [new DialogueNode('That key was hidden well!')],
         };
       }
+    },
+  },
+  computer: {
+    dialogueNodesObj: {
+      nodes: [
+        new DialogueNode('There is a DNA test running on here.'),
+        new DialogueNode(
+          "It's not finished yet, but if it is some has to take a look at it.",
+        ),
+      ],
+    },
+    updateDialogueNodeBasedOnPlayerState: (scene, eventtrigger) => {
+      if (scene.hero.hasDeliveredProbe) {
+        eventtrigger.dialogueNodesObj = {
+          nodes: [
+            new DialogueNode('You take a look at the DNA test.'),
+            new DialogueNode('Looks interesting, let me just ...'),
+            new DialogueNode('I feel so sleepy...'),
+            new DialogueNode("I can't..."),
+            new DialogueNode('keep...'),
+            new DialogueNode('my eyes...'),
+            new DialogueNode('open...'),
+          ],
+        };
+      }
+    },
+    triggerEventWhenDialogueEnds: (scene: any) => {
+      if (!scene.hero.hasDeliveredProbe) {
+        return;
+      }
+
+      scene.scene.pause('UIScene');
+      scene.scene.get('UIScene').objectives.forEach((objective) => {
+        objective.setVisible(false);
+      });
+      scene.scene.pause('LabScene'); // Pause the LabScene
+      scene.scene.launch('SleepDeprivationBattleScene'); // Launch the StartScene alongside LabScene
     },
   },
 };

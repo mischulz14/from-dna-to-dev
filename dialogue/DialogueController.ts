@@ -1,4 +1,5 @@
 import DialogueField from '../dialogue/DialogueField';
+import LabNPC from '../gameObjects/LabNPC';
 import DialogueNode from './DialogueNode';
 
 export default class DialogueController {
@@ -12,6 +13,8 @@ export default class DialogueController {
   isDialogueInCutscene: boolean = false;
   isActiveNPCTalking: boolean = false;
   scene: Phaser.Scene;
+  interactiveGameObject: any;
+  hero: any;
 
   constructor(scene: Phaser.Scene) {
     this.dialogueField = new DialogueField();
@@ -58,6 +61,8 @@ export default class DialogueController {
       this.dialogueInProgress = false;
       this.currentDialogueIndex = 0;
       this.isTextComplete = false;
+      if (this.interactiveGameObject instanceof LabNPC)
+        this.interactiveGameObject.turnBackToOriginalPosition(this.hero);
       this.resetAlreadyShownOptions();
       this.scene.events.emit('dialogueEnded');
       console.log('dialogue ended in dialogueController');
@@ -113,8 +118,14 @@ export default class DialogueController {
     }
   }
 
-  initiateDialogueNodesArray(dialogue: DialogueNode[]) {
+  initiateDialogueNodesArray(
+    dialogue: DialogueNode[],
+    interactiveGameObject: any,
+    hero: any,
+  ) {
     this.dialogue = dialogue;
+    this.interactiveGameObject = interactiveGameObject;
+    this.hero = hero;
   }
 
   progressDialogueNodeWithOptions() {

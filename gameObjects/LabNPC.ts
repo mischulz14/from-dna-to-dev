@@ -16,6 +16,7 @@ export default class LabNPC extends InteractiveGameObject {
     scene: Phaser.Scene,
     labNPC: LabNPC,
   ) => void;
+  initialAnimation: string;
 
   constructor(
     scene: Phaser.Scene,
@@ -58,6 +59,7 @@ export default class LabNPC extends InteractiveGameObject {
       fillStyle: { color: 0x000000, alpha: 0.25 },
     });
 
+    this.initialAnimation = initialAnimation;
     // Play the initial idle animation
     this.anims.play(initialAnimation, true);
     this.shadow.fillEllipse(this.x, this.y + 35, 30, 16);
@@ -81,6 +83,10 @@ export default class LabNPC extends InteractiveGameObject {
     } else if (hero.lastDirection === 'right') {
       this.anims.play('npc-idle-left', true);
     }
+  };
+
+  turnBackToOriginalPosition = (hero: Hero) => {
+    this.anims.play(this.initialAnimation, true);
   };
 
   behaviorLoop = () => {

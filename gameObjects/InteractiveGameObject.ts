@@ -23,8 +23,8 @@ export default class InteractiveGameObject extends Phaser.Physics.Arcade
     x: number,
     y: number,
     texture: string,
-    dialogueIndictaorKey: string,
-    dialogueIndictaorText: string,
+    dialogueIndictaorKey?: string,
+    dialogueIndictaorText?: string,
   ) {
     super(scene, x, y, texture);
     this.scene = scene;

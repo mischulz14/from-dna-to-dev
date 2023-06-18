@@ -1,4 +1,5 @@
 import DialogueNode from '../dialogue/DialogueNode';
+import LabScene from '../scenes/LabScene';
 
 export const npcLabData = {
   npcA: {
@@ -67,7 +68,7 @@ export const npcLabData = {
         };
       }
     },
-    triggerEventWhenDialogueEnds: (scene, npc) => {
+    triggerEventWhenDialogueEnds: (scene: LabScene, npc) => {
       console.log('triggerEventWhenDialogueEnds in labnpc');
       if (
         !scene.hero.hasBattledVirus &&
@@ -81,6 +82,8 @@ export const npcLabData = {
           textBesidesCheckbox: 'Find the key to the fridge',
           checkedCondition: 'hasKey',
         });
+
+        return;
       }
 
       if (scene.hero.hasKey && !scene.hero.hasBattledVirus) {
@@ -96,6 +99,20 @@ export const npcLabData = {
           textBesidesCheckbox: 'Evaluate DNA sequences',
           checkedCondition: 'hasBattledSleepDeprivation',
         });
+
+        scene.hero.hasDeliveredProbe = true;
+      }
+
+      if (
+        scene.hero.hasKey &&
+        scene.hero.hasBattledVirus &&
+        scene.hero.hasBattledSleepDeprivation
+      ) {
+        scene.cutsceneTransitionReverse();
+        setTimeout(() => {
+          scene.scene.stop('LabScene');
+          scene.scene.start('LabCutscene');
+        }, 2800);
       }
     },
   },
