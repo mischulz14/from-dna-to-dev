@@ -25,7 +25,6 @@ export default class AttackOptions {
     );
 
     this.hasPlayerChosenAttack = false;
-
     this.addHTMLOptionsToDialogueField();
   }
 
@@ -86,6 +85,11 @@ export default class AttackOptions {
         optionElement.focus();
       });
     });
+  }
+
+  removeHTMLOptionsFromDialogueField() {
+    const optionsContainer = document.querySelector('.attack-options');
+    optionsContainer.innerHTML = '';
   }
 
   showOptions() {

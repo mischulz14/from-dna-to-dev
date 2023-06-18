@@ -3,7 +3,7 @@ import Phaser, { Events } from 'phaser';
 import AttackOptions from '../battle/AttackOptions';
 import DialogueField from '../dialogue/DialogueField';
 
-export default class VirusBattleScene extends Phaser.Scene {
+export default class SleepDeprivationBattleScene extends Phaser.Scene {
   player: any;
   enemy: any;
   playerAttackOptions: AttackOptions;
@@ -33,58 +33,57 @@ export default class VirusBattleScene extends Phaser.Scene {
   playerAttacks: { text: string; damage: number; damageText: string }[];
 
   constructor() {
-    super({ key: 'VirusBattleScene' });
+    super({ key: 'SleepDeprivationBattleScene' });
 
     this.playerHealth = 100;
-    this.enemyHealth = 30;
+    this.enemyHealth = 100;
     this.enemyAttacks = [
       {
-        name: 'Fever Flare',
-        damage: 20,
-        damageText: 'You feel 0.1°C hotter, your temperature is rising!',
+        name: 'Anxiety Surge',
+        damage: 25,
+        damageText: 'Uff, that anxiety hits like a truck...',
       },
       {
-        name: 'Cough Blast',
+        name: 'Immunity Drop',
         damage: 5,
-        damageText: 'Hmpf, I can just put on my mask, no worries.',
+        damageText: 'Hmpf, I handled worse things in my life.',
       },
       {
-        name: 'Respiratory Rift',
+        name: 'Cognitive Fog',
         damage: 20,
-        damageText: 'The virus is literally taking your breath away.',
+        damageText: 'What.. was... I... doing... again?',
       },
       {
-        name: 'Loss of senses',
+        name: 'Fatigue Wave',
         damage: 20,
-        damageText: 'Oh no! How can I taste my favorite Ramen now? :(',
+        damageText: "I'm just gonna lie down for a second..",
       },
     ];
     this.gameEvents = new Events.EventEmitter();
     this.playerAttacks = [
       {
-        text: 'Vaccine Shield',
+        text: 'Caffeine Boost',
         damage: 30,
-        damageText:
-          'You pumped your blood full with antibodies? Good job, the virus is trembling!',
+        damageText: 'TANTRUUUUUM! (If you get this reference, I like you.)',
       },
       {
-        text: 'Mask barrier',
-        damage: 30,
-        damageText: 'Putting on an FFP2 really marks the spot!',
+        text: 'Sleep on Time',
+        damage: 5,
+        damageText: "Let's be real, this never happens.",
       },
       {
-        text: 'Herd Immunity Hope',
+        text: 'Mindfulness Meditate',
         damage: 5,
         damageText:
-          'You want everyone else to be sick before you? I can feel your ego from here!',
+          'Meditation relaxes you even further! Why would you relaxed when you are being attacked?!',
       },
       {
-        text: 'Miracle Cure Mirage',
-        damage: 2,
-        damageText: 'That may be look good in the news, but it is not helping!',
+        text: 'Late Night Snack',
+        damage: 15,
+        damageText:
+          "I won't say no to a late snacking session. This should keep me awake for a while.",
       },
     ];
-
     this.gameEvents.on('battleStart', this.startBattle, this);
     this.gameEvents.on('showAttackOptions', this.showAttackOptions, this);
     this.gameEvents.on('playerAttackChosen', this.playerAttackChosen, this);
@@ -116,9 +115,9 @@ export default class VirusBattleScene extends Phaser.Scene {
       frameHeight: 50,
     });
 
-    this.load.spritesheet('virusBattleEnemy', 'assets/virusBattleEnemy.png', {
-      frameWidth: 50,
-      frameHeight: 50,
+    this.load.spritesheet('sleepDeprivation', 'assets/sleepDeprivation.png', {
+      frameWidth: 64,
+      frameHeight: 64,
     });
   }
 
@@ -130,8 +129,8 @@ export default class VirusBattleScene extends Phaser.Scene {
     );
     this.add.image(0, 0, 'battleBackground').setOrigin(0, 0);
 
-    this.player = this.add.sprite(100, 280, 'virusBattleHero');
-    this.enemy = this.add.sprite(400, 100, 'virusBattleEnemy');
+    this.player = this.add.sprite(0, 280, 'virusBattleHero');
+    this.enemy = this.add.sprite(0, 100, 'sleepDeprivation');
 
     //  scale player and enemy sprites
     this.player.setScale(6);
@@ -148,10 +147,10 @@ export default class VirusBattleScene extends Phaser.Scene {
     });
 
     this.anims.create({
-      key: 'virusBattleEnemyIdle',
-      frames: this.anims.generateFrameNumbers('virusBattleEnemy', {
+      key: 'sleepDeprivationIdle',
+      frames: this.anims.generateFrameNumbers('sleepDeprivation', {
         start: 0,
-        end: 3,
+        end: 7,
       }),
       frameRate: 4,
       repeat: -1,
@@ -220,10 +219,10 @@ export default class VirusBattleScene extends Phaser.Scene {
 
   async startBattle() {
     this.anims.play('virusBattleHeroIdle', this.player);
-    this.anims.play('virusBattleEnemyIdle', this.enemy);
+    this.anims.play('sleepDeprivationIdle', this.enemy);
     this.addDialogueField();
     this.typeWriterEffect(
-      'You are being attacked by a new variant of the corona virus! \nIt is ... kind of cute? You chose to call it Mr. Virus.',
+      'You are being attacked by sleep deprivation! No wonder when you have to do five night shifts in a row...',
     );
     this.gameObjectsEnterTheScene();
     await this.waitForUserConfirmation();
@@ -294,7 +293,9 @@ export default class VirusBattleScene extends Phaser.Scene {
   async enemyAttackChosen() {
     this.randomEnemyAttack =
       this.enemyAttacks[Math.floor(Math.random() * this.enemyAttacks.length)];
-    this.typeWriterEffect(`Mr.Virus uses ${this.randomEnemyAttack.name}!`);
+    this.typeWriterEffect(
+      `Sleep deprivation uses ${this.randomEnemyAttack.name}!`,
+    );
 
     await this.waitForUserConfirmation();
     this.playEnemyAttackAnimation();
@@ -338,7 +339,7 @@ export default class VirusBattleScene extends Phaser.Scene {
     // transition enemy from right to left
     this.tweens.add({
       targets: this.enemy,
-      x: 700,
+      x: 650,
       ease: 'Power1',
       duration: 3000,
     });
@@ -381,17 +382,18 @@ export default class VirusBattleScene extends Phaser.Scene {
   checkBattleEnd(emittedEventAfterCheck: string) {
     console.log('checkBattleEnd');
     if (this.enemyHealth <= 0) {
-      this.typeWriterEffect('The virus demutates and dies!');
+      this.typeWriterEffect(
+        'You battled of the urge to take a nap! (for now...)',
+      );
       this.enemyDestroyedAnimation();
-      this.playerAttackOptions.removeHTMLOptionsFromDialogueField();
 
       this.waitForUserConfirmation().then(() => {
         this.cutsceneTransitionNormal();
         setTimeout(() => {
-          // @ts-ignore
-          this.scene.get('LabScene').isEventTriggered = false;
-          // @ts-ignore
-          this.scene.get('LabScene').hero.hasBattledVirus = true;
+          this.scene.stop('SleepDeprivationBattleScene');
+          this.scene.resume('LabScene');
+          this.scene.resume('UIScene');
+
           // @ts-ignore
           this.scene.get('UIScene').objectives.forEach((objective) => {
             if (!objective.visible) return;
@@ -402,10 +404,8 @@ export default class VirusBattleScene extends Phaser.Scene {
             textBesidesCheckbox: 'Deliver the probe.',
             checkedCondition: 'hasDeliveredProbe',
           });
-
-          this.scene.stop('VirusBattleScene');
-          this.scene.resume('LabScene');
-          this.scene.resume('UIScene');
+          // @ts-ignore
+          this.scene.get('LabScene').hero.hasBattledSleepDeprivation = true;
         }, 2000);
       });
     } else if (emittedEventAfterCheck === 'showAttackOptions') {
