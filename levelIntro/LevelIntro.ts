@@ -14,7 +14,7 @@ export default class LevelIntro {
         <div class="level-intro__title"> ${this.levelNr}</div>
       </div>
     `;
-    document.body.appendChild(levelIntro);
+    document.getElementById('game')?.appendChild(levelIntro);
 
     setTimeout(() => {
       const levelNameElement = document.createElement('div');
