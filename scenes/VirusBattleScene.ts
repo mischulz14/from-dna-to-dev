@@ -35,8 +35,8 @@ export default class VirusBattleScene extends Phaser.Scene {
   constructor() {
     super({ key: 'VirusBattleScene' });
 
-    this.playerHealth = 100;
-    this.enemyHealth = 30;
+    this.playerHealth = 130;
+    this.enemyHealth = 130;
     this.enemyAttacks = [
       {
         name: 'Fever Flare',

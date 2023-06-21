@@ -2,7 +2,7 @@ import DialogueNode from '../dialogue/DialogueNode';
 import LabScene from '../scenes/LabScene';
 
 export const npcLabData = {
-  npcA: {
+  mainNPC: {
     dialogueNodesObj: {
       nodes: [
         new DialogueNode('Hey there!'),
@@ -108,11 +108,9 @@ export const npcLabData = {
         scene.hero.hasBattledVirus &&
         scene.hero.hasBattledSleepDeprivation
       ) {
-        scene.cutsceneTransitionReverse();
-        setTimeout(() => {
-          scene.scene.stop('LabScene');
-          scene.scene.start('LabCutscene');
-        }, 2800);
+        scene.scene.stop('LabScene');
+        scene.scene.stop('UIScene');
+        scene.scene.start('LabCutscene');
       }
     },
   },
@@ -182,6 +180,60 @@ export const npcLabData = {
       return;
     },
     triggerEventWhenDialogueEnds: (scene, npc) => {
+      return;
+    },
+  },
+  npcA: {
+    dialogueNodesObj: {
+      nodes: [
+        new DialogueNode('Can I tell you a secret?'),
+        new DialogueNode('This company treats you like a number.'),
+        new DialogueNode(
+          'I am just waiting to finish my masters degree and then I am out of here.',
+        ),
+      ],
+    },
+    updateDialogueNodeBasedOnHeroState: (scene, npc) => {
+      return;
+    },
+    triggerEventWhenDialogueEnds: (scene, npc) => {
+      return;
+    },
+  },
+  npcB: {
+    dialogueNodesObj: {
+      nodes: [
+        new DialogueNode('I am so tired.'),
+        new DialogueNode('I have been working for 12 hours straight.'),
+        new DialogueNode('I need a coffee.'),
+      ],
+    },
+    updateDialogueNodeBasedOnHeroState: (scene, npc) => {
+      return;
+    },
+    triggerEventWhenDialogueEnds: (scene, npc) => {
+      return;
+    },
+  },
+  npcC: {
+    dialogueNodesObj: {
+      nodes: [new DialogueNode('I AM NOT STARING AT A WALL, YOU ARE!')],
+    },
+    updateDialogueNodeBasedOnHeroState: (scene, npc) => {
+      if (npc.talkCount === 1) {
+        npc.dialogueNodesObj = {
+          nodes: [new DialogueNode('I just like staring at walls, ok?')],
+        };
+      }
+
+      if (npc.talkCount > 1) {
+        npc.dialogueNodesObj = {
+          nodes: [new DialogueNode('Those nightshifts are killing me.')],
+        };
+      }
+    },
+    triggerEventWhenDialogueEnds: (scene, npc) => {
+      npc.talkCount++;
       return;
     },
   },

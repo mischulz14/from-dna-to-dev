@@ -73,15 +73,18 @@ export default class LabNPC extends InteractiveGameObject {
   }
 
   turnToHero = (hero: Hero) => {
+    console.log('turnToHero');
+    console.log('current animation: ', this.anims.currentAnim.key);
+    console.log('texture: ', this.texture);
     // based on the last held direction, turn to face the hero
     if (hero.lastDirection === 'up') {
-      this.anims.play('npc-idle-down', true);
+      this.anims.play(`${this.texture.key}-idle-down`, true);
     } else if (hero.lastDirection === 'down') {
-      this.anims.play('npc-idle-up', true);
+      this.anims.play(`${this.texture.key}-idle-up`, true);
     } else if (hero.lastDirection === 'left') {
-      this.anims.play('npc-idle-right', true);
+      this.anims.play(`${this.texture.key}-idle-right`, true);
     } else if (hero.lastDirection === 'right') {
-      this.anims.play('npc-idle-left', true);
+      this.anims.play(`${this.texture.key}-idle-left`, true);
     }
   };
 

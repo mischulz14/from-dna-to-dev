@@ -401,8 +401,8 @@ export default class SleepDeprivationBattleScene extends Phaser.Scene {
           });
 
           this.scene.get('UIScene').events.emit('addObjective', {
-            textBesidesCheckbox: 'Deliver the probe.',
-            checkedCondition: 'hasDeliveredProbe',
+            textBesidesCheckbox: 'Deliver the DNA results.',
+            checkedCondition: 'hasDeliveredDNAResults',
           });
           // @ts-ignore
           this.scene.get('LabScene').hero.hasBattledSleepDeprivation = true;

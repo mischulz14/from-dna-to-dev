@@ -96,7 +96,7 @@ export default class LabScene extends Phaser.Scene {
     this.foregroundLayer.setDepth(10000);
 
     // ADD HERO
-    this.hero = new LabHero(this, 1400, 600, 'labHero');
+    this.hero = new LabHero(this, 800, 170, 'labHero');
     this.hero.setScale(2);
     this.hero.shadow.setDepth(1);
     this.add.existing(this.hero);
@@ -152,14 +152,14 @@ export default class LabScene extends Phaser.Scene {
     const mainNPC = new LabNPC(
       this,
       880,
-      615,
+      645,
       'npc',
       'npc-idle-up',
       'E',
       'Talk',
-      npcLabData.npcA.dialogueNodesObj,
-      npcLabData.npcA.triggerEventWhenDialogueEnds,
-      npcLabData.npcA.updateDialogueNodeBasedOnHeroState,
+      npcLabData.mainNPC.dialogueNodesObj,
+      npcLabData.mainNPC.triggerEventWhenDialogueEnds,
+      npcLabData.mainNPC.updateDialogueNodeBasedOnHeroState,
     );
 
     const infoNPC = new LabNPC(
@@ -184,8 +184,52 @@ export default class LabScene extends Phaser.Scene {
 
     mainNPC.setScale(2);
 
+    const labNPCA = new LabNPC(
+      this,
+      1000,
+      645,
+      'npcA',
+      'npcA-idle-up',
+      'E',
+      'Talk',
+      npcLabData.npcA.dialogueNodesObj,
+      npcLabData.npcA.triggerEventWhenDialogueEnds,
+      npcLabData.npcA.updateDialogueNodeBasedOnHeroState,
+    );
+    labNPCA.setScale(2);
+
+    const labNPCB = new LabNPC(
+      this,
+      410,
+      330,
+      'npcB',
+      'npcB-idle-up',
+      'E',
+      'Talk',
+      npcLabData.npcB.dialogueNodesObj,
+      npcLabData.npcB.triggerEventWhenDialogueEnds,
+      npcLabData.npcB.updateDialogueNodeBasedOnHeroState,
+    );
+
+    labNPCB.setScale(2);
+
+    const labNPCC = new LabNPC(
+      this,
+      910,
+      380,
+      'npcC',
+      'npcC-idle-right',
+      'E',
+      'Talk',
+      npcLabData.npcC.dialogueNodesObj,
+      npcLabData.npcC.triggerEventWhenDialogueEnds,
+      npcLabData.npcC.updateDialogueNodeBasedOnHeroState,
+    );
+
+    labNPCC.setScale(2);
+
     // ADD OTHER GAME OBJECTS
-    const janus = new InteractiveGameObject(this, 870, 580, 'janus');
+    const janus = new InteractiveGameObject(this, 870, 600, 'janus');
     janus.setScale(4);
     janus.playAfterDelay('janus-idle', 1000);
     janus.setBodySize(30, 15);
@@ -195,7 +239,7 @@ export default class LabScene extends Phaser.Scene {
       return;
     };
 
-    const janus2 = new InteractiveGameObject(this, 1000, 580, 'janus');
+    const janus2 = new InteractiveGameObject(this, 1000, 600, 'janus');
     janus2.setScale(4);
     janus2.play('janus-idle');
     janus2.setBodySize(30, 15);
@@ -205,7 +249,7 @@ export default class LabScene extends Phaser.Scene {
       return;
     };
 
-    const janus3 = new InteractiveGameObject(this, 1130, 580, 'janus');
+    const janus3 = new InteractiveGameObject(this, 1130, 600, 'janus');
     janus3.setScale(4);
     janus3.playAfterDelay('janus-idle', 2000);
     janus3.setBodySize(30, 15);
@@ -231,7 +275,7 @@ export default class LabScene extends Phaser.Scene {
     });
 
     console.log(this.children, 'this.children');
-    // this.playLevelIntroOnce();
+    this.playLevelIntroOnce();
   }
 
   update(time: number, delta: number) {
@@ -387,6 +431,21 @@ export default class LabScene extends Phaser.Scene {
       frameHeight: 32,
       frameWidth: 32,
     });
+
+    this.load.spritesheet('npcA', 'assets/labNPCA.png', {
+      frameHeight: 38,
+      frameWidth: 32,
+    });
+
+    this.load.spritesheet('npcB', 'assets/labNpcB.png', {
+      frameHeight: 38,
+      frameWidth: 32,
+    });
+
+    this.load.spritesheet('npcC', 'assets/labNpcC.png', {
+      frameHeight: 38,
+      frameWidth: 32,
+    });
   }
 
   createAnimations(scene: Phaser.Scene) {
@@ -419,6 +478,50 @@ export default class LabScene extends Phaser.Scene {
       frames: this.anims.generateFrameNumbers('npc', { start: 7, end: 13 }),
       frameRate: 6,
       repeat: -1,
+    });
+
+    const npcNames = ['npcA', 'npcB', 'npcC'];
+
+    npcNames.forEach((name) => {
+      this.anims.create({
+        key: `${name}-idle-down`,
+        frames: this.anims.generateFrameNumbers(name, {
+          start: 0,
+          end: 6,
+        }),
+        frameRate: 6,
+        repeat: -1,
+      });
+
+      this.anims.create({
+        key: `${name}-idle-up`,
+        frames: this.anims.generateFrameNumbers(name, {
+          start: 21,
+          end: 27,
+        }),
+        frameRate: 6,
+        repeat: -1,
+      });
+
+      this.anims.create({
+        key: `${name}-idle-right`,
+        frames: this.anims.generateFrameNumbers(name, {
+          start: 7,
+          end: 13,
+        }),
+        frameRate: 6,
+        repeat: -1,
+      });
+
+      this.anims.create({
+        key: `${name}-idle-left`,
+        frames: this.anims.generateFrameNumbers(name, {
+          start: 14,
+          end: 20,
+        }),
+        frameRate: 6,
+        repeat: -1,
+      });
     });
 
     this.anims.create({

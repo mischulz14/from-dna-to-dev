@@ -9,7 +9,7 @@ export const eventTriggerData = {
       ],
     },
     updateDialogueNodeBasedOnPlayerState: (scene, eventtrigger) => {
-      if (scene.hero.hasKey) {
+      if (scene.hero.hasKey && !scene.hero.hasBattledVirus) {
         eventtrigger.dialogueNodesObj = {
           nodes: [
             new DialogueNode('You open the refrigerator.'),
@@ -20,9 +20,20 @@ export const eventTriggerData = {
           ],
         };
       }
+
+      if (scene.hero.hasKey && scene.hero.hasBattledVirus) {
+        eventtrigger.dialogueNodesObj = {
+          nodes: [
+            new DialogueNode(
+              'Phew, that was a lot of work for a simple probe...',
+            ),
+            new DialogueNode('The other probes seem to be fine.'),
+          ],
+        };
+      }
     },
     triggerEventWhenDialogueEnds: (scene: any) => {
-      if (!scene.hero.hasKey) {
+      if (!scene.hero.hasKey || scene.hero.hasBattledVirus) {
         return;
       }
 

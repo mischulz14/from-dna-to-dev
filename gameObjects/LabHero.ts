@@ -1,7 +1,7 @@
 import * as Phaser from 'phaser';
 
 export default class LabHero extends Phaser.Physics.Arcade.Sprite {
-  private cursors: Phaser.Types.Input.Keyboard.CursorKeys;
+  cursors: Phaser.Types.Input.Keyboard.CursorKeys;
   lastDirection: string;
   speed: number;
   freeze: boolean;
@@ -38,8 +38,8 @@ export default class LabHero extends Phaser.Physics.Arcade.Sprite {
     scene.add.existing(this);
     scene.physics.add.existing(this);
 
-    this.body.setSize(16, 10);
-    this.body.setOffset(8, 24);
+    this.body.setSize(15, 14);
+    this.body.setOffset(9, 20);
 
     // Initialize the cursors object and the lastDirection string
     this.cursors = this.scene.input.keyboard.createCursorKeys();
@@ -129,7 +129,7 @@ export default class LabHero extends Phaser.Physics.Arcade.Sprite {
     });
 
     // Play the initial idle-down animation
-    this.anims.play('idle-down', true);
+    // this.anims.play('idle-down', true);
   }
 
   update() {
@@ -141,10 +141,8 @@ export default class LabHero extends Phaser.Physics.Arcade.Sprite {
     }
     this.shadow.clear();
     this.body.enable = true; // enable collision response
-
     // Reset the velocity
     this.setVelocity(0);
-
     // Check for input and update the animation and velocity accordingly
     if (this.cursors.left.isDown) {
       this.runLeft();
@@ -158,6 +156,7 @@ export default class LabHero extends Phaser.Physics.Arcade.Sprite {
       // If no keys are pressed, play the idle animation corresponding to the last direction
       this.idle();
     }
+    // if the a key is pressed emit an event to the scene
   }
 
   runRight() {

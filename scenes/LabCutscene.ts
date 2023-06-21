@@ -23,7 +23,7 @@ export default class LabCutscene extends Phaser.Scene {
       ),
     ];
     this.dialogueController = new DialogueController(this);
-    this.dialogueController.initiateDialogueNodesArray(dialogue);
+    this.dialogueController.initiateDialogueNodesArray(dialogue, null, null);
   }
 
   preload() {
@@ -81,6 +81,8 @@ export default class LabCutscene extends Phaser.Scene {
       .rectangle(0, 0, this.scale.width, this.scale.height, 0x000000)
       .setOrigin(0, 0);
     this.transitionRect.setAlpha(0); // Start with 0 opacity
+
+    this.cutsceneTransitionReverse();
   }
 
   progressDialogue() {
@@ -105,6 +107,16 @@ export default class LabCutscene extends Phaser.Scene {
       duration: 300,
       yoyo: true,
       repeat: 3,
+    });
+  }
+
+  cutsceneTransitionReverse() {
+    this.tweens.add({
+      targets: this.transitionRect,
+      alpha: { from: 1, to: 0 },
+      ease: 'Linear',
+      duration: 5000,
+      repeat: 0,
     });
   }
 }
