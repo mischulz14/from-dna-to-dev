@@ -1,32 +1,40 @@
 export default class StateMachine {
+  private initialState: string;
   private currentState: string;
   private blocked: boolean;
+  private possibleStates: any;
 
-  constructor(initialState: string) {
+  constructor(initialState: string, possibleStates: any) {
+    this.initialState = initialState;
     this.currentState = initialState;
     this.blocked = false;
+    this.possibleStates = possibleStates;
   }
 
   transition(event: string) {
     if (this.blocked) return;
 
-    switch (this.currentState) {
-      case 'idle':
-        if (event === 'run') this.currentState = 'running';
-        else if (event === 'attack') this.currentState = 'attacking';
-        break;
-      case 'running':
-        if (event === 'stop') this.currentState = 'idle';
-        else if (event === 'attack') this.currentState = 'attacking';
-        else if (event === 'evade') this.currentState = 'evading';
-        break;
-      case 'attacking':
-        if (event === 'stopAttack') this.currentState = 'idle';
-        break;
-      case 'evading':
-        if (event === 'stopEvade') this.currentState = 'idle';
-        break;
+    const newState = this.possibleStates[this.currentState][event];
+
+    if (!newState) {
+      this.currentState = this.initialState;
+      return;
     }
+
+    if (!newState) {
+      throw new Error(`Invalid transition event: ${event}`);
+    }
+
+    if (newState === this.currentState) {
+      return;
+    }
+
+    if (newState === 'stopAttacking' || newState === 'stopEvading') {
+      this.currentState = this.possibleStates[this.currentState][event];
+      return;
+    }
+
+    this.currentState = newState;
   }
 
   getState() {

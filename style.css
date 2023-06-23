@@ -234,3 +234,78 @@ button {
     opacity: 1;
   }
 }
+
+/* HEALTH BAR */
+
+.health-bar {
+  position: relative;
+  width: 150px;
+  height: 30px;
+}
+
+.health-bar::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  width: 100%;
+  height: 100%;
+  background-color: black;
+  z-index: -1;
+}
+
+.health-bar .bg {
+  background-color: rgb(228, 228, 228);
+  width: 100%;
+  height: 100%;
+  border: 3px solid white;
+}
+.health-bar .bar {
+  background-color: rgb(233, 80, 80);
+  width: 100%;
+  height: 100%;
+}
+
+.health-text {
+  font-size: 28px;
+  position: absolute;
+  bottom: -3px;
+  right: 5px;
+}
+
+.minion-health-bar {
+  position: relative;
+  width: 30px;
+  height: 5px;
+}
+
+.minion-health-bar::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  width: 100%;
+  height: 100%;
+  background-color: black;
+  z-index: -1;
+}
+
+.minion-health-bar .bg {
+  background-color: rgb(228, 228, 228);
+  width: 100%;
+  height: 100%;
+  border: 1px solid white;
+}
+
+.minion-health-bar .bar {
+  background-color: rgb(233, 80, 80);
+  width: 100%;
+  height: 100%;
+}
+
+.minion-health-text {
+  font-size: 10px;
+  position: absolute;
+  bottom: -3px;
+  right: 5px;
+}

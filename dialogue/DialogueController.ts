@@ -15,6 +15,7 @@ export default class DialogueController {
   scene: Phaser.Scene;
   interactiveGameObject: any;
   hero: any;
+  triggerEvent: boolean = false;
 
   constructor(scene: Phaser.Scene) {
     this.dialogueField = new DialogueField();
@@ -70,6 +71,7 @@ export default class DialogueController {
   }
 
   playerPressesEnterEventListener = () => {
+    console.log('player presses enter to progress dialogue');
     if (!this.isActiveNPCTalking && !this.isDialogueInCutscene) return;
     if (!this.isTextComplete) {
       this.isTextComplete = true;
@@ -130,5 +132,11 @@ export default class DialogueController {
 
   progressDialogueNodeWithOptions() {
     this.dialogue[this.currentDialogueIndex].showOptions();
+  }
+
+  triggerEventAfterDialogueEnds(eventName: string) {
+    this.scene.events.on('dialogueEnded', () => {
+      this.scene.events.emit(eventName);
+    });
   }
 }
