@@ -21,6 +21,7 @@ export default class LabHeroTest extends Phaser.Physics.Arcade.Sprite {
   isTakingDamage: boolean;
   healthBar: HealthBar;
   xandy: Phaser.GameObjects.Text;
+  hitbox: any;
 
   constructor(
     scene: TestScene,
@@ -30,6 +31,7 @@ export default class LabHeroTest extends Phaser.Physics.Arcade.Sprite {
     frame?: string | number,
   ) {
     super(scene, x, y, texture, frame);
+    this.createAnimations(scene);
 
     this.freeze = false;
     this.shadow = scene.add.graphics({
@@ -163,16 +165,24 @@ export default class LabHeroTest extends Phaser.Physics.Arcade.Sprite {
       'attack-' + this.lastDirection,
     ).duration;
 
-    let hitbox = this.createHitbox();
+    // get the duration it takes to get to the third frame of the attack animation
+    const delay = animationDuration / 3.5;
+
+    this.hitbox = this.createHitbox();
 
     let graphics = this.scene.add.graphics();
 
     // check if enemy is in the hitbox
-    this.scene.time.delayedCall(150, () => this.checkEnemyHit(hitbox));
+    this.scene.time.delayedCall(delay, () => this.checkEnemyHit(this.hitbox));
 
     // draw the hitbox
     // graphics.lineStyle(2, 0xff0000);
-    // graphics.strokeRect(hitbox.x, hitbox.y, hitbox.width, hitbox.height);
+    // graphics.strokeRect(
+    //   this.hitbox.x,
+    //   this.hitbox.y,
+    //   this.hitbox.width,
+    //   this.hitbox.height,
+    // );
 
     // Block transitions and set a callback to unblock when the animation finishes
     this.on('animationcomplete', () => {
@@ -233,7 +243,7 @@ export default class LabHeroTest extends Phaser.Physics.Arcade.Sprite {
     this.isEvading = true;
     this.cooldownPeriodForEvasion = 300;
     this.lastActionTime = this.scene.time.now;
-    this.anims.play('evade-' + this.lastDirection, true);
+    this.scene.anims.play('evade-' + this.lastDirection, true);
     this.freeze = true;
 
     let tweenConfig: any = {
@@ -329,5 +339,47 @@ export default class LabHeroTest extends Phaser.Physics.Arcade.Sprite {
     const shadowWidth = 30;
     const shadowHeight = 15;
     this.shadow.fillEllipse(shadowX, shadowY, shadowWidth, shadowHeight);
+  }
+
+  createAnimations(scene: Phaser.Scene) {
+    this.scene.anims.create({
+      key: 'attack-right',
+      frames: this.scene.anims.generateFrameNumbers('punchrighttest', {
+        start: 1,
+        end: 8,
+      }),
+      frameRate: 13,
+      duration: 500,
+    });
+
+    this.scene.anims.create({
+      key: 'attack-left',
+      frames: this.scene.anims.generateFrameNumbers('punchrighttest', {
+        start: 10,
+        end: 17,
+      }),
+      frameRate: 13,
+      duration: 500,
+    });
+
+    this.scene.anims.create({
+      key: 'attack-down',
+      frames: this.scene.anims.generateFrameNumbers('punchdown', {
+        start: 1,
+        end: 8,
+      }),
+      frameRate: 12,
+      duration: 500,
+    });
+
+    this.scene.anims.create({
+      key: 'attack-up',
+      frames: this.scene.anims.generateFrameNumbers('punchdown', {
+        start: 10,
+        end: 17,
+      }),
+      frameRate: 12,
+      duration: 500,
+    });
   }
 }

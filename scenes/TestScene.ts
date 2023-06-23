@@ -82,6 +82,7 @@ export default class TestScene extends Phaser.Scene {
 
     this.events.on('dialogueEnded', () => {
       this.freezeGame = false;
+      this.dialogueController.dialogue = null;
     });
 
     // game events
@@ -327,46 +328,6 @@ export default class TestScene extends Phaser.Scene {
       duration: 1000,
       showOnStart: true,
       hideOnComplete: true,
-    });
-
-    this.anims.create({
-      key: 'attack-right',
-      frames: this.anims.generateFrameNumbers('punchrighttest', {
-        start: 1,
-        end: 8,
-      }),
-      frameRate: 13,
-      duration: 500,
-    });
-
-    this.anims.create({
-      key: 'attack-left',
-      frames: this.anims.generateFrameNumbers('punchrighttest', {
-        start: 10,
-        end: 17,
-      }),
-      frameRate: 13,
-      duration: 500,
-    });
-
-    this.anims.create({
-      key: 'attack-down',
-      frames: this.anims.generateFrameNumbers('punchdown', {
-        start: 1,
-        end: 8,
-      }),
-      frameRate: 12,
-      duration: 500,
-    });
-
-    this.anims.create({
-      key: 'attack-up',
-      frames: this.anims.generateFrameNumbers('punchdown', {
-        start: 10,
-        end: 17,
-      }),
-      frameRate: 12,
-      duration: 500,
     });
 
     this.anims.create({
