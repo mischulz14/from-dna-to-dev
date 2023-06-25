@@ -20,7 +20,7 @@ const config: Phaser.Types.Core.GameConfig = {
     },
   },
   width: 800,
-  height: 500,
+  height: 512,
   parent: 'game',
   scale: {
     mode: Phaser.Scale.FIT,
@@ -32,9 +32,11 @@ const config: Phaser.Types.Core.GameConfig = {
   //  make background color transparent
   backgroundColor: '#aab',
   scene: [
-    TestScene,
     LabScene,
+    TestScene,
+
     StartScene,
+
     UIScene,
     SleepDeprivationBattleScene,
     VirusBattleScene,

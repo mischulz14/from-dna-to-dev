@@ -76,18 +76,18 @@ export default class LabScene extends Phaser.Scene {
     // CREATE LAYERS
     const groundLayer = map.createLayer('Floor', tileset, 0, 0);
 
-    const tableLayer = map.createLayer('Tables', tileset);
-    // tableLayer.setDepth(2);
-
-    const computerLayer = map.createLayer('Computers', tileset, 0, 0);
-    const chairLayer = map.createLayer('Chairs', tileset, 0, 0);
-
     const collisionLayer = map.createLayer('Collisions', tileset);
     collisionLayer.setVisible(false);
     collisionLayer.setCollisionByProperty({ collides: true });
 
     this.wallLayer = map.createLayer('Walls', tileset);
     this.wallLayer.setDepth(2);
+
+    const tableLayer = map.createLayer('Tables', tileset);
+    // tableLayer.setDepth(2);
+
+    const computerLayer = map.createLayer('Computers', tileset, 0, 0);
+    const chairLayer = map.createLayer('Chairs', tileset, 0, 0);
 
     const otherGameObjectsLayer = map.createLayer('OtherGameobjects', tileset);
     otherGameObjectsLayer.setDepth(2);

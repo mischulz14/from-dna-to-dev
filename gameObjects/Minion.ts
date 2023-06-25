@@ -1,14 +1,15 @@
-import * as Phaser from 'phaser';
-
 import MinionHealthBar from '../battle/MinionHealthBar';
+import Enemy from './Enemy';
+import LabHeroTest from './LabHeroTest';
 
-export default class Enemy extends Phaser.Physics.Arcade.Sprite {
+export default class Minion extends Enemy {
   target: Phaser.Physics.Arcade.Sprite;
   hitTime: number;
   isHit: boolean;
   healthBar: MinionHealthBar;
   health: number;
   isTakingDamage: boolean;
+  damage: number;
   shadow: Phaser.GameObjects.Graphics;
 
   constructor(
@@ -25,7 +26,10 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
       fillStyle: { color: 0x000000, alpha: 0.1 },
     });
 
-    this.health = 30;
+    this.shadow.setDepth(this.depth + 1);
+
+    this.health = 20;
+    this.damage = 10;
 
     scene.add.existing(this);
     scene.physics.add.existing(this);
@@ -81,8 +85,6 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
       ) {
         this.setVelocity(0, 0);
       }
-
-      // if it overlaps with the target, reduce the target health
     }
   }
 
@@ -113,17 +115,25 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
     });
   }
 
-  updateHealthBarPosition() {
-    this.healthBar.setPosition(this.x - 10, this.y - 10);
-  }
+  heroOverlap(hero: LabHeroTest, enemy) {
+    // console.log(hero.isEvading);
+    if (hero.isEvading) {
+      return;
+    }
+    if (!hero.isTakingDamage) {
+      hero.health -= enemy.damage;
+      hero.isTakingDamage = true;
+      hero.healthBar.decrease(enemy.damage);
+      hero.damageAnimation();
+      hero.freeze = true;
+      setTimeout(() => {
+        hero.freeze = false;
+      }, 300);
+      // console.log('Hero health: ', hero.health); // log the new health value
 
-  updateShadowPosition() {
-    this.shadow.clear();
-    this.shadow.fillEllipse(
-      this.x,
-      this.y + this.height / 2,
-      this.width / 1.5,
-      this.height / 3.5,
-    );
+      setTimeout(() => {
+        hero.isTakingDamage = false;
+      }, 2000);
+    }
   }
 }

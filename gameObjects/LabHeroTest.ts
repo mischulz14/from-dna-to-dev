@@ -22,6 +22,7 @@ export default class LabHeroTest extends Phaser.Physics.Arcade.Sprite {
   healthBar: HealthBar;
   xandy: Phaser.GameObjects.Text;
   hitbox: any;
+  damage: number;
 
   constructor(
     scene: TestScene,
@@ -37,7 +38,10 @@ export default class LabHeroTest extends Phaser.Physics.Arcade.Sprite {
     this.shadow = scene.add.graphics({
       fillStyle: { color: 0x000000, alpha: 0.1 },
     });
+    this.shadow.setDepth(this.depth + 1);
+
     this.heroBounds = this.getBounds();
+
     const possibleStates = {
       idle: { running: 'running', attack: 'attacking', evade: 'evading' },
       running: {
@@ -53,22 +57,23 @@ export default class LabHeroTest extends Phaser.Physics.Arcade.Sprite {
     this.stateMachine = new StateMachine('idle', possibleStates);
     this.lastActionTime = 0;
     this.isTakingDamage = false;
-    this.healthBar = new HealthBar(this.scene, 50, 50, 100);
+    this.healthBar = new HealthBar(this.scene, 50, 50, 100, 'health-bar');
+    this.damage = 10;
 
     // Add this instance to the scene's display list and update list
 
     scene.add.existing(this);
     scene.physics.add.existing(this);
 
-    this.body.setSize(12, 20);
-    this.body.setOffset(35, this.height / 2 - 5);
+    this.body.setSize(18, 16);
+    this.setOffset(31, 65);
 
     // Initialize the cursors object and the lastDirection string
     this.cursors = this.scene.input.keyboard.createCursorKeys();
     this.lastDirection = 'down';
     this.speed = 200;
 
-    this.cooldownPeriodForAttack = 200;
+    this.cooldownPeriodForAttack = 50;
     this.cooldownPeriodForEvasion = 300;
 
     this.health = 100;
@@ -138,19 +143,19 @@ export default class LabHeroTest extends Phaser.Physics.Arcade.Sprite {
     if (this.cursors.left.isDown) {
       this.setVelocity(-this.speed, 0);
       this.lastDirection = 'left';
-      this.play('run-left', true);
+      this.play('battle-run-left', true);
     } else if (this.cursors.right.isDown) {
       this.setVelocity(this.speed, 0);
       this.lastDirection = 'right';
-      this.play('run-right', true);
+      this.play('battle-run-right', true);
     } else if (this.cursors.up.isDown) {
       this.setVelocity(0, -this.speed);
       this.lastDirection = 'up';
-      this.play('run-up', true);
+      this.play('battle-run-up', true);
     } else if (this.cursors.down.isDown) {
       this.setVelocity(0, this.speed);
       this.lastDirection = 'down';
-      this.play('run-down', true);
+      this.play('battle-run-down', true);
     }
   }
 
@@ -193,7 +198,6 @@ export default class LabHeroTest extends Phaser.Physics.Arcade.Sprite {
   }
 
   createHitbox() {
-    let hitbox;
     const hitBoxSize = 40;
     const xOffset = 25;
     const yOffsetMap = {
@@ -209,14 +213,14 @@ export default class LabHeroTest extends Phaser.Physics.Arcade.Sprite {
       right: this.x + this.width / 2 - 20,
     };
 
-    hitbox = new Phaser.Geom.Rectangle(
+    this.hitbox = new Phaser.Geom.Rectangle(
       xMap[this.lastDirection],
       this.y + yOffsetMap[this.lastDirection],
       hitBoxSize,
       hitBoxSize,
     );
 
-    return hitbox;
+    return this.hitbox;
   }
 
   checkEnemyHit(hitbox) {
@@ -227,7 +231,7 @@ export default class LabHeroTest extends Phaser.Physics.Arcade.Sprite {
         console.log('Enemy hit!');
         if (enemy.isTakingDamage) return;
         enemy.hit();
-        enemy.healthBar.decrease(10);
+        enemy.healthBar.decrease(this.damage);
         enemy.isTakingDamage = true;
 
         setTimeout(() => {
@@ -237,13 +241,33 @@ export default class LabHeroTest extends Phaser.Physics.Arcade.Sprite {
         console.log(enemy.healthBar.health);
       }
     });
+
+    // check for boss hit
+    if (
+      Phaser.Geom.Intersects.RectangleToRectangle(
+        hitbox,
+        this.scene.boss.getBounds(),
+      )
+    ) {
+      console.log('Boss hit!');
+      if (this.scene.boss.isTakingDamage) return;
+      this.scene.boss.hit();
+      this.scene.boss.healthBar.decrease(10);
+      this.scene.boss.isTakingDamage = true;
+
+      setTimeout(() => {
+        this.scene.boss.isTakingDamage = false;
+      }, 1000);
+
+      console.log(this.scene.boss.healthBar.health);
+    }
   }
 
   evade() {
     this.isEvading = true;
     this.cooldownPeriodForEvasion = 300;
     this.lastActionTime = this.scene.time.now;
-    this.scene.anims.play('evade-' + this.lastDirection, true);
+    this.anims.play('evade-' + this.lastDirection, true);
     this.freeze = true;
 
     let tweenConfig: any = {
@@ -281,7 +305,7 @@ export default class LabHeroTest extends Phaser.Physics.Arcade.Sprite {
   }
 
   idle() {
-    this.anims.play('idle-' + this.lastDirection, true);
+    this.anims.play('battle-idle-' + this.lastDirection, true);
     this.setVelocity(0);
   }
 
@@ -305,14 +329,35 @@ export default class LabHeroTest extends Phaser.Physics.Arcade.Sprite {
       this.clearTint();
     }, 500);
 
+    // make rectangle out of heros body to check for collision
+    const hitbox = new Phaser.Geom.Rectangle(
+      this.x - this.width / 2,
+      this.y - this.height / 2,
+      this.width,
+      this.height,
+    );
+
+    let distanceToMove = 30;
+
     // move the hero back a few pixels based on the direction
+    if (this.checkCollisionWithLayer(hitbox, this.scene.collisionLayer))
+      distanceToMove = 0;
+
+    // make this check also for all of the spikes in the scenes
+    this.scene.spikes.forEach((spike) => {
+      if (
+        Phaser.Geom.Intersects.RectangleToRectangle(hitbox, spike.getBounds())
+      ) {
+        distanceToMove = 0;
+        return;
+      }
+    });
+
     let tweenConfig: any = {
       targets: this,
       duration: 100,
       ease: 'Linear',
     };
-
-    const distanceToMove = 30;
 
     switch (this.lastDirection) {
       case 'up':
@@ -330,6 +375,57 @@ export default class LabHeroTest extends Phaser.Physics.Arcade.Sprite {
     }
 
     this.scene.tweens.add(tweenConfig);
+  }
+
+  // TODO fix this
+  checkCollisionWithLayer(
+    hitbox: Phaser.Geom.Rectangle,
+    layer: Phaser.Tilemaps.TilemapLayer,
+  ) {
+    const worldHitbox = this.scene.physics.world.bounds;
+    console.log(worldHitbox, 'worldHitbox');
+    console.log('layer', layer);
+    const tiles = layer.getTilesWithinWorldXY(
+      worldHitbox.x,
+      worldHitbox.y,
+      worldHitbox.width,
+      worldHitbox.height,
+      { isColliding: true },
+    );
+    console.log(tiles, 'tiles');
+    for (const tile of tiles) {
+      const tileBounds = new Phaser.Geom.Rectangle(
+        tile.pixelX,
+        tile.pixelY,
+        tile.width,
+        tile.height,
+      );
+
+      console.log(tileBounds, 'tileBounds');
+      if (Phaser.Geom.Intersects.RectangleToRectangle(hitbox, tileBounds)) {
+        console.log('collision');
+        if (hitbox.width === undefined) {
+          console.log('hitbox is undefined');
+          return false;
+        }
+        if (tileBounds.width === undefined) {
+          console.log('tileBounds is undefined');
+          return false;
+        }
+
+        if (layer === undefined) {
+          console.log('layer is undefined');
+          return false;
+        }
+
+        if (tile.width === undefined) {
+          console.log('tile.width is undefined');
+          return false;
+        }
+        return true;
+      }
+    }
+    return false;
   }
 
   updateShadow() {

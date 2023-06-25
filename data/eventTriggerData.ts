@@ -43,7 +43,7 @@ export const eventTriggerData = {
       });
 
       scene.scene.pause('LabScene'); // Pause the LabScene
-      scene.scene.launch('VirusBattleScene'); // Launch the StartScene alongside LabScene
+      scene.scene.launch('TestScene'); // Launch the StartScene alongside LabScene
     },
   },
   fridgeKeyContainer: {

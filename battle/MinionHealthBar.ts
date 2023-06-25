@@ -28,7 +28,6 @@ export default class MinionHealthBarHealthBar extends Phaser.GameObjects
 
     // get the bar and health text elements
     this.bar = this.node.querySelector('.bar') as HTMLElement;
-    this.healthText = this.node.querySelector('.health-text') as HTMLElement;
 
     scene.add.existing(this);
     this.setVisible(false);
@@ -38,8 +37,6 @@ export default class MinionHealthBarHealthBar extends Phaser.GameObjects
     if (this.health === 0) {
       return;
     }
-
-    const healthPercentageToRemove = (100 / this.health) * amount;
 
     const timer = this.scene.time.addEvent({
       delay: 25, // 50ms delay between each tick
