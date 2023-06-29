@@ -8,6 +8,7 @@ import LabHeroTest from '../gameObjects/LabHeroTest';
 import Minion from '../gameObjects/Minion';
 import Spike from '../gameObjects/Spike';
 import Virus from '../gameObjects/Virus';
+import { cutsceneTransitionReverse } from '../utils/sceneTransitions';
 
 export default class TestScene extends Phaser.Scene {
   hero: LabHeroTest;
@@ -21,7 +22,7 @@ export default class TestScene extends Phaser.Scene {
   gameEvents: Phaser.Events.EventEmitter;
   freezeGame: boolean;
   collisionLayer: Phaser.Tilemaps.TilemapLayer;
-
+  transitionRect: Phaser.GameObjects.Rectangle;
   // private npc: Phaser.GameObjects.Sprite;
   constructor() {
     super({ key: 'TestScene' });
@@ -41,6 +42,11 @@ export default class TestScene extends Phaser.Scene {
     });
 
     this.setUpGameEvents();
+
+    this.transitionRect = this.add
+      .rectangle(0, 0, this.scale.width, this.scale.height, 0x000000)
+      .setOrigin(0, 0);
+    this.transitionRect.setDepth(1000);
   }
 
   create() {
@@ -50,7 +56,7 @@ export default class TestScene extends Phaser.Scene {
     this.createSpikes();
     this.spawnMinions(3);
     this.configureHero();
-    this.initiateGameDialogue();
+    this.transitionToScene();
     this.createLayers();
   }
 
@@ -112,8 +118,35 @@ export default class TestScene extends Phaser.Scene {
       }
 
       if (this.wave === 4) {
-        this.scene.stop('TestScene');
-        this.scene.resume('LabScene');
+        this.tweens.add({
+          targets: this.transitionRect,
+          alpha: { from: 1, to: 0 },
+          ease: 'EaseInOut',
+          duration: 2000,
+          repeat: 0,
+          onComplete: () => {
+            this.scene.stop('TestScene');
+            // @ts-ignore
+            this.scene.get('LabScene').isEventTriggered = false;
+            // @ts-ignore
+            this.scene.get('LabScene').hero.hasBattledVirus = true;
+
+            // @ts-ignore
+            this.scene.get('UIScene').objectives.forEach((objective) => {
+              if (!objective.visible) return;
+              objective.setVisible(true);
+            });
+
+            this.scene.get('UIScene').events.emit('addObjective', {
+              textBesidesCheckbox: 'Deliver the probe.',
+              checkedCondition: 'hasDeliveredProbe',
+            });
+
+            this.scene.resume('LabScene');
+            this.scene.get('LabScene').events.emit('resumeGame');
+            this.scene.resume('UIScene');
+          },
+        });
       }
     });
 
@@ -529,5 +562,23 @@ export default class TestScene extends Phaser.Scene {
 
     // add physics collider between each enemy and each spike
     this.physics.add.collider(this.enemies, this.spikes);
+  }
+
+  transitionToScene() {
+    document.querySelector('.health-bar').classList.add('hide');
+    document.querySelector('.boss-health-bar').classList.add('hide');
+
+    this.tweens.add({
+      targets: this.transitionRect,
+      alpha: { from: 1, to: 0 },
+      ease: 'EaseInOut',
+      duration: 2000,
+      repeat: 0,
+      onComplete: () => {
+        this.initiateGameDialogue();
+        document.querySelector('.health-bar').classList.remove('hide');
+        document.querySelector('.boss-health-bar').classList.remove('hide');
+      },
+    });
   }
 }
