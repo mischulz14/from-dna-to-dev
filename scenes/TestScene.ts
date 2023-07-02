@@ -35,8 +35,6 @@ export default class TestScene extends Phaser.Scene {
   }
 
   preload() {
-    this.loadSpriteSheetsImagesAndTileMaps();
-
     this.input.keyboard.on('keydown-ENTER', () => {
       this.dialogueController.playerPressesEnterEventListener();
     });
@@ -50,14 +48,13 @@ export default class TestScene extends Phaser.Scene {
   }
 
   create() {
-    this.createAnimations();
     this.createHero();
     this.createBoss();
     this.createSpikes();
+    this.createLayers();
     this.spawnMinions(3);
     this.configureHero();
-    this.transitionToScene();
-    this.createLayers();
+    this.initScene();
   }
 
   update(time: number, delta: number) {
@@ -90,7 +87,7 @@ export default class TestScene extends Phaser.Scene {
   }
 
   /////////////////////////
-  /// PRELOADING ASSETS ///
+  /// SET UP GAME EVENTS ///
   /////////////////////////
 
   setUpGameEvents() {
@@ -209,56 +206,8 @@ export default class TestScene extends Phaser.Scene {
     });
   }
 
-  loadSpriteSheetsImagesAndTileMaps() {
-    this.load.tilemapTiledJSON('battlemap', 'assets/labBattleBackground.json');
-
-    // Load the tileset image
-    this.load.image('lab_tiles_battle', 'assets/labTileset.png');
-
-    // load the hero spritesheet
-    this.load.spritesheet('labHeroTest', 'assets/labHeroSpriteSheetTest.png', {
-      frameWidth: 80,
-      frameHeight: 128,
-    });
-
-    this.load.spritesheet('punchrighttest', 'assets/punchright1test.png', {
-      frameWidth: 80,
-      frameHeight: 128,
-    });
-
-    this.load.spritesheet('punchdown', 'assets/attack-down.png', {
-      frameWidth: 80,
-      frameHeight: 128,
-    });
-
-    this.load.spritesheet('fistattack', 'assets/fistattack.png', {
-      frameWidth: 32,
-      frameHeight: 64,
-    });
-
-    this.load.spritesheet('testenemy', 'assets/testEnemy.png', {
-      frameWidth: 32,
-      frameHeight: 32,
-    });
-
-    this.load.spritesheet('evade', 'assets/evadeSprites.png', {
-      frameWidth: 80,
-      frameHeight: 128,
-    });
-
-    this.load.spritesheet('virus', 'assets/VirusBattleSprite.png', {
-      frameWidth: 64,
-      frameHeight: 64,
-    });
-
-    this.load.spritesheet('spike', 'assets/spike-animation.png', {
-      frameWidth: 64,
-      frameHeight: 64,
-    });
-  }
-
   /////////////////////////
-  /// CREATING ASSETS ///
+  /// CREATING GAMEOBJECTS ///
   ///////////////////////
 
   createLayers() {
@@ -348,175 +297,10 @@ export default class TestScene extends Phaser.Scene {
     this.freezeGame = true;
   }
 
-  createAnimations() {
-    this.anims.create({
-      key: 'battle-idle-down',
-      frames: this.anims.generateFrameNumbers('labHeroTest', {
-        start: 29,
-        end: 33,
-      }),
-      frameRate: 6,
-      repeat: -1,
-    });
-
-    this.anims.create({
-      key: 'battle-run-down',
-      frames: this.anims.generateFrameNumbers('labHeroTest', {
-        start: 34,
-        end: 41,
-      }),
-      frameRate: 10,
-      repeat: -1,
-    });
-
-    this.anims.create({
-      key: 'battle-idle-up',
-      frames: this.anims.generateFrameNumbers('labHeroTest', {
-        start: 42,
-        end: 46,
-      }),
-      frameRate: 6,
-      repeat: -1,
-    });
-
-    this.anims.create({
-      key: 'battle-run-up',
-      frames: this.anims.generateFrameNumbers('labHeroTest', {
-        start: 47,
-        end: 54,
-      }),
-      frameRate: 10,
-      repeat: -1,
-    });
-
-    this.anims.create({
-      key: 'battle-idle-left',
-      frames: this.anims.generateFrameNumbers('labHeroTest', {
-        start: 16,
-        end: 20,
-      }),
-      frameRate: 6,
-      repeat: -1,
-    });
-
-    this.anims.create({
-      key: 'battle-run-left',
-      frames: this.anims.generateFrameNumbers('labHeroTest', {
-        start: 0,
-        end: 7,
-      }),
-      frameRate: 10,
-      repeat: -1,
-    });
-
-    this.anims.create({
-      key: 'battle-idle-right',
-      frames: this.anims.generateFrameNumbers('labHeroTest', {
-        start: 21,
-        end: 25,
-      }),
-      frameRate: 6,
-      repeat: -1,
-    });
-
-    this.anims.create({
-      key: 'battle-run-right',
-      frames: this.anims.generateFrameNumbers('labHeroTest', {
-        start: 8,
-        end: 15,
-      }),
-      frameRate: 10,
-      repeat: -1,
-    });
-
-    this.anims.create({
-      key: 'fistattack-attack',
-      frames: this.anims.generateFrameNumbers('fistattack', {
-        start: 0,
-        end: 9,
-      }),
-      frameRate: 13,
-      duration: 1000,
-      showOnStart: true,
-      hideOnComplete: true,
-    });
-
-    this.anims.create({
-      key: 'enemy-idle',
-      frames: this.anims.generateFrameNumbers('testenemy', {
-        start: 0,
-        end: 4,
-      }),
-      frameRate: 6,
-      repeat: -1,
-    });
-
-    this.anims.create({
-      key: 'evade-left',
-      frames: this.anims.generateFrameNumbers('evade', {
-        start: 0,
-        end: 6,
-      }),
-      frameRate: 20,
-      duration: 100,
-    });
-
-    this.anims.create({
-      key: 'evade-right',
-      frames: this.anims.generateFrameNumbers('evade', {
-        start: 7,
-        end: 13,
-      }),
-      frameRate: 20,
-      duration: 100,
-    });
-
-    this.anims.create({
-      key: 'evade-down',
-      frames: this.anims.generateFrameNumbers('evade', {
-        start: 14,
-        end: 20,
-      }),
-      frameRate: 20,
-      duration: 100,
-    });
-
-    this.anims.create({
-      key: 'evade-up',
-      frames: this.anims.generateFrameNumbers('evade', {
-        start: 21,
-        end: 27,
-      }),
-      frameRate: 20,
-      duration: 100,
-    });
-
-    this.anims.create({
-      key: 'virus-idle',
-      frames: this.anims.generateFrameNumbers('virus', {
-        start: 0,
-        end: 3,
-      }),
-      frameRate: 4,
-      repeat: -1,
-    });
-
-    this.anims.create({
-      key: 'spike-disappear',
-      frames: this.anims.generateFrameNumbers('spike', {
-        start: 0,
-        end: 16,
-      }),
-      frameRate: 13,
-      duration: 1000,
-      showOnStart: true,
-      hideOnComplete: true,
-    });
-  }
-
   sortGameObjectsByYCoordinate() {
     this.children.each((child) => {
       if (child instanceof Minion) return;
+      // @ts-ignore
       child.setDepth(child.y);
     });
   }
@@ -564,7 +348,7 @@ export default class TestScene extends Phaser.Scene {
     this.physics.add.collider(this.enemies, this.spikes);
   }
 
-  transitionToScene() {
+  initScene() {
     document.querySelector('.health-bar').classList.add('hide');
     document.querySelector('.boss-health-bar').classList.add('hide');
 

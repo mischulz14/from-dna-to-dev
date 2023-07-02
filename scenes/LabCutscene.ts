@@ -10,16 +10,16 @@ export default class LabCutscene extends Phaser.Scene {
     const dialogue = [
       new DialogueNode('After a long day of work, you look out of the window.'),
       new DialogueNode(
-        'All this battling with viruses, all of those nightshifts and sleep deprivation is certainly taking a toll on me...',
+        'All this battling with stress, all of those nightshifts and sleep deprivation is certainly taking a toll on you...',
       ),
       new DialogueNode(
-        'This was not how I imagined it to be when I was studying to become a scientist...',
+        'This was not how you imagined it to be when you were studying to become a scientist...',
       ),
       new DialogueNode(
-        'Is this really what I want to do for the rest of my life?',
+        'Is this really what you want to do for the rest of your life?',
       ),
       new DialogueNode(
-        'I should probably take a vacation and maybe I will feel better afterwards...',
+        'You should probably take a vacation and maybe you will feel better afterwards...',
       ),
     ];
     this.dialogueController = new DialogueController(this);
@@ -28,11 +28,6 @@ export default class LabCutscene extends Phaser.Scene {
 
   preload() {
     this.dialogueController.dialogueField.show();
-
-    this.load.spritesheet('LabCutsceneSprite', 'assets/labCutsceneSprite.png', {
-      frameWidth: 100,
-      frameHeight: 50,
-    });
 
     this.input.keyboard.on(
       'keydown-ENTER',
@@ -94,7 +89,7 @@ export default class LabCutscene extends Phaser.Scene {
       targets: this.transitionRect,
       alpha: { from: 0, to: 1 },
       ease: 'Linear',
-      duration: 1000,
+      duration: 3000,
       repeat: 0,
     });
   }
