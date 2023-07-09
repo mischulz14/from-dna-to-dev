@@ -1,6 +1,8 @@
+import { State } from '../api/state';
 import LabHeroTest from '../gameObjects/LabHeroTest';
+import { keyIsDown } from '../utils/keyIsDown';
 
-export default class AttackState {
+export default class AttackState implements State {
   hero: LabHeroTest;
   isAttackingAgain: boolean;
   hitbox: any;
@@ -15,17 +17,13 @@ export default class AttackState {
   }
 
   update() {
-    if (
-      Phaser.Input.Keyboard.JustDown(this.hero.scene.input.keyboard.addKey('A'))
-    ) {
+    if (keyIsDown(this.hero.inputAKey)) {
       this.isAttackingAgain = true;
     }
-    // The A key is down
-    if (this.hero.anims.currentFrame.isLast && this.isAttackingAgain) {
-      this.hero.playerStateMachine.switchState('followUpAttack');
-      this.isAttackingAgain = false;
-    } else if (this.hero.anims.currentFrame.isLast) {
-      this.hero.playerStateMachine.switchState('idle');
+    if (this.hero.anims.currentFrame.isLast) {
+      this.isAttackingAgain
+        ? this.hero.playerStateMachine.switchState('followUpAttack')
+        : this.hero.playerStateMachine.switchState('idle');
       this.isAttackingAgain = false;
     }
   }
@@ -89,21 +87,12 @@ export default class AttackState {
   }
 
   checkEnemyHit(hitbox) {
-    this.hero.scene.enemies.forEach((enemy) => {
+    this.hero.currentScene.enemies.forEach((enemy) => {
       if (
         Phaser.Geom.Intersects.RectangleToRectangle(hitbox, enemy.getBounds())
       ) {
         console.log('Enemy hit!');
-        if (enemy.isTakingDamage) return;
-        enemy.hit();
-        enemy.healthBar.decrease(this.hero.damage);
-        enemy.isTakingDamage = true;
-
-        setTimeout(() => {
-          enemy.isTakingDamage = false;
-        }, 300);
-
-        console.log(enemy.healthBar.health);
+        enemy.hit(this.hero.damage);
       }
     });
 
@@ -111,20 +100,11 @@ export default class AttackState {
     if (
       Phaser.Geom.Intersects.RectangleToRectangle(
         hitbox,
-        this.hero.scene.boss.getBounds(),
+        this.hero.currentScene.boss.getBounds(),
       )
     ) {
       console.log('Boss hit!');
-      if (this.hero.scene.boss.isTakingDamage) return;
-      this.hero.scene.boss.hit();
-      this.hero.scene.boss.healthBar.decrease(10);
-      this.hero.scene.boss.isTakingDamage = true;
-
-      setTimeout(() => {
-        this.hero.scene.boss.isTakingDamage = false;
-      }, 300);
-
-      console.log(this.hero.scene.boss.healthBar.health);
+      this.hero.currentScene.boss.hit(this.hero.damage);
     }
   }
 

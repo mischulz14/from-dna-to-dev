@@ -1,7 +1,8 @@
+import { State } from '../api/state';
 import LabHeroTest from '../gameObjects/LabHeroTest';
 import { anyOfTheCursorKeysAreDown, keyIsDown } from '../utils/keyIsDown';
 
-export default class RunState {
+export default class RunState implements State {
   hero: LabHeroTest;
   constructor(hero) {
     this.hero = hero;
@@ -14,7 +15,7 @@ export default class RunState {
   update() {
     //  transition to attack state
     if (
-      keyIsDown(this.hero.aKey) &&
+      keyIsDown(this.hero.inputAKey) &&
       anyOfTheCursorKeysAreDown(this.hero.cursors)
     ) {
       this.hero.setVelocity(0);
@@ -24,7 +25,7 @@ export default class RunState {
 
     //  transition to evade state
     if (
-      keyIsDown(this.hero.sKey) &&
+      keyIsDown(this.hero.inputSKey) &&
       anyOfTheCursorKeysAreDown(this.hero.cursors)
     ) {
       this.hero.setVelocity(0);

@@ -5,9 +5,8 @@ export default class FollowUpAttackState extends AttackState {
   hero: LabHeroTest;
 
   update() {
-    if (this.hero.anims.currentFrame.isLast) {
+    this.hero.anims.currentFrame.isLast &&
       this.hero.playerStateMachine.switchState('idle');
-    }
   }
 
   playAttackAnimation(): void {

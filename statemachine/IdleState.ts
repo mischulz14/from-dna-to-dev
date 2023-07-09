@@ -1,7 +1,8 @@
+import { State } from '../api/state';
 import LabHeroTest from '../gameObjects/LabHeroTest';
 import { anyOfTheCursorKeysAreDown, keyIsDown } from '../utils/keyIsDown';
 
-export default class IdleState {
+export default class IdleState implements State {
   hero: LabHeroTest;
   constructor(hero: LabHeroTest) {
     this.hero = hero;
@@ -19,7 +20,7 @@ export default class IdleState {
     }
 
     // if the A key is down, switch to attack state
-    if (keyIsDown(this.hero.aKey)) {
+    if (keyIsDown(this.hero.inputAKey)) {
       this.hero.playerStateMachine.switchState('attack');
       return;
     }

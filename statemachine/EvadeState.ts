@@ -1,7 +1,8 @@
+import { State } from '../api/state';
 import LabHeroTest from '../gameObjects/LabHeroTest';
 import checkCollisionWithLayer from '../utils/collisionWithLayer';
 
-export default class EvadeState {
+export default class EvadeState implements State {
   hero: LabHeroTest;
   constructor(hero) {
     this.hero = hero;
