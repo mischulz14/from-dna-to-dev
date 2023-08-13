@@ -68,4 +68,8 @@ export default class HealthBar extends Phaser.GameObjects.DOMElement {
       },
     });
   }
+
+  hideHealthBar() {
+    this.setVisible(false);
+  }
 }
