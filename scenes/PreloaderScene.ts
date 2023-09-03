@@ -145,6 +145,12 @@ export default class PreloadScene extends Phaser.Scene {
   }
 
   preloadLabBattleSprites() {
+    this.load.image('labBattleBackground', 'assets/labBattleBackground.png');
+    this.load.spritesheet('virusBattleHero', 'assets/virusBattleHero.png', {
+      frameWidth: 50,
+      frameHeight: 50,
+    });
+
     this.load.spritesheet(
       'fistpunchrightandleft',
       'assets/fistpunchrightandleft.png',

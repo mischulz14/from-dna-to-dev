@@ -1,4 +1,6 @@
 import DialogueNode from '../dialogue/DialogueNode';
+import { enemyAttacks } from './enemyAttacks';
+import { playerAttacks } from './playerAttacks';
 
 export const eventTriggerData = {
   refrigerator: {
@@ -49,7 +51,13 @@ export const eventTriggerData = {
       });
 
       scene.scene.pause('LabScene'); // Pause the LabScene
-      scene.scene.launch('VirusBattleScene'); // Launch the StartScene alongside LabScene
+      scene.scene.launch('BattleScene', {
+        enemyAttacks: enemyAttacks.virusBattle,
+        playerAttacks: playerAttacks.virusBattle,
+        backgroundImage: 'labBattleBackground',
+        battleHeroSpriteTexture: 'virusBattleHero',
+        enemyTexture: 'virus',
+      }); // Launch the StartScene alongside LabScene
     },
   },
   fridgeKeyContainer: {

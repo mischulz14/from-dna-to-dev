@@ -31,59 +31,16 @@ export default class VirusBattleScene extends Phaser.Scene {
   playerHealthBarBackground: Phaser.GameObjects.Rectangle[];
   enemyHealthBarBackground: Phaser.GameObjects.Rectangle[];
   playerAttacks: { text: string; damage: number; damageText: string }[];
+  backgroundImage: string;
+  battleHeroSpriteTexture: string;
+  enemyTexture: string;
 
   constructor() {
-    super({ key: 'VirusBattleScene' });
+    super({ key: 'BattleScene' });
 
     this.playerHealth = 130;
     this.enemyHealth = 130;
-    this.enemyAttacks = [
-      {
-        name: 'Fever Flare',
-        damage: 20,
-        damageText: 'You feel 0.1°C hotter, your temperature is rising!',
-      },
-      {
-        name: 'Cough Blast',
-        damage: 5,
-        damageText: 'Hmpf, I can just put on my mask, no worries.',
-      },
-      {
-        name: 'Respiratory Rift',
-        damage: 20,
-        damageText: 'The virus is literally taking your breath away.',
-      },
-      {
-        name: 'Loss of senses',
-        damage: 20,
-        damageText: 'Oh no! How can I taste my favorite Ramen now? :(',
-      },
-    ];
     this.gameEvents = new Events.EventEmitter();
-    this.playerAttacks = [
-      {
-        text: 'Vaccine Shield',
-        damage: 30,
-        damageText:
-          'You pumped your blood full with antibodies? Good job, the virus is trembling!',
-      },
-      {
-        text: 'Mask barrier',
-        damage: 30,
-        damageText: 'Putting on an FFP2 really marks the spot!',
-      },
-      {
-        text: 'Herd Immunity Hope',
-        damage: 5,
-        damageText:
-          'You want everyone else to be sick before you? I can feel your ego from here!',
-      },
-      {
-        text: 'Miracle Cure Mirage',
-        damage: 2,
-        damageText: 'That may be look good in the news, but it is not helping!',
-      },
-    ];
 
     this.gameEvents.on('battleStart', this.startBattle, this);
     this.gameEvents.on('showAttackOptions', this.showAttackOptions, this);
@@ -109,17 +66,13 @@ export default class VirusBattleScene extends Phaser.Scene {
     this.gameEvents.on('reducePlayerHealth', this.reducePlayerHealth, this);
     this.gameEvents.on('checkBattleEnd', this.checkBattleEnd, this);
   }
-  preload() {
-    this.load.image('battleBackground', 'assets/labBattleBackground.png');
-    this.load.spritesheet('virusBattleHero', 'assets/virusBattleHero.png', {
-      frameWidth: 50,
-      frameHeight: 50,
-    });
 
-    // this.load.spritesheet('virusBattleEnemy', 'assets/virusBattleEnemy.png', {
-    //   frameWidth: 50,
-    //   frameHeight: 50,
-    // });
+  init(data: any) {
+    this.enemyAttacks = data.enemyAttacks;
+    this.playerAttacks = data.playerAttacks;
+    this.backgroundImage = data.backgroundImage;
+    this.battleHeroSpriteTexture = data.battleHeroSpriteTexture;
+    this.enemyTexture = data.enemyTexture;
   }
 
   create() {
@@ -128,18 +81,18 @@ export default class VirusBattleScene extends Phaser.Scene {
       this,
       this.gameEvents,
     );
-    this.add.image(0, 0, 'battleBackground').setOrigin(0, 0);
+    this.add.image(0, 0, this.backgroundImage).setOrigin(0, 0);
 
-    this.player = this.add.sprite(100, 280, 'virusBattleHero');
-    this.enemy = this.add.sprite(400, 100, 'virus');
+    this.player = this.add.sprite(100, 280, this.battleHeroSpriteTexture);
+    this.enemy = this.add.sprite(400, 100, this.enemyTexture);
 
     //  scale player and enemy sprites
     this.player.setScale(6);
     this.enemy.setScale(4);
 
     this.anims.create({
-      key: 'virusBattleHeroIdle',
-      frames: this.anims.generateFrameNumbers('virusBattleHero', {
+      key: 'BattleHeroIdle',
+      frames: this.anims.generateFrameNumbers(this.battleHeroSpriteTexture, {
         start: 0,
         end: 3,
       }),
@@ -148,8 +101,8 @@ export default class VirusBattleScene extends Phaser.Scene {
     });
 
     this.anims.create({
-      key: 'virusBattleEnemyIdle',
-      frames: this.anims.generateFrameNumbers('virus', {
+      key: 'BattleEnemyIdle',
+      frames: this.anims.generateFrameNumbers(this.enemyTexture, {
         start: 0,
         end: 3,
       }),
@@ -219,8 +172,8 @@ export default class VirusBattleScene extends Phaser.Scene {
   }
 
   async startBattle() {
-    this.anims.play('virusBattleHeroIdle', this.player);
-    this.anims.play('virusBattleEnemyIdle', this.enemy);
+    this.anims.play('BattleHeroIdle', this.player);
+    this.anims.play('BattleEnemyIdle', this.enemy);
     this.addDialogueField();
     this.typeWriterEffect(
       'You are being attacked by a new variant of the corona virus! \nIt is ... kind of cute? You chose to call it Mr. Virus.',
@@ -405,6 +358,7 @@ export default class VirusBattleScene extends Phaser.Scene {
 
           this.scene.stop('VirusBattleScene');
           this.scene.resume('LabScene');
+          this.scene.get('LabScene').events.emit('resumeGame');
           this.scene.resume('UIScene');
         }, 2000);
       });
