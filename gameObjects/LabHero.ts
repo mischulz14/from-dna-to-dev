@@ -39,7 +39,7 @@ export default class LabHero extends Phaser.Physics.Arcade.Sprite {
     scene.physics.add.existing(this);
 
     this.body.setSize(15, 14);
-    this.body.setOffset(9, 20);
+    this.body.setOffset(13, 20);
 
     // Initialize the cursors object and the lastDirection string
     this.cursors = this.scene.input.keyboard.createCursorKeys();
