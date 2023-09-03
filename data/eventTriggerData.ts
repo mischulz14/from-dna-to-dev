@@ -13,9 +13,15 @@ export const eventTriggerData = {
         eventtrigger.dialogueNodesObj = {
           nodes: [
             new DialogueNode('You open the refrigerator.'),
-            new DialogueNode('Wait... what is that?'),
             new DialogueNode(
-              'Something jumps out of the darkness and attacks!',
+              'But one Probe is falling out of the fridge! Oh no!',
+            ),
+            new DialogueNode(
+              'You have to catch it before it falls to the ground!',
+            ),
+            new DialogueNode('You feel your stress response kicking in!'),
+            new DialogueNode(
+              'I... I have to catch it! I have to catch it! I have to catch it!',
             ),
           ],
         };
@@ -43,7 +49,7 @@ export const eventTriggerData = {
       });
 
       scene.scene.pause('LabScene'); // Pause the LabScene
-      scene.scene.launch('TestScene'); // Launch the StartScene alongside LabScene
+      scene.scene.launch('VirusBattleScene'); // Launch the StartScene alongside LabScene
     },
   },
   fridgeKeyContainer: {

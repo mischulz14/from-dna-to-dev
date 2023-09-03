@@ -169,10 +169,7 @@ export const npcLabData = {
           'He learned how to draw pixel art game assets, how to draw character animations and how to design and code game levels.',
         ),
         new DialogueNode(
-          "If you're wondering: Yes, he learned it from scratch and it took him a while. (;",
-        ),
-        new DialogueNode(
-          'He made this to tell the story of how he got into coding, but in a fun and engaging way.',
+          'He made this to tell the story of how he transitioned from life sciences to coding, but in a fun and engaging way.',
         ),
       ],
     },
