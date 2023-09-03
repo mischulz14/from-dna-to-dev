@@ -27,7 +27,7 @@ export default class Virus extends Enemy {
       fillStyle: { color: 0x000000, alpha: 0.1 },
     });
 
-    this.health = 200;
+    this.health = 120;
     this.damage = 10;
 
     scene.add.existing(this);
@@ -116,18 +116,21 @@ export default class Virus extends Enemy {
     // move the hero back a few pixels based on the direction
 
     // Adding some randomness to the target's position
-    const targetX = this.checkCollisionWithLayer(
-      hitbox,
-      this.scene.collisionLayer,
-    )
-      ? this.target.x + Math.random() * 10
-      : this.target.x; // Random number between -100 and 100
-    const targetY = this.checkCollisionWithLayer(
-      hitbox,
-      this.scene.collisionLayer,
-    )
-      ? this.target.y + Math.random() * 10
-      : this.target.y; // Random number between -100 and 100
+    // const targetX = this.checkCollisionWithLayer(
+    //   hitbox,
+    //   this.scene.collisionLayer,
+    // )
+    //   ? this.target.x + Math.random() * 10
+    //   : this.target.x; // Random number between -100 and 100
+    // const targetY = this.checkCollisionWithLayer(
+    //   hitbox,
+    //   this.scene.collisionLayer,
+    // )
+    //   ? this.target.y + Math.random() * 10
+    //   : this.target.y; // Random number between -100 and 100
+
+    const targetX = this.target.x + Math.random() * 10;
+    const targetY = this.target.y + Math.random() * 10;
 
     this.scene.tweens.add({
       targets: this,
@@ -155,31 +158,27 @@ export default class Virus extends Enemy {
     this.lastAttackTime = this.scene.time.now;
   }
 
-  hit(time: number) {
-    this.isHit = true;
-  }
-
   die() {
     if (this.scene === undefined || this.scene.tweens === undefined) {
       return;
     }
     this.setVelocity(0, 0);
-    // this.scene.tweens.add({
-    //   targets: this,
-    //   alpha: 0,
-    //   duration: 200,
-    //   ease: 'Linear',
-    //   onComplete: () => {
-    //     // slice the enemy from the enemies array
-    //     this.scene.enemies = this.scene.enemies.filter(
-    //       (enemy: Enemy) => enemy !== this,
-    //     );
+    this.scene.tweens.add({
+      targets: this,
+      alpha: 0,
+      duration: 200,
+      ease: 'Linear',
+      onComplete: () => {
+        // slice the enemy from the enemies array
+        this.scene.enemies = this.scene.enemies.filter(
+          (enemy: Enemy) => enemy !== this,
+        );
 
-    //     this.healthBar.destroy();
-    //     this.shadow.destroy();
-    //     this.body.destroy();
-    //   },
-    // });
+        this.healthBar.destroy();
+        this.shadow.destroy();
+        this.body.destroy();
+      },
+    });
   }
 
   virusCollision(hero: LabHeroTest, virus: Virus) {

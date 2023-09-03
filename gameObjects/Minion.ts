@@ -1,4 +1,5 @@
 import MinionHealthBar from '../battle/MinionHealthBar';
+import TestScene from '../scenes/TestScene';
 import Enemy from './Enemy';
 import LabHeroTest from './LabHeroTest';
 
@@ -59,6 +60,7 @@ export default class Minion extends Enemy {
     if (this.isHit) {
       this.setVelocity(0, 0); // this will stop the enemy's movement
       // move it back a little bit
+      console.log('Enemy hit!');
       this.scene.physics.moveToObject(this, this.target, -70);
       this.healthBar.showHealthBar();
 
@@ -66,7 +68,7 @@ export default class Minion extends Enemy {
 
       setTimeout(() => {
         this.isHit = false;
-      }, 300);
+      }, 400);
 
       setTimeout(() => {
         this.healthBar.hideHealthBar();
@@ -86,10 +88,6 @@ export default class Minion extends Enemy {
         this.setVelocity(0, 0);
       }
     }
-  }
-
-  hit(time: number) {
-    this.isHit = true;
   }
 
   die() {

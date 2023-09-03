@@ -20,9 +20,6 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
       fillStyle: { color: 0x000000, alpha: 0.1 },
     });
 
-    this.health = 20;
-    this.damage = 10;
-
     scene.add.existing(this);
     scene.physics.add.existing(this);
     this.healthBar = new MinionHealthBar(
@@ -35,8 +32,26 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
 
   update() {}
 
-  hit(time: number) {
+  hit(damage) {
     this.isHit = true;
+    if (this.healthBar instanceof MinionHealthBar) {
+      this.healthBar.showHealthBar();
+
+      setTimeout(() => {
+        this.healthBar.hideHealthBar();
+      }, 1000);
+    }
+
+    if (this.isTakingDamage) return;
+
+    this.isTakingDamage = true;
+    this.healthBar.decrease(damage);
+
+    setTimeout(() => {
+      this.isTakingDamage = false;
+    }, 300);
+
+    console.log(this.healthBar.health);
   }
 
   die() {}
