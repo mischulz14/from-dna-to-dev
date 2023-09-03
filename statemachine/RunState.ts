@@ -13,7 +13,10 @@ export default class RunState implements State {
   }
 
   update() {
-    //  transition to attack state
+    let x = 0,
+      y = 0;
+
+    // Transition to attack state
     if (
       keyIsDown(this.hero.inputAKey) &&
       anyOfTheCursorKeysAreDown(this.hero.cursors)
@@ -23,7 +26,7 @@ export default class RunState implements State {
       return;
     }
 
-    //  transition to evade state
+    // Transition to evade state
     if (
       keyIsDown(this.hero.inputSKey) &&
       anyOfTheCursorKeysAreDown(this.hero.cursors)
@@ -33,33 +36,39 @@ export default class RunState implements State {
       return;
     }
 
-    //  transition to idle state
+    // Transition to idle state
     if (!anyOfTheCursorKeysAreDown(this.hero.cursors)) {
       this.hero.setVelocity(0);
       this.hero.playerStateMachine.switchState('idle');
       return;
     }
 
-    //  transition to run state
-    if (anyOfTheCursorKeysAreDown(this.hero.cursors)) {
-      if (this.hero.cursors.left.isDown) {
-        this.hero.setVelocity(-this.hero.speed, 0);
-        this.hero.lastDirection = 'left';
-        this.hero.play('battle-run-left', true);
-      } else if (this.hero.cursors.right.isDown) {
-        this.hero.setVelocity(this.hero.speed, 0);
-        this.hero.lastDirection = 'right';
-        this.hero.play('battle-run-right', true);
-      } else if (this.hero.cursors.up.isDown) {
-        this.hero.setVelocity(0, -this.hero.speed);
-        this.hero.lastDirection = 'up';
-        this.hero.play('battle-run-up', true);
-      } else if (this.hero.cursors.down.isDown) {
-        this.hero.setVelocity(0, this.hero.speed);
-        this.hero.lastDirection = 'down';
-        this.hero.play('battle-run-down', true);
-      }
-      return;
+    // Horizontal Movement
+    if (this.hero.cursors.left.isDown) {
+      x = -1;
+      this.hero.lastDirection = 'left';
+    } else if (this.hero.cursors.right.isDown) {
+      x = 1;
+      this.hero.lastDirection = 'right';
     }
+
+    // Vertical Movement
+    if (this.hero.cursors.up.isDown) {
+      y = -1;
+      this.hero.lastDirection = 'up';
+    } else if (this.hero.cursors.down.isDown) {
+      y = 1;
+      this.hero.lastDirection = 'down';
+    }
+
+    // Normalize diagonal movement
+    if (x !== 0 && y !== 0) {
+      x /= Math.sqrt(2);
+      y /= Math.sqrt(2);
+    }
+
+    // Update velocity and animation
+    this.hero.setVelocity(x * this.hero.speed, y * this.hero.speed);
+    this.hero.anims.play('battle-run-' + this.hero.lastDirection, true);
   }
 }

@@ -46,13 +46,13 @@ export default class AttackState implements State {
     );
 
     // draw the hitbox
-    graphics.lineStyle(2, 0xff0000);
-    graphics.strokeRect(
-      this.hitbox.x,
-      this.hitbox.y,
-      this.hitbox.width,
-      this.hitbox.height,
-    );
+    // graphics.lineStyle(2, 0xff0000);
+    // graphics.strokeRect(
+    //   this.hitbox.x,
+    //   this.hitbox.y,
+    //   this.hitbox.width,
+    //   this.hitbox.height,
+    // );
 
     // remove the hitbox after the animation is done
     this.hero.scene.time.delayedCall(delay, () => {
@@ -61,7 +61,7 @@ export default class AttackState implements State {
   }
 
   createHitbox() {
-    const hitBoxSize = 40;
+    const hitBoxSize = 60;
     const xOffset = 25;
     const yOffsetMap = {
       up: -40,
@@ -72,8 +72,8 @@ export default class AttackState implements State {
     const xMap = {
       up: this.hero.x - xOffset,
       down: this.hero.x - xOffset,
-      left: this.hero.x - this.hero.width + 20,
-      right: this.hero.x + this.hero.width / 2 - 20,
+      left: this.hero.x - this.hero.width + 40,
+      right: this.hero.x + this.hero.width / 2 - 40,
     };
 
     this.hitbox = new Phaser.Geom.Rectangle(
