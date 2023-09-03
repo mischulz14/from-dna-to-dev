@@ -10,7 +10,7 @@ export default class StartScene extends Phaser.Scene {
   preload() {
     // Load the image that will be used for the background
     this.load.image('background', 'assets/dnatodev.png');
-    this.load.image('backstory', 'assets/backstory.png');
+    this.load.image('backstory', 'assets/backstoryNew.png');
     this.load.spritesheet('dna', 'assets/dna.png', {
       frameWidth: 32,
       frameHeight: 32,

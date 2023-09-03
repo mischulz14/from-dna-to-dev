@@ -72,13 +72,15 @@ export default class PreloadScene extends Phaser.Scene {
 
   preloadHeroSprites() {
     // load the hero spritesheet
-    this.load.spritesheet('labHero', 'assets/labHeroSpriteSheet.png', {
-      frameWidth: 32,
-      frameHeight: 36,
+    this.load.spritesheet('labHero', 'assets/labHero.png', {
+      frameWidth: 40,
+      frameHeight: 40,
     });
 
-    this.load.spritesheet('labHeroTest', 'assets/labHeroSpriteSheetTest.png', {
-      frameWidth: 80,
+    // console log file processing error of labherospritenew:
+
+    this.load.spritesheet('labHeroNew', 'assets/labHeroSpriteSheetTest.png', {
+      frameWidth: 128,
       frameHeight: 128,
     });
   }
@@ -143,15 +145,23 @@ export default class PreloadScene extends Phaser.Scene {
   }
 
   preloadLabBattleSprites() {
-    this.load.spritesheet('punchrighttest', 'assets/punchright1test.png', {
-      frameWidth: 80,
-      frameHeight: 128,
-    });
+    this.load.spritesheet(
+      'fistpunchrightandleft',
+      'assets/fistpunchrightandleft.png',
+      {
+        frameWidth: 128,
+        frameHeight: 128,
+      },
+    );
 
-    this.load.spritesheet('punchdown', 'assets/attack-down.png', {
-      frameWidth: 80,
-      frameHeight: 128,
-    });
+    this.load.spritesheet(
+      'fistpunchupanddown',
+      'assets/fistpunchupanddown.png',
+      {
+        frameWidth: 128,
+        frameHeight: 128,
+      },
+    );
 
     this.load.spritesheet('fistattack', 'assets/fistattack.png', {
       frameWidth: 32,
@@ -301,47 +311,87 @@ export default class PreloadScene extends Phaser.Scene {
   createLabBattleAnimations() {
     this.anims.create({
       key: 'attack-right',
-      frames: this.anims.generateFrameNumbers('punchrighttest', {
+      frames: this.anims.generateFrameNumbers('fistpunchrightandleft', {
         start: 1,
         end: 8,
       }),
       frameRate: 13,
-      duration: 500,
+      duration: 1000,
+    });
+
+    this.anims.create({
+      key: 'attack2-right',
+      frames: this.anims.generateFrameNumbers('fistpunchrightandleft', {
+        start: 8,
+        end: 17,
+      }),
+      frameRate: 13,
+      duration: 1000,
     });
 
     this.anims.create({
       key: 'attack-left',
-      frames: this.anims.generateFrameNumbers('punchrighttest', {
-        start: 10,
-        end: 17,
+      frames: this.anims.generateFrameNumbers('fistpunchrightandleft', {
+        start: 18,
+        end: 25,
       }),
       frameRate: 13,
-      duration: 500,
+      duration: 1000,
+    });
+
+    this.anims.create({
+      key: 'attack2-left',
+      frames: this.anims.generateFrameNumbers('fistpunchrightandleft', {
+        start: 25,
+        end: 35,
+      }),
+      frameRate: 13,
+      duration: 1000,
     });
 
     this.anims.create({
       key: 'attack-down',
-      frames: this.anims.generateFrameNumbers('punchdown', {
+      frames: this.anims.generateFrameNumbers('fistpunchupanddown', {
         start: 1,
         end: 8,
       }),
       frameRate: 12,
-      duration: 500,
+      duration: 1000,
+    });
+
+    this.anims.create({
+      key: 'attack2-down',
+      frames: this.anims.generateFrameNumbers('fistpunchupanddown', {
+        start: 9,
+        end: 17,
+      }),
+      frameRate: 12,
+      duration: 1000,
     });
 
     this.anims.create({
       key: 'attack-up',
-      frames: this.anims.generateFrameNumbers('punchdown', {
-        start: 10,
-        end: 17,
+      frames: this.anims.generateFrameNumbers('fistpunchupanddown', {
+        start: 18,
+        end: 25,
       }),
       frameRate: 12,
-      duration: 500,
+      duration: 1000,
+    });
+
+    this.anims.create({
+      key: 'attack2-up',
+      frames: this.anims.generateFrameNumbers('fistpunchupanddown', {
+        start: 26,
+        end: 36,
+      }),
+      frameRate: 12,
+      duration: 1000,
     });
 
     this.anims.create({
       key: 'battle-idle-down',
-      frames: this.anims.generateFrameNumbers('labHeroTest', {
+      frames: this.anims.generateFrameNumbers('labHeroNew', {
         start: 29,
         end: 33,
       }),
@@ -351,7 +401,7 @@ export default class PreloadScene extends Phaser.Scene {
 
     this.anims.create({
       key: 'battle-run-down',
-      frames: this.anims.generateFrameNumbers('labHeroTest', {
+      frames: this.anims.generateFrameNumbers('labHeroNew', {
         start: 34,
         end: 41,
       }),
@@ -361,7 +411,7 @@ export default class PreloadScene extends Phaser.Scene {
 
     this.anims.create({
       key: 'battle-idle-up',
-      frames: this.anims.generateFrameNumbers('labHeroTest', {
+      frames: this.anims.generateFrameNumbers('labHeroNew', {
         start: 42,
         end: 46,
       }),
@@ -371,7 +421,7 @@ export default class PreloadScene extends Phaser.Scene {
 
     this.anims.create({
       key: 'battle-run-up',
-      frames: this.anims.generateFrameNumbers('labHeroTest', {
+      frames: this.anims.generateFrameNumbers('labHeroNew', {
         start: 47,
         end: 54,
       }),
@@ -381,7 +431,7 @@ export default class PreloadScene extends Phaser.Scene {
 
     this.anims.create({
       key: 'battle-idle-left',
-      frames: this.anims.generateFrameNumbers('labHeroTest', {
+      frames: this.anims.generateFrameNumbers('labHeroNew', {
         start: 16,
         end: 20,
       }),
@@ -391,7 +441,7 @@ export default class PreloadScene extends Phaser.Scene {
 
     this.anims.create({
       key: 'battle-run-left',
-      frames: this.anims.generateFrameNumbers('labHeroTest', {
+      frames: this.anims.generateFrameNumbers('labHeroNew', {
         start: 0,
         end: 7,
       }),
@@ -401,7 +451,7 @@ export default class PreloadScene extends Phaser.Scene {
 
     this.anims.create({
       key: 'battle-idle-right',
-      frames: this.anims.generateFrameNumbers('labHeroTest', {
+      frames: this.anims.generateFrameNumbers('labHeroNew', {
         start: 21,
         end: 25,
       }),
@@ -411,7 +461,7 @@ export default class PreloadScene extends Phaser.Scene {
 
     this.anims.create({
       key: 'battle-run-right',
-      frames: this.anims.generateFrameNumbers('labHeroTest', {
+      frames: this.anims.generateFrameNumbers('labHeroNew', {
         start: 8,
         end: 15,
       }),
@@ -447,7 +497,7 @@ export default class PreloadScene extends Phaser.Scene {
         start: 0,
         end: 6,
       }),
-      frameRate: 20,
+      frameRate: 16,
       duration: 100,
     });
 
@@ -457,7 +507,7 @@ export default class PreloadScene extends Phaser.Scene {
         start: 7,
         end: 13,
       }),
-      frameRate: 20,
+      frameRate: 16,
       duration: 100,
     });
 
@@ -465,9 +515,9 @@ export default class PreloadScene extends Phaser.Scene {
       key: 'evade-down',
       frames: this.anims.generateFrameNumbers('evade', {
         start: 14,
-        end: 20,
+        end: 16,
       }),
-      frameRate: 20,
+      frameRate: 16,
       duration: 100,
     });
 
@@ -477,7 +527,7 @@ export default class PreloadScene extends Phaser.Scene {
         start: 21,
         end: 27,
       }),
-      frameRate: 20,
+      frameRate: 16,
       duration: 100,
     });
 

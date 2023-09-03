@@ -116,10 +116,10 @@ export default class VirusBattleScene extends Phaser.Scene {
       frameHeight: 50,
     });
 
-    this.load.spritesheet('virusBattleEnemy', 'assets/virusBattleEnemy.png', {
-      frameWidth: 50,
-      frameHeight: 50,
-    });
+    // this.load.spritesheet('virusBattleEnemy', 'assets/virusBattleEnemy.png', {
+    //   frameWidth: 50,
+    //   frameHeight: 50,
+    // });
   }
 
   create() {
@@ -131,7 +131,7 @@ export default class VirusBattleScene extends Phaser.Scene {
     this.add.image(0, 0, 'battleBackground').setOrigin(0, 0);
 
     this.player = this.add.sprite(100, 280, 'virusBattleHero');
-    this.enemy = this.add.sprite(400, 100, 'virusBattleEnemy');
+    this.enemy = this.add.sprite(400, 100, 'virus');
 
     //  scale player and enemy sprites
     this.player.setScale(6);
@@ -149,7 +149,7 @@ export default class VirusBattleScene extends Phaser.Scene {
 
     this.anims.create({
       key: 'virusBattleEnemyIdle',
-      frames: this.anims.generateFrameNumbers('virusBattleEnemy', {
+      frames: this.anims.generateFrameNumbers('virus', {
         start: 0,
         end: 3,
       }),

@@ -1,7 +1,6 @@
 import { DOM, Game } from 'phaser';
 
 import { eventTriggerData } from '../data/eventTriggerData';
-import { interactiveGameObjectData } from '../data/interactiveGameObjectData';
 import { npcLabData } from '../data/npcData';
 import DialogueController from '../dialogue/DialogueController';
 import DialogueNode from '../dialogue/DialogueNode';
@@ -25,7 +24,6 @@ export default class LabScene extends Phaser.Scene {
   transitionRect: any | object[];
   collisionLayer: Phaser.Tilemaps.TilemapLayer;
 
-  // private npc: Phaser.GameObjects.Sprite;
   constructor() {
     super({ key: 'LabScene' });
     this.activeInteractiveGameObject = null;
@@ -147,6 +145,23 @@ export default class LabScene extends Phaser.Scene {
     this.events.on('resumeGame', () => {
       console.log('resumeGame event got triggered');
       this.cutsceneTransitionReverse();
+
+      this.dialogueController.dialogueField.show();
+      this.dialogueController.isDialogueInCutscene = true;
+      this.dialogueController.initiateDialogueNodesArray(
+        [
+          new DialogueNode('You caught the probe last second!'),
+          new DialogueNode('Hmm...'),
+          new DialogueNode(
+            'It seems that your stress response leads to imaginative fight scenes...',
+          ),
+          new DialogueNode('You wonder if that is a good thing...'),
+          new DialogueNode('At least it seems to boost your reflexes!'),
+        ],
+        null,
+        null,
+      );
+      this.dialogueController.typeText();
     });
 
     this.events.on('dialogueEnded', () => {
@@ -166,7 +181,6 @@ export default class LabScene extends Phaser.Scene {
     this.events.on('addObjective', (data) => {
       // check if the UIScene is active
       if (this.scene.isActive('UIScene')) {
-        console.log(this.scene.get('UIScene'), 'this.scene.get(UIScene)');
         // Emit the event in the ui scene
         this.scene.get('UIScene').events.emit('addObjective', data);
       }

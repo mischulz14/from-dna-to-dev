@@ -40,14 +40,29 @@ export default class TestScene extends Phaser.Scene {
     });
 
     this.setUpGameEvents();
+  }
 
+  create() {
     this.transitionRect = this.add
       .rectangle(0, 0, this.scale.width, this.scale.height, 0x000000)
       .setOrigin(0, 0);
     this.transitionRect.setDepth(1000);
-  }
+    const worldWidth = this.cameras.main.width * 0.98;
+    const worldHeight = this.cameras.main.height * 0.95;
+    const worldX = (this.cameras.main.width - worldWidth) / 2;
+    const worldY = (this.cameras.main.height - worldHeight) / 2;
 
-  create() {
+    this.physics.world.setBounds(worldX, worldY, worldWidth, worldHeight);
+
+    // Visualize the world bounds
+    const graphics = this.add.graphics();
+    graphics.lineStyle(2, 0xff0000);
+    graphics.strokeRect(
+      this.physics.world.bounds.x,
+      this.physics.world.bounds.y,
+      this.physics.world.bounds.width,
+      this.physics.world.bounds.height,
+    );
     this.createHero();
     this.createBoss();
     this.createSpikes();
@@ -98,7 +113,7 @@ export default class TestScene extends Phaser.Scene {
       this.hero.speed = 200;
 
       if (this.wave === 2) {
-        this.spawnMinions(1);
+        this.spawnMinions(5);
         this.boss.healthBar.decrease(50);
       }
 
@@ -113,44 +128,12 @@ export default class TestScene extends Phaser.Scene {
           });
         });
       }
-
-      if (this.wave === 4) {
-        this.tweens.add({
-          targets: this.transitionRect,
-          alpha: { from: 1, to: 0 },
-          ease: 'EaseInOut',
-          duration: 2000,
-          repeat: 0,
-          onComplete: () => {
-            this.scene.stop('TestScene');
-            // @ts-ignore
-            this.scene.get('LabScene').isEventTriggered = false;
-            // @ts-ignore
-            this.scene.get('LabScene').hero.hasBattledVirus = true;
-
-            // @ts-ignore
-            this.scene.get('UIScene').objectives.forEach((objective) => {
-              if (!objective.visible) return;
-              objective.setVisible(true);
-            });
-
-            this.scene.get('UIScene').events.emit('addObjective', {
-              textBesidesCheckbox: 'Deliver the probe.',
-              checkedCondition: 'hasDeliveredProbe',
-            });
-
-            this.scene.resume('LabScene');
-            this.scene.get('LabScene').events.emit('resumeGame');
-            this.scene.resume('UIScene');
-          },
-        });
-      }
     });
 
     // EVENTS FOR WAVES
     this.events.on('startWave2', () => {
       this.hero.setVelocity(0, 0);
-      this.hero.stateMachine.transition('idle');
+      this.hero.playerStateMachine.switchState('idle');
       console.log('wave 2');
       this.dialogueController.dialogueField.show();
       this.dialogueController.isDialogueInCutscene = true;
@@ -168,7 +151,7 @@ export default class TestScene extends Phaser.Scene {
 
     this.events.on('startWave3', () => {
       this.hero.setVelocity(0, 0);
-      this.hero.stateMachine.transition('idle');
+      this.hero.playerStateMachine.switchState('idle');
       console.log('wave 3');
       this.dialogueController.dialogueField.show();
       this.dialogueController.isDialogueInCutscene = true;
@@ -188,21 +171,40 @@ export default class TestScene extends Phaser.Scene {
 
     // EVENTS FOR BOSS DEATH
     this.events.on('bossDeath', () => {
-      this.wave = 4;
-      this.hero.setVelocity(0, 0);
-      this.hero.stateMachine.transition('idle');
-      this.dialogueController.dialogueField.show();
-      this.dialogueController.isDialogueInCutscene = true;
-      this.dialogueController.initiateDialogueNodesArray(
-        [
-          new DialogueNode('You defeated the Virus!'),
-          new DialogueNode('You saved the world!'),
-        ],
-        null,
-        null,
-      );
-      this.dialogueController.typeText();
       this.freezeGame = true;
+      this.hero.setVisible(false);
+      this.hero.healthBar.setVisible(false);
+      this.hero.shadow.setVisible(false);
+
+      this.tweens.add({
+        targets: this.transitionRect,
+        alpha: { from: 0, to: 1 },
+        ease: 'EaseInOut',
+        duration: 2000,
+        repeat: 0,
+        onComplete: () => {
+          this.scene.stop('TestScene');
+          // @ts-ignore
+          this.scene.get('LabScene').isEventTriggered = false;
+          // @ts-ignore
+          this.scene.get('LabScene').hero.hasBattledVirus = true;
+
+          // @ts-ignore
+          this.scene.get('UIScene').objectives.forEach((objective) => {
+            if (!objective.visible) return;
+            objective.setVisible(true);
+          });
+
+          this.scene.get('UIScene').events.emit('addObjective', {
+            textBesidesCheckbox: 'Deliver the probe.',
+            checkedCondition: 'hasDeliveredProbe',
+          });
+
+          this.scene.resume('LabScene');
+          this.scene.get('LabScene').events.emit('resumeGame');
+          this.scene.resume('UIScene');
+        },
+      });
     });
   }
 
@@ -220,15 +222,15 @@ export default class TestScene extends Phaser.Scene {
     // CREATE LAYERS
     map.createLayer('Floor', tileset, 0, 0);
 
-    this.collisionLayer = map.createLayer('Collisions', tileset);
-    this.collisionLayer.setVisible(false);
-    this.collisionLayer.setCollisionByProperty({ collides: true });
+    // this.collisionLayer = map.createLayer('Collisions', tileset);
+    // this.collisionLayer.setVisible(false);
+    // this.collisionLayer.setCollisionByProperty({ collides: true });
 
-    const wallLayer = map.createLayer('Walls', tileset);
+    // const wallLayer = map.createLayer('Walls', tileset);
 
     // add collision with collision layer and each child of the scene
     this.children.each((child) => {
-      if (child instanceof Phaser.GameObjects.Sprite) {
+      if (child instanceof Phaser.GameObjects.Sprite && child !== this.hero) {
         this.physics.add.collider(child, this.collisionLayer);
       }
     });
@@ -268,11 +270,33 @@ export default class TestScene extends Phaser.Scene {
       spike.setScale(2);
       this.physics.add.collider(this.hero, spike);
       spike.setDepth(spike.y);
+      this.physics.add.overlap(this.hero, spike, () => {
+        // if hero overlaps, push him back based on direction
+        switch (this.hero.lastDirection) {
+          case 'up':
+            this.hero.y += 100;
+            break;
+          case 'down':
+            this.hero.y -= 100;
+            break;
+          case 'left':
+            this.hero.x += 100;
+            break;
+          case 'right':
+            this.hero.x -= 100;
+            break;
+          default:
+            break;
+        }
+      });
     });
   }
 
   configureHero() {
     this.hero.setCollideWorldBounds(true);
+
+    // console.log world bounds
+    console.log(this.physics.world.bounds);
   }
 
   initiateGameDialogue() {
@@ -281,11 +305,9 @@ export default class TestScene extends Phaser.Scene {
     this.dialogueController.initiateDialogueNodesArray(
       [
         new DialogueNode(
-          'Oh no, the probes fell out of the fridge! (Or at least thats what you think)',
+          'The probe that fell out of the fridge contained a Virus that wants to infect you!',
         ),
-        new DialogueNode(
-          'The probes contained a Virus that wants to infect you!',
-        ),
+        new DialogueNode('(Or at least thats what you think...)'),
         new DialogueNode(
           'Fight off the virus particles so you dont get infected!',
         ),
