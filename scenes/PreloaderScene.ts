@@ -1,5 +1,11 @@
 import Phaser from 'phaser';
 
+import { battleBackgroundSpriteNames } from '../data/battleBackgroundSpriteNames';
+import { enemyBattleAnimationNames } from '../data/enemyBattleAnimationNames';
+import { enemySpriteNames } from '../data/enemySpriteNames';
+import { heroBattleAnimationNames } from '../data/heroBattleAnimationNames';
+import { heroBattleSpriteNames } from '../data/heroBattleSpriteNames';
+
 export default class PreloadScene extends Phaser.Scene {
   constructor() {
     super({ key: 'PreloadScene' });
@@ -24,7 +30,7 @@ export default class PreloadScene extends Phaser.Scene {
     this.createLabAnimations();
     this.createLabBattleAnimations();
     // pass control to the start scene
-    this.scene.start('StartScene');
+    this.scene.start('LabScene');
   }
 
   addProgressBar() {
@@ -92,8 +98,8 @@ export default class PreloadScene extends Phaser.Scene {
     });
 
     this.load.spritesheet('infoNpc', 'assets/LabNPCInfoGuy.png', {
-      frameWidth: 50,
-      frameHeight: 45,
+      frameWidth: 96,
+      frameHeight: 64,
     });
 
     this.load.spritesheet(
@@ -118,8 +124,8 @@ export default class PreloadScene extends Phaser.Scene {
       'fridgeKeyContainer',
       'assets/fridgeKeyContainer.png',
       {
-        frameHeight: 32,
-        frameWidth: 32,
+        frameHeight: 64,
+        frameWidth: 64,
       },
     );
 
@@ -145,11 +151,18 @@ export default class PreloadScene extends Phaser.Scene {
   }
 
   preloadLabBattleSprites() {
-    this.load.image('labBattleBackground', 'assets/labBattleBackground.png');
-    this.load.spritesheet('virusBattleHero', 'assets/virusBattleHero.png', {
-      frameWidth: 50,
-      frameHeight: 50,
-    });
+    this.load.image(
+      battleBackgroundSpriteNames.lab,
+      'assets/labBattleBackground.png',
+    );
+    this.load.spritesheet(
+      heroBattleSpriteNames.lab,
+      'assets/virusBattleHero.png',
+      {
+        frameWidth: 50,
+        frameHeight: 50,
+      },
+    );
 
     this.load.spritesheet(
       'fistpunchrightandleft',
@@ -184,10 +197,23 @@ export default class PreloadScene extends Phaser.Scene {
       frameHeight: 128,
     });
 
-    this.load.spritesheet('virus', 'assets/VirusBattleSprite.png', {
-      frameWidth: 64,
-      frameHeight: 64,
-    });
+    this.load.spritesheet(
+      enemySpriteNames.virus,
+      'assets/VirusBattleSprite.png',
+      {
+        frameWidth: 64,
+        frameHeight: 64,
+      },
+    );
+
+    this.load.spritesheet(
+      enemySpriteNames.sleepDeprivation,
+      'assets/sleepDeprivationEnemy.png',
+      {
+        frameWidth: 64,
+        frameHeight: 64,
+      },
+    );
 
     this.load.spritesheet('spike', 'assets/spike-animation.png', {
       frameWidth: 64,
@@ -315,6 +341,39 @@ export default class PreloadScene extends Phaser.Scene {
   }
 
   createLabBattleAnimations() {
+    this.anims.create({
+      key: heroBattleAnimationNames.lab,
+      frames: this.anims.generateFrameNumbers(heroBattleSpriteNames.lab, {
+        start: 0,
+        end: 3,
+      }),
+      frameRate: 4,
+      repeat: -1,
+    });
+
+    this.anims.create({
+      key: enemyBattleAnimationNames.virus,
+      frames: this.anims.generateFrameNumbers(enemySpriteNames.virus, {
+        start: 0,
+        end: 3,
+      }),
+      frameRate: 4,
+      repeat: -1,
+    });
+
+    this.anims.create({
+      key: enemyBattleAnimationNames.sleepDeprivation,
+      frames: this.anims.generateFrameNumbers(
+        enemySpriteNames.sleepDeprivation,
+        {
+          start: 0,
+          end: 3,
+        },
+      ),
+      frameRate: 4,
+      repeat: -1,
+    });
+
     this.anims.create({
       key: 'attack-right',
       frames: this.anims.generateFrameNumbers('fistpunchrightandleft', {
