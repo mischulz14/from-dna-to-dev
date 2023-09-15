@@ -1,6 +1,7 @@
 import Phaser, { Events } from 'phaser';
 
 import AttackOptions from '../battle/AttackOptions';
+import { heroBattleAnimationNames } from '../data/heroBattleAnimationNames';
 import DialogueField from '../dialogue/DialogueField';
 
 export default class VirusBattleScene extends Phaser.Scene {
@@ -12,7 +13,10 @@ export default class VirusBattleScene extends Phaser.Scene {
   playerHealthBar: Phaser.GameObjects.Rectangle;
   enemyHealth: any;
   enemyAttacks: any;
+  enemyName: string;
   randomEnemyAttack: any;
+  heroBattleAnimationName: string;
+  enemyBattleAnimationName: string;
   enemyHealthBar: Phaser.GameObjects.Rectangle;
   attackOptionsContainer: any;
   dialogueField: DialogueField;
@@ -34,12 +38,13 @@ export default class VirusBattleScene extends Phaser.Scene {
   backgroundImage: string;
   battleHeroSpriteTexture: string;
   enemyTexture: string;
+  triggerEventsOnBattleEnd: Function;
 
   constructor() {
     super({ key: 'BattleScene' });
 
     this.playerHealth = 130;
-    this.enemyHealth = 130;
+    this.enemyHealth = 10;
     this.gameEvents = new Events.EventEmitter();
 
     this.gameEvents.on('battleStart', this.startBattle, this);
@@ -73,6 +78,10 @@ export default class VirusBattleScene extends Phaser.Scene {
     this.backgroundImage = data.backgroundImage;
     this.battleHeroSpriteTexture = data.battleHeroSpriteTexture;
     this.enemyTexture = data.enemyTexture;
+    this.enemyName = data.enemyName;
+    this.triggerEventsOnBattleEnd = data.triggerEventsOnBattleEnd;
+    this.heroBattleAnimationName = data.heroBattleAnimationName;
+    this.enemyBattleAnimationName = data.enemyBattleAnimationName;
   }
 
   create() {
@@ -89,16 +98,6 @@ export default class VirusBattleScene extends Phaser.Scene {
     //  scale player and enemy sprites
     this.player.setScale(6);
     this.enemy.setScale(4);
-
-    this.anims.create({
-      key: 'BattleHeroIdle',
-      frames: this.anims.generateFrameNumbers(this.battleHeroSpriteTexture, {
-        start: 0,
-        end: 3,
-      }),
-      frameRate: 4,
-      repeat: -1,
-    });
 
     this.anims.create({
       key: 'BattleEnemyIdle',
@@ -172,11 +171,13 @@ export default class VirusBattleScene extends Phaser.Scene {
   }
 
   async startBattle() {
-    this.anims.play('BattleHeroIdle', this.player);
-    this.anims.play('BattleEnemyIdle', this.enemy);
+    this.anims.play(this.heroBattleAnimationName, this.player);
+    this.anims.play(this.enemyBattleAnimationName, this.enemy);
     this.addDialogueField();
     this.typeWriterEffect(
-      'You are being attacked by a new variant of the corona virus! \nIt is ... kind of cute? You chose to call it Mr. Virus.',
+      'You are being attacked by a new variant of the corona virus! \nIt is ... kind of cute? You chose to call it ' +
+        this.enemyName +
+        '.',
     );
     this.gameObjectsEnterTheScene();
     await this.waitForUserConfirmation();
@@ -341,25 +342,7 @@ export default class VirusBattleScene extends Phaser.Scene {
       this.waitForUserConfirmation().then(() => {
         this.cutsceneTransitionNormal();
         setTimeout(() => {
-          // @ts-ignore
-          this.scene.get('LabScene').isEventTriggered = false;
-          // @ts-ignore
-          this.scene.get('LabScene').hero.hasBattledVirus = true;
-          // @ts-ignore
-          this.scene.get('UIScene').objectives.forEach((objective) => {
-            if (!objective.visible) return;
-            objective.setVisible(true);
-          });
-
-          this.scene.get('UIScene').events.emit('addObjective', {
-            textBesidesCheckbox: 'Deliver the probe.',
-            checkedCondition: 'hasDeliveredProbe',
-          });
-
-          this.scene.stop('VirusBattleScene');
-          this.scene.resume('LabScene');
-          this.scene.get('LabScene').events.emit('resumeGame');
-          this.scene.resume('UIScene');
+          this.triggerEventsOnBattleEnd(this);
         }, 2000);
       });
     } else if (emittedEventAfterCheck === 'showAttackOptions') {
