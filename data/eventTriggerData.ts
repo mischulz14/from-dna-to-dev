@@ -1,5 +1,10 @@
 import DialogueNode from '../dialogue/DialogueNode';
+import { battleBackgroundSpriteNames } from './battleBackgroundSpriteNames';
 import { enemyAttacks } from './enemyAttacks';
+import { enemyBattleAnimationNames } from './enemyBattleAnimationNames';
+import { enemySpriteNames } from './enemySpriteNames';
+import { heroBattleAnimationNames } from './heroBattleAnimationNames';
+import { heroBattleSpriteNames } from './heroBattleSpriteNames';
 import { playerAttacks } from './playerAttacks';
 
 export const eventTriggerData = {
@@ -50,13 +55,39 @@ export const eventTriggerData = {
         objective.setVisible(false);
       });
 
+      console.log('trigger computer event');
+
       scene.scene.pause('LabScene'); // Pause the LabScene
       scene.scene.launch('BattleScene', {
+        heroBattleAnimationName: heroBattleAnimationNames.lab,
+        enemyBattleAnimationName: enemyBattleAnimationNames.virus,
         enemyAttacks: enemyAttacks.virusBattle,
         playerAttacks: playerAttacks.virusBattle,
-        backgroundImage: 'labBattleBackground',
-        battleHeroSpriteTexture: 'virusBattleHero',
-        enemyTexture: 'virus',
+        backgroundImage: battleBackgroundSpriteNames.lab,
+        battleHeroSpriteTexture: heroBattleSpriteNames.lab,
+        enemyTexture: enemySpriteNames.virus,
+        enemyName: 'Mr. Virus',
+        triggerEventsOnBattleEnd: (scene: any) => {
+          // @ts-ignore
+          scene.scene.get('LabScene').isEventTriggered = false;
+          // @ts-ignore
+          scene.scene.get('LabScene').hero.hasBattledVirus = true;
+          // @ts-ignore
+          scene.scene.get('UIScene').objectives.forEach((objective) => {
+            if (!objective.visible) return;
+            objective.setVisible(true);
+          });
+
+          scene.scene.get('UIScene').events.emit('addObjective', {
+            textBesidesCheckbox: 'Deliver the probe.',
+            checkedCondition: 'hasDeliveredProbe',
+          });
+
+          scene.scene.stop('BattleScene');
+          scene.scene.resume('LabScene');
+          scene.scene.get('LabScene').events.emit('resumeGame');
+          scene.scene.resume('UIScene');
+        },
       }); // Launch the StartScene alongside LabScene
     },
   },
@@ -139,7 +170,34 @@ export const eventTriggerData = {
         objective.setVisible(false);
       });
       scene.scene.pause('LabScene'); // Pause the LabScene
-      scene.scene.launch('SleepDeprivationBattleScene'); // Launch the StartScene alongside LabScene
+      scene.scene.launch('BattleScene', {
+        heroBattleAnimationName: heroBattleAnimationNames.lab,
+        enemyBattleAnimationName: enemyBattleAnimationNames.sleepDeprivation,
+        enemyAttacks: enemyAttacks.sleepDeprivationBattle,
+        playerAttacks: playerAttacks.sleepDeprivationBattle,
+        backgroundImage: battleBackgroundSpriteNames.lab,
+        battleHeroSpriteTexture: heroBattleSpriteNames.lab,
+        enemyTexture: enemySpriteNames.sleepDeprivation,
+        enemyName: 'Mr. Sleepyhead',
+        triggerEventsOnBattleEnd: (scene: any) => {
+          scene.scene.stop('BattleScene');
+          scene.scene.resume('LabScene');
+          scene.scene.resume('UIScene');
+
+          // @ts-ignore
+          scene.scene.get('UIScene').objectives.forEach((objective) => {
+            if (!objective.visible) return;
+            objective.setVisible(true);
+          });
+
+          scene.scene.get('UIScene').events.emit('addObjective', {
+            textBesidesCheckbox: 'Deliver the DNA results.',
+            checkedCondition: 'hasDeliveredDNAResults',
+          });
+          // @ts-ignore
+          scene.scene.get('LabScene').hero.hasBattledSleepDeprivation = true;
+        },
+      });
     },
   },
 };
