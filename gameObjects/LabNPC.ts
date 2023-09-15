@@ -60,8 +60,12 @@ export default class LabNPC extends InteractiveGameObject {
     });
 
     this.initialAnimation = initialAnimation;
-    // Play the initial idle animation
-    this.anims.play(initialAnimation, true);
+    // Play the initial idle animation with a random delay
+    const delay = Phaser.Math.Between(0, 2000);
+    scene.time.delayedCall(delay, () => {
+      this.anims.play(initialAnimation, true);
+    });
+
     this.shadow.fillEllipse(this.x, this.y + 35, 30, 16);
   }
 
