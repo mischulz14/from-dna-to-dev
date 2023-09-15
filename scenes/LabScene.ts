@@ -45,7 +45,7 @@ export default class LabScene extends Phaser.Scene {
     // Make the camera follow the hero
     this.cameras.main.startFollow(this.hero);
     this.scene.launch('UIScene');
-    this.playLevelIntroOnce();
+    // this.playLevelIntroOnce();
   }
 
   /////////////////////////
@@ -232,6 +232,14 @@ export default class LabScene extends Phaser.Scene {
     const computerLayer = map.createLayer('Computers', tileset, 0, 0);
     const chairLayer = map.createLayer('Chairs', tileset, 0, 0);
 
+    map.getLayer('Chairs').data.forEach((row) => {
+      row.forEach((tile) => {
+        if (tile.index === 0) {
+          tile.setCollision(false, false, true, false);
+        }
+      });
+    });
+
     const otherGameObjectsLayer = map.createLayer('OtherGameobjects', tileset);
     otherGameObjectsLayer.setDepth(2);
 
@@ -243,8 +251,8 @@ export default class LabScene extends Phaser.Scene {
     // EVENT TRIGGERS
     const fridgeKey = new EventTrigger(
       this,
-      1532,
-      580,
+      1512,
+      575,
       'fridgeKeyContainer',
       'E',
       'Interact',
@@ -252,7 +260,6 @@ export default class LabScene extends Phaser.Scene {
       eventTriggerData.fridgeKeyContainer.triggerEventWhenDialogueEnds,
       eventTriggerData.fridgeKeyContainer.updateDialogueNodeBasedOnPlayerState,
     );
-    fridgeKey.setScale(2);
 
     const refrigeratorBattleTrigger = new EventTrigger(
       this,
@@ -301,9 +308,9 @@ export default class LabScene extends Phaser.Scene {
     const infoNPC = new LabNPC(
       this,
       800,
-      70,
+      100,
       'infoNpc',
-      'infoNpc-idle-down',
+      '',
       'E',
       'Talk',
       npcLabData.infoNpc.dialogueNodesObj,
@@ -311,7 +318,7 @@ export default class LabScene extends Phaser.Scene {
       npcLabData.infoNpc.updateDialogueNodeBasedOnHeroState,
     );
 
-    infoNPC.setBodySize(40, 30);
+    infoNPC.setBodySize(60, 50);
     infoNPC.setScale(2);
     infoNPC.turnToHero = () => {
       return;
