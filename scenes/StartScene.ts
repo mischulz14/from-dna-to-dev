@@ -2,15 +2,19 @@ export default class StartScene extends Phaser.Scene {
   dna: Phaser.GameObjects.Sprite;
   text: Phaser.GameObjects.Text;
   hasContinuedToBackstory: boolean;
+  introSceneSound: Phaser.Sound.BaseSound;
+  audioFinished: boolean;
+  audioIsStillPlaying: boolean;
   constructor() {
     super({ key: 'StartScene' });
     this.hasContinuedToBackstory = false;
+    this.audioFinished = false;
+    this.audioIsStillPlaying = false;
   }
 
   preload() {
     // Load the image that will be used for the background
     this.load.image('background', 'assets/dnatodev.png');
-    this.load.image('backstory', 'assets/backstoryNew.png');
     this.load.spritesheet('dna', 'assets/dna.png', {
       frameWidth: 32,
       frameHeight: 32,
@@ -23,7 +27,9 @@ export default class StartScene extends Phaser.Scene {
   }
 
   create() {
-    const backgrouund = this.add.image(0, 0, 'background').setOrigin(0, 0);
+    this.introSceneSound = this.sound.add('IntroScene');
+    this.introSceneSound.on('complete', this.audioHasFinishedPlaying, this);
+    const background = this.add.image(0, 0, 'background').setOrigin(0, 0);
     this.anims.create({
       key: 'dna-spin',
       frames: this.anims.generateFrameNumbers('dna', {
@@ -57,43 +63,110 @@ export default class StartScene extends Phaser.Scene {
       .setScale(2)
       .play('codebrackets-pop');
 
-    const backstory = this.add
-      .image(0, 0, 'backstory')
-      .setOrigin(0, 0)
-      .setVisible(false);
-
     // when the user presses start, start the first level
     this.input.keyboard.on('keydown', () => {
+      if (this.audioIsStillPlaying) return;
+      this.audioIsStillPlaying = true;
+      this.introSceneSound.play();
       this.text.setVisible(false);
-      backstory.setVisible(true);
       dna.setVisible(false);
       codebrackets.setVisible(false);
-      backgrouund.setVisible(false);
+      background.setVisible(false);
       this.hasContinuedToBackstory = true;
 
-      this.time.delayedCall(2000, () => {
-        const text = this.add.text(300, 465, 'Press enter to continue', {
-          fontSize: '1.3rem',
-          fontFamily: 'Rainyhearts',
-          color: '#fff',
-        });
-
-        this.tweens.add({
-          targets: text,
-          alpha: 0,
-          duration: 1000,
-          ease: 'Linear',
-          repeat: -1,
-          yoyo: true,
-        });
-      });
+      this.revealText();
     });
 
     // on enter key, start the first level
     this.input.keyboard.on('keydown-ENTER', () => {
-      if (this.hasContinuedToBackstory) {
+      if (this.hasContinuedToBackstory && this.audioFinished) {
         this.scene.start('LabScene');
       }
     });
   }
+
+  audioHasFinishedPlaying() {
+    this.audioFinished = true;
+
+    const text = this.add.text(300, 465, 'Press enter to continue', {
+      fontSize: '1.3rem',
+      fontFamily: 'Rainyhearts',
+      color: '#fff',
+    });
+
+    this.tweens.add({
+      targets: text,
+      alpha: 0,
+      duration: 1000,
+      ease: 'Linear',
+      repeat: -1,
+      yoyo: true,
+    });
+  }
+
+  revealText() {
+    const { text1, text2, text3, text4, text5, text6 } = getBackgroundText();
+
+    this.add.text(10, 5, text1, {
+      fontSize: '2rem',
+      fontFamily: 'Rainyhearts',
+      color: '#fff',
+    });
+
+    this.time.delayedCall(2000, () => {
+      this.add.text(10, 60, text2, {
+        fontSize: '1.6rem',
+        fontFamily: 'Rainyhearts',
+        color: '#fff',
+      });
+    });
+
+    this.time.delayedCall(9500, () => {
+      this.add.text(10, 120, text3, {
+        fontSize: '1.6rem',
+        fontFamily: 'Rainyhearts',
+        color: '#fff',
+      });
+    });
+
+    this.time.delayedCall(18000, () => {
+      this.add.text(10, 180, text4, {
+        fontSize: '1.6rem',
+        fontFamily: 'Rainyhearts',
+        color: '#fff',
+      });
+    });
+
+    this.time.delayedCall(24000, () => {
+      this.add.text(10, 220, text5, {
+        fontSize: '1.6rem',
+        fontFamily: 'Rainyhearts',
+        color: '#fff',
+      });
+    });
+
+    this.time.delayedCall(31500, () => {
+      this.add.text(10, 290, text6, {
+        fontSize: '1.6rem',
+        fontFamily: 'Rainyhearts',
+        color: '#fff',
+      });
+    });
+  }
+}
+
+function getBackgroundText() {
+  const text1 = 'What happened so far...';
+  const text2 =
+    'You are in a lab, working as a molecular biologist after having spent \n years studying at university.';
+  const text3 =
+    'You notice that in stressfull situations you tend to fall into imaginary \n fight scenes as a fight or flight response.';
+  const text4 =
+    "This seems to help you overcome almost any obstacle you're facing.";
+  const text5 =
+    "After having worked professionally in the scientific field \n you're having doubts about your future, but you decide to push through.";
+  const text6 =
+    "Even though you're working in a lab, \n you feel your DNA changing and searching for \n SOMETHING ELSE";
+
+  return { text1, text2, text3, text4, text5, text6 };
 }

@@ -23,14 +23,14 @@ export default class PreloadScene extends Phaser.Scene {
     this.preloadLabBattleSprites();
     // this.preloadEnemySprites();
     this.preloadTilesets();
-    // this.preloadAudio()
+    this.preloadAudio();
   }
 
   create() {
     this.createLabAnimations();
     this.createLabBattleAnimations();
     // pass control to the start scene
-    this.scene.start('LabScene');
+    this.scene.start('StartScene');
   }
 
   addProgressBar() {
@@ -54,7 +54,7 @@ export default class PreloadScene extends Phaser.Scene {
 
     // Update progress bar based on the progress of the asset loader
     this.load.on('progress', function (value) {
-      console.log(value);
+      // console.log(value);
       progressBar.clear();
       progressBar.fillStyle(0xffffff, 1);
       progressBar.fillRect(250, 280, 300 * value, 30);
@@ -68,6 +68,10 @@ export default class PreloadScene extends Phaser.Scene {
   }
 
   preloadBackgrounds() {}
+
+  preloadAudio() {
+    this.load.audio('IntroScene', 'assets/audio/IntroScene.mp3');
+  }
 
   preloadCutsceneSprites() {
     this.load.spritesheet('LabCutsceneSprite', 'assets/labCutsceneSprite.png', {
