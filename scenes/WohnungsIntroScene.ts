@@ -5,7 +5,7 @@ import {
 } from '../data/cutSceneSprites';
 import DialogueController from '../dialogue/DialogueController';
 import DialogueNode from '../dialogue/DialogueNode';
-import { textAppears, textDisappears } from '../utils/TextEffects';
+import { textAppears, textDisappears } from '../utils/textEffects';
 
 export default class WohnungsIntroScene extends Phaser.Scene {
   dialogueController: DialogueController;

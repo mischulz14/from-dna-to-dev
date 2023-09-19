@@ -1,4 +1,4 @@
-import { textAppears } from '../utils/TextEffects';
+import { textAppears } from '../utils/textEffects';
 
 export default class StartScene extends Phaser.Scene {
   dna: Phaser.GameObjects.Sprite;
