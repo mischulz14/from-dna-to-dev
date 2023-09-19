@@ -9,7 +9,11 @@ module.exports = {
       template: './index.html',
     }),
     new CopyWebpackPlugin({
-      patterns: [{ from: 'assets', to: 'assets' }],
+      patterns: [
+        { from: 'assets', to: 'assets' },
+        { from: './style.css', to: 'style.css' },
+        { from: './rainyhearts', to: 'rainyhearts' },
+      ],
     }),
   ],
   module: {
