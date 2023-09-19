@@ -67,7 +67,7 @@ export default class LabCutscene extends Phaser.Scene {
 
       setTimeout(() => {
         this.scene.stop('LabCutscene');
-        this.scene.start('LabScene');
+        this.scene.start('WohnungsIntroScene');
       }, 2000);
     });
 
