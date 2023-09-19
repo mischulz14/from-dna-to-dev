@@ -1,3 +1,5 @@
+// textEffects
+
 export function textAppears(
   textContent: string,
   fontSize,

@@ -14,7 +14,7 @@
   "devDependencies": {
     "live-server": "^1.1.0",
     "phaser": "^3.60.0",
-    "ts-loader": "^9.4.2",
+    "ts-loader": "^9.4.4",
     "typescript": "^5.0.4",
     "webpack": "^5.82.1",
     "webpack-cli": "^5.1.1"
