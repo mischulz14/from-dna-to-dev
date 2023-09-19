@@ -1,35 +1,41 @@
 import Phaser from 'phaser';
 
 import { battleBackgroundSpriteNames } from '../data/battleBackgroundSpriteNames';
+import {
+  cutSceneAnimsInfo,
+  cutSceneAudioNames,
+  cutSceneSpriteNames,
+} from '../data/cutSceneSprites';
 import { enemyBattleAnimationNames } from '../data/enemyBattleAnimationNames';
 import { enemySpriteNames } from '../data/enemySpriteNames';
 import { heroBattleAnimationNames } from '../data/heroBattleAnimationNames';
 import { heroBattleSpriteNames } from '../data/heroBattleSpriteNames';
 
 export default class PreloadScene extends Phaser.Scene {
+  canProceed: any;
   constructor() {
     super({ key: 'PreloadScene' });
+    this.canProceed = false;
 
     // this.add.text(20, 20, 'Loading game...');
   }
 
   preload() {
     this.addProgressBar();
-
-    this.preloadBackgrounds();
     this.preloadCutsceneSprites();
     this.preloadHeroSprites();
     this.preloadLabSprites();
     this.preloadLabBattleSprites();
+    this.preloadAudio();
     // this.preloadEnemySprites();
     this.preloadTilesets();
-    this.preloadAudio();
   }
 
   create() {
     this.createLabAnimations();
     this.createLabBattleAnimations();
-    // pass control to the start scene
+    this.createCutSceneAnimations();
+
     this.scene.start('StartScene');
   }
 
@@ -67,10 +73,12 @@ export default class PreloadScene extends Phaser.Scene {
     });
   }
 
-  preloadBackgrounds() {}
-
   preloadAudio() {
-    this.load.audio('IntroScene', 'assets/audio/IntroScene.mp3');
+    this.load.audio('IntroScene', 'assets/audio/LabIntro.wav');
+    this.load.audio(
+      cutSceneAudioNames.wohnung,
+      'assets/audio/WohnungsCutscene.mp3',
+    );
   }
 
   preloadCutsceneSprites() {
@@ -78,6 +86,15 @@ export default class PreloadScene extends Phaser.Scene {
       frameWidth: 100,
       frameHeight: 50,
     });
+
+    this.load.spritesheet(
+      cutSceneSpriteNames.wohnung,
+      'assets/wohnungCutsceneSprite.png',
+      {
+        frameWidth: cutSceneAnimsInfo.wohnung.spriteWidth,
+        frameHeight: cutSceneAnimsInfo.wohnung.spriteHeight,
+      },
+    );
   }
 
   preloadHeroSprites() {
@@ -235,6 +252,20 @@ export default class PreloadScene extends Phaser.Scene {
 
     // LAB BATTLE SCENES
     this.load.image('lab_tiles_battle', 'assets/labTileset.png');
+  }
+
+  createCutSceneAnimations() {
+    cutSceneAnimsInfo.wohnung.anims.forEach((animInfo) => {
+      this.anims.create({
+        key: animInfo.name,
+        frames: this.anims.generateFrameNumbers(cutSceneSpriteNames.wohnung, {
+          start: animInfo.start,
+          end: animInfo.end,
+        }),
+        frameRate: 6,
+        repeat: animInfo.repeat ? animInfo.repeat : 0,
+      });
+    });
   }
 
   createLabAnimations() {
