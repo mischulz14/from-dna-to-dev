@@ -12,6 +12,8 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "copy-webpack-plugin": "^11.0.0",
+    "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.5.3",
     "live-server": "^1.1.0",
     "phaser": "^3.60.0",
