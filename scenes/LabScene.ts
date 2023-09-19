@@ -45,7 +45,7 @@ export default class LabScene extends Phaser.Scene {
     // Make the camera follow the hero
     this.cameras.main.startFollow(this.hero);
     this.scene.launch('UIScene');
-    // this.playLevelIntroOnce();
+    this.playLevelIntroOnce();
   }
 
   /////////////////////////
@@ -223,6 +223,12 @@ export default class LabScene extends Phaser.Scene {
     this.collisionLayer = map.createLayer('Collisions', tileset);
     this.collisionLayer.setVisible(false);
     this.collisionLayer.setCollisionByProperty({ collides: true });
+    // make collisionlayer visible
+    // this.collisionLayer.renderDebug(this.add.graphics().setDepth(1000), {
+    //   tileColor: null, // Color of non-colliding tiles
+    //   collidingTileColor: new Phaser.Display.Color(243, 134, 48, 200), // Color of colliding tiles
+    //   faceColor: new Phaser.Display.Color(40, 39, 37, 255), // Color of colliding face edges
+    // });
 
     this.wallLayer = map.createLayer('Walls', tileset);
     this.wallLayer.setDepth(2);
@@ -245,21 +251,45 @@ export default class LabScene extends Phaser.Scene {
 
     this.foregroundLayer = map.createLayer('Foreground', tileset);
     this.foregroundLayer.setDepth(10000);
+
+    const eventTriggerLayer = map.createLayer('FridgeKeyContainer', tileset);
+
+    eventTriggerLayer.forEachTile((tile) => {
+      if (tile.index !== -1) {
+        // get the top left x and top left y
+        const worldX = tile.getCenterX() + tile.width / 2;
+        const worldY = tile.getCenterY() + tile.height / 2;
+
+        // Create a new instance of your custom GameObject at the tile's coordinates
+        const gameObject = new EventTrigger(
+          this,
+          worldX,
+          worldY,
+          'fridgeKeyContainer',
+          'E',
+          'Interact',
+          eventTriggerData.fridgeKeyContainer.dialogueNodesObj,
+          eventTriggerData.fridgeKeyContainer.triggerEventWhenDialogueEnds,
+          eventTriggerData.fridgeKeyContainer.updateDialogueNodeBasedOnPlayerState,
+        );
+        this.add.existing(gameObject);
+      }
+    });
   }
 
   createInteractiveGameObjects() {
     // EVENT TRIGGERS
-    const fridgeKey = new EventTrigger(
-      this,
-      1512,
-      575,
-      'fridgeKeyContainer',
-      'E',
-      'Interact',
-      eventTriggerData.fridgeKeyContainer.dialogueNodesObj,
-      eventTriggerData.fridgeKeyContainer.triggerEventWhenDialogueEnds,
-      eventTriggerData.fridgeKeyContainer.updateDialogueNodeBasedOnPlayerState,
-    );
+    // const fridgeKey = new EventTrigger(
+    //   this,
+    //   1512,
+    //   575,
+    //   'fridgeKeyContainer',
+    //   'E',
+    //   'Interact',
+    //   eventTriggerData.fridgeKeyContainer.dialogueNodesObj,
+    //   eventTriggerData.fridgeKeyContainer.triggerEventWhenDialogueEnds,
+    //   eventTriggerData.fridgeKeyContainer.updateDialogueNodeBasedOnPlayerState,
+    // );
 
     const refrigeratorBattleTrigger = new EventTrigger(
       this,
