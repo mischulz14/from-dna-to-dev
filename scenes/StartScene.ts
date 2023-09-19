@@ -1,3 +1,5 @@
+import { textAppears } from '../utils/TextEffects';
+
 export default class StartScene extends Phaser.Scene {
   dna: Phaser.GameObjects.Sprite;
   text: Phaser.GameObjects.Text;
@@ -107,50 +109,26 @@ export default class StartScene extends Phaser.Scene {
   revealText() {
     const { text1, text2, text3, text4, text5, text6 } = getBackgroundText();
 
-    this.add.text(10, 5, text1, {
-      fontSize: '2rem',
-      fontFamily: 'Rainyhearts',
-      color: '#fff',
-    });
+    textAppears(text1, '1.6rem', 'Rainyhearts', 1000, 10, 10, this);
 
     this.time.delayedCall(2000, () => {
-      this.add.text(10, 60, text2, {
-        fontSize: '1.6rem',
-        fontFamily: 'Rainyhearts',
-        color: '#fff',
-      });
+      textAppears(text2, '1.6rem', 'Rainyhearts', 1000, 10, 60, this);
     });
 
     this.time.delayedCall(9500, () => {
-      this.add.text(10, 120, text3, {
-        fontSize: '1.6rem',
-        fontFamily: 'Rainyhearts',
-        color: '#fff',
-      });
+      textAppears(text3, '1.6rem', 'Rainyhearts', 1000, 10, 120, this);
     });
 
     this.time.delayedCall(18000, () => {
-      this.add.text(10, 180, text4, {
-        fontSize: '1.6rem',
-        fontFamily: 'Rainyhearts',
-        color: '#fff',
-      });
+      textAppears(text4, '1.6rem', 'Rainyhearts', 1000, 10, 180, this);
     });
 
     this.time.delayedCall(24000, () => {
-      this.add.text(10, 220, text5, {
-        fontSize: '1.6rem',
-        fontFamily: 'Rainyhearts',
-        color: '#fff',
-      });
+      textAppears(text5, '1.6rem', 'Rainyhearts', 1000, 10, 220, this);
     });
 
     this.time.delayedCall(31500, () => {
-      this.add.text(10, 290, text6, {
-        fontSize: '1.6rem',
-        fontFamily: 'Rainyhearts',
-        color: '#fff',
-      });
+      textAppears(text6, '1.6rem', 'Rainyhearts', 1000, 10, 290, this);
     });
   }
 }
@@ -158,7 +136,7 @@ export default class StartScene extends Phaser.Scene {
 function getBackgroundText() {
   const text1 = 'What happened so far...';
   const text2 =
-    'You are in a lab, working as a molecular biologist after having spent \n years studying at university.';
+    "You're in a lab, working as a molecular biologist after having spent \n years studying at university.";
   const text3 =
     'You notice that in stressfull situations you tend to fall into imaginary \n fight scenes as a fight or flight response.';
   const text4 =
