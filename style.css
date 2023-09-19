@@ -51,6 +51,10 @@ canvas {
   display: grid !important;
 }
 
+.hide {
+  display: none !important;
+}
+
 /* DIALOGUE */
 
 .dialogue-indicator {
