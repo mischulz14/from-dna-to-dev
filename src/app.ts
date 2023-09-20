@@ -37,7 +37,6 @@ const config: Phaser.Types.Core.GameConfig = {
     StartScene,
     LabScene,
     UIScene,
-    SleepDeprivationBattleScene,
     VirusBattleScene,
     LabCutscene,
     WohnungsIntroScene,

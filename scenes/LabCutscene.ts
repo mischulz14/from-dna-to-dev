@@ -33,8 +33,6 @@ export default class LabCutscene extends Phaser.Scene {
       'keydown-ENTER',
       this.dialogueController.playerPressesEnterEventListener,
     );
-
-    this.load.image('labCutscene', 'assets/labCutscene.png');
   }
 
   create() {

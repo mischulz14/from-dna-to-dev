@@ -1,3 +1,4 @@
+import { cutSceneAudioNames } from '../data/cutSceneSprites';
 import { textAppears } from '../utils/textEffects';
 
 export default class StartScene extends Phaser.Scene {
@@ -29,7 +30,7 @@ export default class StartScene extends Phaser.Scene {
   }
 
   create() {
-    this.introSceneSound = this.sound.add('IntroScene');
+    this.introSceneSound = this.sound.add(cutSceneAudioNames.intro);
     this.introSceneSound.on('complete', this.audioHasFinishedPlaying, this);
     const background = this.add.image(0, 0, 'background').setOrigin(0, 0);
     this.anims.create({

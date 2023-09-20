@@ -41,6 +41,21 @@ canvas {
   box-shadow: -16px -16px 0px rgba(0, 0, 0);
 }
 
+/* AUDIO BUTTON */
+
+#audio-button {
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 100%;
+  width: 40px;
+  background-color: black;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
 /* UTILS */
 
 .shown {
