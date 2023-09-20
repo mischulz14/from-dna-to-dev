@@ -36,7 +36,7 @@ export default class PreloadScene extends Phaser.Scene {
     this.createLabBattleAnimations();
     this.createCutSceneAnimations();
 
-    this.scene.start('WohnungsIntroScene');
+    this.scene.start('StartScene');
   }
 
   addProgressBar() {
