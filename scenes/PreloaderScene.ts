@@ -89,7 +89,7 @@ export default class PreloadScene extends Phaser.Scene {
   }
 
   preloadCutsceneSprites() {
-    this.load.spritesheet(cutSceneSpriteNames.lab, labCutsceneSprite, {
+    this.load.spritesheet('labCutsceneSprite', 'assets/labCutSceneSprite.png', {
       frameWidth: 100,
       frameHeight: 50,
     });
