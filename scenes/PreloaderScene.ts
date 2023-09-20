@@ -1,14 +1,7 @@
 import Phaser from 'phaser';
 
-import introAudioFile from '../assets/audio/LabIntro.mp3';
+import introAudioFile from '../assets/audio/LabIntro.wav';
 import wohnungsAudioFile from '../assets/audio/WohnungsCutscene.mp3';
-import fridgeKeyContainerImage from '../assets/fridgeKeyContainer.png';
-import labBattleBackgroundImage from '../assets/labBattleBackground.png';
-import labCutsceneSprite from '../assets/labCutSceneSprite.png';
-import labHeroPng from '../assets/labHero.png';
-import labMapJson from '../assets/labMapJson.json';
-import labTilesImage from '../assets/labTileset.png';
-import wohnungsCutsceneSprite from '../assets/wohnungCutsceneSprite.png';
 import { battleBackgroundSpriteNames } from '../data/battleBackgroundSpriteNames';
 import {
   cutSceneAnimsInfo,
@@ -19,7 +12,6 @@ import { enemyBattleAnimationNames } from '../data/enemyBattleAnimationNames';
 import { enemySpriteNames } from '../data/enemySpriteNames';
 import { heroBattleAnimationNames } from '../data/heroBattleAnimationNames';
 import { heroBattleSpriteNames } from '../data/heroBattleSpriteNames';
-import heroSpriteNames from '../data/heroSpriteName';
 
 export default class PreloadScene extends Phaser.Scene {
   canProceed: any;
@@ -46,7 +38,7 @@ export default class PreloadScene extends Phaser.Scene {
     this.createLabBattleAnimations();
     this.createCutSceneAnimations();
 
-    this.scene.start('StartScene');
+    this.scene.start('WohnungsIntroScene');
   }
 
   addProgressBar() {
@@ -89,22 +81,33 @@ export default class PreloadScene extends Phaser.Scene {
   }
 
   preloadCutsceneSprites() {
-    this.load.spritesheet('labCutsceneSprite', 'assets/labCutSceneSprite.png', {
+    this.load.spritesheet('LabCutsceneSprite', 'assets/labCutsceneSprite.png', {
       frameWidth: 100,
       frameHeight: 50,
     });
 
-    this.load.spritesheet(cutSceneSpriteNames.wohnung, wohnungsCutsceneSprite, {
-      frameWidth: cutSceneAnimsInfo.wohnung.spriteWidth,
-      frameHeight: cutSceneAnimsInfo.wohnung.spriteHeight,
-    });
+    this.load.spritesheet(
+      cutSceneSpriteNames.wohnung,
+      'assets/wohnungCutsceneSprite.png',
+      {
+        frameWidth: cutSceneAnimsInfo.wohnung.spriteWidth,
+        frameHeight: cutSceneAnimsInfo.wohnung.spriteHeight,
+      },
+    );
   }
 
   preloadHeroSprites() {
     // load the hero spritesheet
-    this.load.spritesheet(heroSpriteNames.lab, labHeroPng, {
+    this.load.spritesheet('labHero', 'assets/labHero.png', {
       frameWidth: 40,
       frameHeight: 40,
+    });
+
+    // console log file processing error of labherospritenew:
+
+    this.load.spritesheet('labHeroNew', 'assets/labHeroSpriteSheetTest.png', {
+      frameWidth: 128,
+      frameHeight: 128,
     });
   }
 
@@ -137,10 +140,14 @@ export default class PreloadScene extends Phaser.Scene {
       },
     );
 
-    this.load.spritesheet('fridgeKeyContainer', fridgeKeyContainerImage, {
-      frameHeight: 64,
-      frameWidth: 64,
-    });
+    this.load.spritesheet(
+      'fridgeKeyContainer',
+      'assets/fridgeKeyContainer.png',
+      {
+        frameHeight: 64,
+        frameWidth: 64,
+      },
+    );
 
     this.load.spritesheet('janus', 'assets/janus.png', {
       frameHeight: 32,
@@ -164,7 +171,10 @@ export default class PreloadScene extends Phaser.Scene {
   }
 
   preloadLabBattleSprites() {
-    this.load.image(battleBackgroundSpriteNames.lab, labBattleBackgroundImage);
+    this.load.image(
+      battleBackgroundSpriteNames.lab,
+      'assets/labBattleBackground.png',
+    );
     this.load.spritesheet(
       heroBattleSpriteNames.lab,
       'assets/virusBattleHero.png',
@@ -173,6 +183,39 @@ export default class PreloadScene extends Phaser.Scene {
         frameHeight: 50,
       },
     );
+
+    this.load.spritesheet(
+      'fistpunchrightandleft',
+      'assets/fistpunchrightandleft.png',
+      {
+        frameWidth: 128,
+        frameHeight: 128,
+      },
+    );
+
+    this.load.spritesheet(
+      'fistpunchupanddown',
+      'assets/fistpunchupanddown.png',
+      {
+        frameWidth: 128,
+        frameHeight: 128,
+      },
+    );
+
+    this.load.spritesheet('fistattack', 'assets/fistattack.png', {
+      frameWidth: 32,
+      frameHeight: 64,
+    });
+
+    this.load.spritesheet('testenemy', 'assets/testEnemy.png', {
+      frameWidth: 32,
+      frameHeight: 32,
+    });
+
+    this.load.spritesheet('evade', 'assets/evadeSprites.png', {
+      frameWidth: 80,
+      frameHeight: 128,
+    });
 
     this.load.spritesheet(
       enemySpriteNames.virus,
@@ -191,12 +234,23 @@ export default class PreloadScene extends Phaser.Scene {
         frameHeight: 64,
       },
     );
+
+    this.load.spritesheet('spike', 'assets/spike-animation.png', {
+      frameWidth: 64,
+      frameHeight: 64,
+    });
   }
 
   preloadTilesets() {
     // LABSCENE
-    this.load.tilemapTiledJSON('map', labMapJson);
-    this.load.image('lab_tiles', labTilesImage);
+    this.load.tilemapTiledJSON('map', 'assets/labMapJson.json');
+
+    this.load.image('lab_tiles', 'assets/labTileset.png');
+
+    this.load.tilemapTiledJSON('battlemap', 'assets/labBattleBackground.json');
+
+    // LAB BATTLE SCENES
+    this.load.image('lab_tiles_battle', 'assets/labTileset.png');
   }
 
   createCutSceneAnimations() {
@@ -352,6 +406,250 @@ export default class PreloadScene extends Phaser.Scene {
       ),
       frameRate: 4,
       repeat: -1,
+    });
+
+    this.anims.create({
+      key: 'attack-right',
+      frames: this.anims.generateFrameNumbers('fistpunchrightandleft', {
+        start: 1,
+        end: 8,
+      }),
+      frameRate: 13,
+      duration: 1000,
+    });
+
+    this.anims.create({
+      key: 'attack2-right',
+      frames: this.anims.generateFrameNumbers('fistpunchrightandleft', {
+        start: 8,
+        end: 17,
+      }),
+      frameRate: 13,
+      duration: 1000,
+    });
+
+    this.anims.create({
+      key: 'attack-left',
+      frames: this.anims.generateFrameNumbers('fistpunchrightandleft', {
+        start: 18,
+        end: 25,
+      }),
+      frameRate: 13,
+      duration: 1000,
+    });
+
+    this.anims.create({
+      key: 'attack2-left',
+      frames: this.anims.generateFrameNumbers('fistpunchrightandleft', {
+        start: 25,
+        end: 35,
+      }),
+      frameRate: 13,
+      duration: 1000,
+    });
+
+    this.anims.create({
+      key: 'attack-down',
+      frames: this.anims.generateFrameNumbers('fistpunchupanddown', {
+        start: 1,
+        end: 8,
+      }),
+      frameRate: 12,
+      duration: 1000,
+    });
+
+    this.anims.create({
+      key: 'attack2-down',
+      frames: this.anims.generateFrameNumbers('fistpunchupanddown', {
+        start: 9,
+        end: 17,
+      }),
+      frameRate: 12,
+      duration: 1000,
+    });
+
+    this.anims.create({
+      key: 'attack-up',
+      frames: this.anims.generateFrameNumbers('fistpunchupanddown', {
+        start: 18,
+        end: 25,
+      }),
+      frameRate: 12,
+      duration: 1000,
+    });
+
+    this.anims.create({
+      key: 'attack2-up',
+      frames: this.anims.generateFrameNumbers('fistpunchupanddown', {
+        start: 26,
+        end: 36,
+      }),
+      frameRate: 12,
+      duration: 1000,
+    });
+
+    this.anims.create({
+      key: 'battle-idle-down',
+      frames: this.anims.generateFrameNumbers('labHeroNew', {
+        start: 29,
+        end: 33,
+      }),
+      frameRate: 6,
+      repeat: -1,
+    });
+
+    this.anims.create({
+      key: 'battle-run-down',
+      frames: this.anims.generateFrameNumbers('labHeroNew', {
+        start: 34,
+        end: 41,
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });
+
+    this.anims.create({
+      key: 'battle-idle-up',
+      frames: this.anims.generateFrameNumbers('labHeroNew', {
+        start: 42,
+        end: 46,
+      }),
+      frameRate: 6,
+      repeat: -1,
+    });
+
+    this.anims.create({
+      key: 'battle-run-up',
+      frames: this.anims.generateFrameNumbers('labHeroNew', {
+        start: 47,
+        end: 54,
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });
+
+    this.anims.create({
+      key: 'battle-idle-left',
+      frames: this.anims.generateFrameNumbers('labHeroNew', {
+        start: 16,
+        end: 20,
+      }),
+      frameRate: 6,
+      repeat: -1,
+    });
+
+    this.anims.create({
+      key: 'battle-run-left',
+      frames: this.anims.generateFrameNumbers('labHeroNew', {
+        start: 0,
+        end: 7,
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });
+
+    this.anims.create({
+      key: 'battle-idle-right',
+      frames: this.anims.generateFrameNumbers('labHeroNew', {
+        start: 21,
+        end: 25,
+      }),
+      frameRate: 6,
+      repeat: -1,
+    });
+
+    this.anims.create({
+      key: 'battle-run-right',
+      frames: this.anims.generateFrameNumbers('labHeroNew', {
+        start: 8,
+        end: 15,
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });
+
+    this.anims.create({
+      key: 'fistattack-attack',
+      frames: this.anims.generateFrameNumbers('fistattack', {
+        start: 0,
+        end: 9,
+      }),
+      frameRate: 13,
+      duration: 1000,
+      showOnStart: true,
+      hideOnComplete: true,
+    });
+
+    this.anims.create({
+      key: 'enemy-idle',
+      frames: this.anims.generateFrameNumbers('testenemy', {
+        start: 0,
+        end: 4,
+      }),
+      frameRate: 6,
+      repeat: -1,
+    });
+
+    this.anims.create({
+      key: 'evade-left',
+      frames: this.anims.generateFrameNumbers('evade', {
+        start: 0,
+        end: 6,
+      }),
+      frameRate: 16,
+      duration: 100,
+    });
+
+    this.anims.create({
+      key: 'evade-right',
+      frames: this.anims.generateFrameNumbers('evade', {
+        start: 7,
+        end: 13,
+      }),
+      frameRate: 16,
+      duration: 100,
+    });
+
+    this.anims.create({
+      key: 'evade-down',
+      frames: this.anims.generateFrameNumbers('evade', {
+        start: 14,
+        end: 16,
+      }),
+      frameRate: 16,
+      duration: 100,
+    });
+
+    this.anims.create({
+      key: 'evade-up',
+      frames: this.anims.generateFrameNumbers('evade', {
+        start: 21,
+        end: 27,
+      }),
+      frameRate: 16,
+      duration: 100,
+    });
+
+    this.anims.create({
+      key: 'virus-idle',
+      frames: this.anims.generateFrameNumbers('virus', {
+        start: 0,
+        end: 3,
+      }),
+      frameRate: 4,
+      repeat: -1,
+    });
+
+    this.anims.create({
+      key: 'spike-disappear',
+      frames: this.anims.generateFrameNumbers('spike', {
+        start: 0,
+        end: 16,
+      }),
+      frameRate: 13,
+      duration: 1000,
+      showOnStart: true,
+      hideOnComplete: true,
     });
   }
 }
