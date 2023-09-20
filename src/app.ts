@@ -1,10 +1,10 @@
 import 'phaser';
 
+import GlobalAudioManager from '../global/GlobalAudioManager';
 import VirusBattleScene from '../scenes/BattleScene';
 import LabCutscene from '../scenes/LabCutscene';
 import LabScene from '../scenes/LabScene';
 import PreloaderScene from '../scenes/PreloaderScene';
-import SleepDeprivationBattleScene from '../scenes/SleepDeprivationBattleScene';
 import StartScene from '../scenes/StartScene';
 import UIScene from '../scenes/UIScene';
 import WohnungsIntroScene from '../scenes/WohnungsIntroScene';
@@ -43,4 +43,17 @@ const config: Phaser.Types.Core.GameConfig = {
   ], // order of scenes does not matter
 };
 
-new Phaser.Game(config);
+const game = new Phaser.Game(config);
+
+// using singleton pattern to access global audio manager
+const globalAudioManager = GlobalAudioManager.getInstance();
+globalAudioManager.initialize(game);
+
+document.addEventListener('DOMContentLoaded', () => {
+  const audioButton = document.getElementById('audio-button');
+  if (audioButton) {
+    audioButton.addEventListener('click', () => {
+      globalAudioManager.toggleSound();
+    });
+  }
+});
