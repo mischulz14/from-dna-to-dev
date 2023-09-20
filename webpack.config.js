@@ -30,6 +30,15 @@ module.exports = {
           },
         ],
       },
+      {
+        test: /\.(png|jpg|gif|mp3|wav)$/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {},
+          },
+        ],
+      },
     ],
   },
   resolve: {
