@@ -4,7 +4,7 @@ import introAudioFile from '../assets/audio/LabIntro.mp3';
 import wohnungsAudioFile from '../assets/audio/WohnungsCutscene.mp3';
 import fridgeKeyContainerImage from '../assets/fridgeKeyContainer.png';
 import labBattleBackgroundImage from '../assets/labBattleBackground.png';
-import labCutsceneSprite from '../assets/labCutsceneSprite.png';
+import labCutsceneSprite from '../assets/labCutSceneSprite.png';
 import labHeroPng from '../assets/labHero.png';
 import labMapJson from '../assets/labMapJson.json';
 import labTilesImage from '../assets/labTileset.png';

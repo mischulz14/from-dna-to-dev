@@ -6,7 +6,6 @@ import LabScene from '../scenes/LabScene';
 import PreloaderScene from '../scenes/PreloaderScene';
 import SleepDeprivationBattleScene from '../scenes/SleepDeprivationBattleScene';
 import StartScene from '../scenes/StartScene';
-import TestScene from '../scenes/TestScene';
 import UIScene from '../scenes/UIScene';
 import WohnungsIntroScene from '../scenes/WohnungsIntroScene';
 
@@ -38,7 +37,6 @@ const config: Phaser.Types.Core.GameConfig = {
     StartScene,
     LabScene,
     UIScene,
-    TestScene,
     SleepDeprivationBattleScene,
     VirusBattleScene,
     LabCutscene,

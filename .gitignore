@@ -33,3 +33,7 @@ dist
 
 # Ignore Mac OS files
 .DS_Store
+
+#ignore legacy files
+legacy
+
