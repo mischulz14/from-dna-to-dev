@@ -1,7 +1,5 @@
 import Phaser from 'phaser';
 
-import introAudioFile from '../assets/audio/LabIntro.wav';
-import wohnungsAudioFile from '../assets/audio/WohnungsCutscene.mp3';
 import { battleBackgroundSpriteNames } from '../data/battleBackgroundSpriteNames';
 import {
   cutSceneAnimsInfo,
@@ -38,7 +36,7 @@ export default class PreloadScene extends Phaser.Scene {
     this.createLabBattleAnimations();
     this.createCutSceneAnimations();
 
-    this.scene.start('StartScene');
+    this.scene.start('WohnungsIntroScene');
   }
 
   addProgressBar() {
@@ -77,7 +75,10 @@ export default class PreloadScene extends Phaser.Scene {
 
   preloadAudio() {
     this.load.audio(cutSceneAudioNames.intro, 'assets/audio/LabIntro.wav');
-    this.load.audio(cutSceneAudioNames.wohnung, wohnungsAudioFile);
+    this.load.audio(
+      cutSceneAudioNames.wohnung,
+      'assets/audio/WohnungsCutscene.mp3',
+    );
   }
 
   preloadCutsceneSprites() {
