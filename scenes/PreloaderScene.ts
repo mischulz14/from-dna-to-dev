@@ -194,39 +194,6 @@ export default class PreloadScene extends Phaser.Scene {
     );
 
     this.load.spritesheet(
-      'fistpunchrightandleft',
-      '../assets/fistpunchrightandleft.png',
-      {
-        frameWidth: 128,
-        frameHeight: 128,
-      },
-    );
-
-    this.load.spritesheet(
-      'fistpunchupanddown',
-      '../assets/fistpunchupanddown.png',
-      {
-        frameWidth: 128,
-        frameHeight: 128,
-      },
-    );
-
-    this.load.spritesheet('fistattack', '../assets/fistattack.png', {
-      frameWidth: 32,
-      frameHeight: 64,
-    });
-
-    this.load.spritesheet('testenemy', '../assets/testEnemy.png', {
-      frameWidth: 32,
-      frameHeight: 32,
-    });
-
-    this.load.spritesheet('evade', '../assets/evadeSprites.png', {
-      frameWidth: 80,
-      frameHeight: 128,
-    });
-
-    this.load.spritesheet(
       enemySpriteNames.virus,
       '../assets/VirusBattleSprite.png',
       {
