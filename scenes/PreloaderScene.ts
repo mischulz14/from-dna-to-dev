@@ -84,7 +84,7 @@ export default class PreloadScene extends Phaser.Scene {
   }
 
   preloadAudio() {
-    this.load.audio(cutSceneAudioNames.intro, introAudioFile);
+    this.load.audio(cutSceneAudioNames.intro, 'assets/audio/LabIntro.mp3');
     this.load.audio(cutSceneAudioNames.wohnung, wohnungsAudioFile);
   }
 
