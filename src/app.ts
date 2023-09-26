@@ -45,10 +45,11 @@ const config: Phaser.Types.Core.GameConfig = {
 
 const game = new Phaser.Game(config);
 
-// using singleton pattern to access global audio manager
+// accessing global audio manager
 const globalAudioManager = GlobalAudioManager.getInstance();
 globalAudioManager.initialize(game);
 
+// add event listener to audio button and toggle sound on click
 document.addEventListener('DOMContentLoaded', () => {
   const audioButton = document.getElementById('audio-button');
   if (audioButton) {
@@ -56,4 +57,9 @@ document.addEventListener('DOMContentLoaded', () => {
       globalAudioManager.toggleSound();
     });
   }
+});
+
+// create a new audio context because of autoplay policy
+document.addEventListener('DOMContentLoaded', () => {
+  globalAudioManager.audioContext = new AudioContext();
 });

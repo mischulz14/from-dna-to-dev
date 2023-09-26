@@ -142,28 +142,6 @@ export default class LabScene extends Phaser.Scene {
       'keydown-ENTER',
       this.dialogueController.playerPressesEnterEventListener,
     );
-    this.events.on('resumeGame', () => {
-      console.log('resumeGame event got triggered');
-      this.cutsceneTransitionReverse();
-
-      this.dialogueController.dialogueField.show();
-      this.dialogueController.isDialogueInCutscene = true;
-      this.dialogueController.initiateDialogueNodesArray(
-        [
-          new DialogueNode('You caught the probe last second!'),
-          new DialogueNode('Hmm...'),
-          new DialogueNode(
-            'It seems that your stress response leads to imaginative fight scenes...',
-          ),
-          new DialogueNode('You wonder if that is a good thing...'),
-          new DialogueNode('At least it seems to boost your reflexes!'),
-        ],
-        null,
-        null,
-      );
-      this.dialogueController.typeText();
-    });
-
     this.events.on('dialogueEnded', () => {
       this.activeInteractiveGameObject.triggerEventWhenDialogueEnds(
         this,

@@ -1,10 +1,17 @@
+/**
+ * Singleton class that manages the audio pausing or resuming for the entire game.
+ * it is initialized in app.ts where it gets passed the game object, which means that it persists scene changes.
+ * this in combination with the html button in the DOM allows us to pause and resume the audio at will, no matter which scene we are in.
+ */
+
 export default class GlobalAudioManager {
   private static instance: GlobalAudioManager;
   private game: Phaser.Game | null = null;
-  private isSoundPaused: boolean = false;
+  public isSoundPaused: boolean = false;
   private audioButton: HTMLElement | null =
     document.getElementById('audio-button');
   private audioOnSvg: string;
+  public audioContext: AudioContext = new AudioContext();
   private audioOffSvg: string;
   private pauseTimestamps: Map<string, number> = new Map();
 
@@ -19,6 +26,7 @@ export default class GlobalAudioManager {
 
   public initialize(game: Phaser.Game): void {
     this.game = game;
+    this.isSoundPaused = false;
   }
 
   public pauseAll(): void {

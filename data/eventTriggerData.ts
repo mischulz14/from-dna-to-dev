@@ -85,7 +85,6 @@ export const eventTriggerData = {
 
           scene.scene.stop('BattleScene');
           scene.scene.resume('LabScene');
-          scene.scene.get('LabScene').events.emit('resumeGame');
           scene.scene.resume('UIScene');
         },
       }); // Launch the StartScene alongside LabScene
