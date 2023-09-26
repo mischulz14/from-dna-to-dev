@@ -1,7 +1,12 @@
+/**
+ * Takes in a hitbox and a tilemap layer and returns true if the hitbox collides with any tiles in the layer.
+ * @param hitbox
+ * @param layer
+ * @returns boolean
+ */
 export default function checkCollisionWithLayer(
   hitbox: Phaser.Geom.Rectangle,
   layer: Phaser.Tilemaps.TilemapLayer,
-  scene: Phaser.Scene,
 ) {
   const tiles = layer.getTilesWithinWorldXY(
     hitbox.x,
