@@ -36,7 +36,7 @@ export default class PreloadScene extends Phaser.Scene {
     this.createLabBattleAnimations();
     this.createCutSceneAnimations();
 
-    this.scene.start('StartScene');
+    this.scene.start('WohnungsIntroScene');
   }
 
   addProgressBar() {
@@ -107,17 +107,6 @@ export default class PreloadScene extends Phaser.Scene {
       frameWidth: 40,
       frameHeight: 40,
     });
-
-    // console log file processing error of labherospritenew:
-
-    this.load.spritesheet(
-      'labHeroNew',
-      '../assets/labHeroSpriteSheetTest.png',
-      {
-        frameWidth: 128,
-        frameHeight: 128,
-      },
-    );
   }
 
   preloadLabSprites() {
@@ -210,11 +199,6 @@ export default class PreloadScene extends Phaser.Scene {
         frameHeight: 64,
       },
     );
-
-    this.load.spritesheet('spike', '../assets/spike-animation.png', {
-      frameWidth: 64,
-      frameHeight: 64,
-    });
   }
 
   preloadTilesets() {

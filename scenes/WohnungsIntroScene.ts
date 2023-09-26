@@ -3,12 +3,10 @@ import {
   cutSceneAudioNames,
   cutSceneSpriteNames,
 } from '../data/cutSceneSprites';
-import DialogueController from '../dialogue/DialogueController';
-import DialogueNode from '../dialogue/DialogueNode';
+import { cutsceneTransitionReverse } from '../utils/sceneTransitions';
 import { textAppears, textDisappears } from '../utils/textEffects';
 
 export default class WohnungsIntroScene extends Phaser.Scene {
-  dialogueController: DialogueController;
   transitionRect: Phaser.GameObjects.Rectangle;
   sprite: Phaser.GameObjects.Sprite;
 
@@ -29,7 +27,7 @@ export default class WohnungsIntroScene extends Phaser.Scene {
       .setOrigin(0, 0);
     this.transitionRect.setAlpha(0); // Start with 0 opacity
 
-    this.cutsceneTransitionReverse();
+    cutsceneTransitionReverse(this, this.transitionRect);
 
     this.time.delayedCall(1000, () => {
       this.sound.play(cutSceneAudioNames.wohnung);
@@ -103,16 +101,6 @@ export default class WohnungsIntroScene extends Phaser.Scene {
       duration: 300,
       yoyo: true,
       repeat: 3,
-    });
-  }
-
-  cutsceneTransitionReverse() {
-    this.tweens.add({
-      targets: this.transitionRect,
-      alpha: { from: 1, to: 0 },
-      ease: 'Linear',
-      duration: 3000,
-      repeat: 0,
     });
   }
 }
