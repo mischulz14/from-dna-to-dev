@@ -13,7 +13,7 @@ export default class GlobalAudioManager {
   private audioOnSvg: string;
   public audioContext: AudioContext = new AudioContext();
   private audioOffSvg: string;
-  private pauseTimestamps: Map<string, number> = new Map();
+  private timer = 0;
 
   private constructor() {}
 
@@ -33,12 +33,10 @@ export default class GlobalAudioManager {
     if (this.game) {
       this.isSoundPaused = true;
 
-      // Record the timestamp when each sound is paused
       this.game.sound.getAllPlaying().forEach((sound) => {
-        // sound.sounds.forEach((sound) => {
-        console.log(sound.key);
-        // sound.update({});
+        this.startPauseTimer(sound.key);
       });
+
       this.game.sound.pauseAll();
     }
   }
@@ -47,16 +45,11 @@ export default class GlobalAudioManager {
     if (this.game) {
       this.game.sound.resumeAll();
       this.isSoundPaused = false;
-
-      // Clear the pause timestamps
-      this.pauseTimestamps.clear();
     }
   }
 
-  public getPauseDuration(soundKey: string): number | null {
-    return this.pauseTimestamps.has(soundKey)
-      ? Date.now() - (this.pauseTimestamps.get(soundKey) || 0)
-      : null;
+  public startPauseTimer(soundKey: string): void {
+    this.timer = new Date().getTime();
   }
 
   public toggleSound(): void {

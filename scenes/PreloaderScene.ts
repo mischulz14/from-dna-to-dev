@@ -8,6 +8,7 @@ import {
 } from '../data/cutSceneSprites';
 import { enemyBattleAnimationNames } from '../data/enemyBattleAnimationNames';
 import { enemySpriteNames } from '../data/enemySpriteNames';
+import { heroAnimNames } from '../data/heroAnimNames';
 import { heroBattleAnimationNames } from '../data/heroBattleAnimationNames';
 import { heroBattleSpriteNames } from '../data/heroBattleSpriteNames';
 
@@ -35,8 +36,9 @@ export default class PreloadScene extends Phaser.Scene {
     this.createLabAnimations();
     this.createLabBattleAnimations();
     this.createCutSceneAnimations();
+    this.createHeroAnimations();
 
-    this.scene.start('WohnungsIntroScene');
+    this.scene.start('LabScene');
   }
 
   addProgressBar() {
@@ -227,6 +229,85 @@ export default class PreloadScene extends Phaser.Scene {
         frameRate: 6,
         repeat: animInfo.repeat ? animInfo.repeat : 0,
       });
+    });
+  }
+
+  createHeroAnimations() {
+    this.anims.create({
+      key: heroAnimNames.idleDown,
+      frames: this.anims.generateFrameNumbers('labHero', {
+        start: 29,
+        end: 33,
+      }),
+      frameRate: 6,
+      repeat: -1,
+    });
+
+    this.anims.create({
+      key: heroAnimNames.runDown,
+      frames: this.anims.generateFrameNumbers('labHero', {
+        start: 34,
+        end: 41,
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });
+
+    this.anims.create({
+      key: heroAnimNames.idleUp,
+      frames: this.anims.generateFrameNumbers('labHero', {
+        start: 42,
+        end: 46,
+      }),
+      frameRate: 6,
+      repeat: -1,
+    });
+
+    this.anims.create({
+      key: heroAnimNames.runUp,
+      frames: this.anims.generateFrameNumbers('labHero', {
+        start: 47,
+        end: 54,
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });
+
+    this.anims.create({
+      key: heroAnimNames.idleLeft,
+      frames: this.anims.generateFrameNumbers('labHero', {
+        start: 16,
+        end: 20,
+      }),
+      frameRate: 6,
+      repeat: -1,
+    });
+
+    this.anims.create({
+      key: heroAnimNames.runLeft,
+      frames: this.anims.generateFrameNumbers('labHero', { start: 0, end: 7 }),
+      frameRate: 10,
+      repeat: -1,
+    });
+
+    this.anims.create({
+      key: heroAnimNames.idleRight,
+      frames: this.anims.generateFrameNumbers('labHero', {
+        start: 21,
+        end: 25,
+      }),
+      frameRate: 6,
+      repeat: -1,
+    });
+
+    this.anims.create({
+      key: heroAnimNames.runRight,
+      frames: this.anims.generateFrameNumbers('labHero', {
+        start: 8,
+        end: 15,
+      }),
+      frameRate: 10,
+      repeat: -1,
     });
   }
 
