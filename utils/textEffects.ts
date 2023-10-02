@@ -13,7 +13,7 @@
  */
 
 export function textAppears(
-  textContent: string,
+  textContent: Phaser.GameObjects.Text,
   fontSize,
   fontFamily,
   duration,

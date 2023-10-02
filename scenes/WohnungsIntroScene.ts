@@ -107,21 +107,22 @@ export default class WohnungsIntroScene extends Phaser.Scene {
 
 function getCutSceneText() {
   const text1 =
-    "You decided to take a vacation with your girlfriend in Spain. \n You're laying in bed, relaxing, scrolling on your phone.";
+    "You decided to take a vacation with your girlfriend in Spain. \n You're laying in bed, relaxing, scrolling on your phone." as unknown as Phaser.GameObjects.Text;
 
   const text2 =
-    "But wait! What is that? An email pops up ... Hmmm... \n 'Dear Employee, you where just a number for us so we have to let you go,  \n along with all the other employees we didn't care about.";
+    "But wait! What is that? An email pops up ... Hmmm... \n 'Dear Employee, you where just a number for us so we have to let you go,  \n along with all the other employees we didn't care about." as unknown as Phaser.GameObjects.Text;
 
   const text3 =
-    "WHAT?! They can't just fire me out of the blue \n without even speaking to me first!";
+    "WHAT?! They can't just fire me out of the blue \n without even speaking to me first!" as unknown as Phaser.GameObjects.Text;
 
   const text4 =
-    'Your exasperated gasp seems to have caught the attention of your girlfriend. ';
+    'Your exasperated gasp seems to have caught the attention of your girlfriend. ' as unknown as Phaser.GameObjects.Text;
 
-  const text5 = "'What is it?' she asks, while entering the room.";
+  const text5 =
+    "'What is it?' she asks, while entering the room." as unknown as Phaser.GameObjects.Text;
 
   const text6 =
-    "You just answer 'Can I tell you after I drank some coffee?\n And I'll need a strong one for that explanation...'";
+    "You just answer 'Can I tell you after I drank some coffee?\n And I'll need a strong one for that explanation...'" as unknown as Phaser.GameObjects.Text;
 
   return { text1, text2, text3, text4, text5, text6 };
 }

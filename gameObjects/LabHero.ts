@@ -49,13 +49,6 @@ export default class LabHero extends Phaser.Physics.Arcade.Sprite {
     this.cursors = this.scene.input.keyboard.createCursorKeys();
     this.lastDirection = 'down';
     this.speed = 200;
-
-    this.createAnimations(scene);
-  }
-
-  createAnimations(scene: Phaser.Scene) {
-    // Play the initial idle-down animation
-    // this.anims.play('idle-down', true);
   }
 
   update() {
@@ -66,7 +59,7 @@ export default class LabHero extends Phaser.Physics.Arcade.Sprite {
       return;
     }
 
-    this.body.enable = true; // enable collision response
+    this.body.enable = true; // enable collision response if not frozen
     // Reset the velocity
     this.setVelocity(0);
     this.updateLastDirection();
