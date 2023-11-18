@@ -3,6 +3,7 @@ import Phaser, { Events } from 'phaser';
 import AttackOptions from '../battle/AttackOptions';
 import { heroBattleAnimationNames } from '../data/heroBattleAnimationNames';
 import DialogueField from '../dialogue/DialogueField';
+import { cutsceneTransitionReverse } from '../utils/sceneTransitions';
 
 export default class VirusBattleScene extends Phaser.Scene {
   player: any;
@@ -48,29 +49,8 @@ export default class VirusBattleScene extends Phaser.Scene {
     this.enemyHealth = 10;
     this.gameEvents = new Events.EventEmitter();
 
-    this.gameEvents.on('battleStart', this.startBattle, this);
-    this.gameEvents.on('showAttackOptions', this.showAttackOptions, this);
-    this.gameEvents.on('playerAttackChosen', this.playerAttackChosen, this);
-    this.gameEvents.on(
-      'showPlayerAttackMessage',
-      this.showPlayerAttackMessage,
-      this,
-    );
-    this.gameEvents.on(
-      'playPlayerAttackAnimation',
-      this.playPlayerAttackAnimation,
-      this,
-    );
-    this.gameEvents.on(
-      'playEnemyAttackAnimation',
-      this.playEnemyAttackAnimation,
-      this,
-    );
-    this.gameEvents.on('playDamageAnimation', this.playDamageAnimation, this);
-    this.gameEvents.on('reduceEnemyHealth', this.reduceEnemyHealth, this);
-    this.gameEvents.on('enemyAttackChosen', this.enemyAttackChosen, this);
-    this.gameEvents.on('reducePlayerHealth', this.reducePlayerHealth, this);
-    this.gameEvents.on('checkBattleEnd', this.checkBattleEnd, this);
+    this.setUpGameEvents();
+    cutsceneTransitionReverse(this, this.transitionRect);
   }
 
   init(data: any) {
@@ -395,5 +375,31 @@ export default class VirusBattleScene extends Phaser.Scene {
       duration: 1000,
       repeat: 0,
     });
+  }
+
+  setUpGameEvents() {
+    this.gameEvents.on('battleStart', this.startBattle, this);
+    this.gameEvents.on('showAttackOptions', this.showAttackOptions, this);
+    this.gameEvents.on('playerAttackChosen', this.playerAttackChosen, this);
+    this.gameEvents.on(
+      'showPlayerAttackMessage',
+      this.showPlayerAttackMessage,
+      this,
+    );
+    this.gameEvents.on(
+      'playPlayerAttackAnimation',
+      this.playPlayerAttackAnimation,
+      this,
+    );
+    this.gameEvents.on(
+      'playEnemyAttackAnimation',
+      this.playEnemyAttackAnimation,
+      this,
+    );
+    this.gameEvents.on('playDamageAnimation', this.playDamageAnimation, this);
+    this.gameEvents.on('reduceEnemyHealth', this.reduceEnemyHealth, this);
+    this.gameEvents.on('enemyAttackChosen', this.enemyAttackChosen, this);
+    this.gameEvents.on('reducePlayerHealth', this.reducePlayerHealth, this);
+    this.gameEvents.on('checkBattleEnd', this.checkBattleEnd, this);
   }
 }
