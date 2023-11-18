@@ -4,7 +4,7 @@ import IdleState from './IdleState';
 import RunState from './RunState';
 
 export default class PlayerFiniteStateMachine {
-  state: any;
+  state: IdleState | RunState;
   idleState: IdleState;
   states: {
     idle: IdleState;
@@ -29,7 +29,7 @@ export default class PlayerFiniteStateMachine {
 
   switchState(state: string) {
     this.state = this.states[state];
-    this.state.enter() ?? this.state.enter();
+    this.state ?? this.state.enter();
   }
 
   getState() {
