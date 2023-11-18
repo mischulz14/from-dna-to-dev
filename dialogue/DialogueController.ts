@@ -113,7 +113,6 @@ export default class DialogueController {
     }
   };
 
-  // Add this method
   resetAlreadyShownOptions() {
     for (let node of this.dialogue) {
       node.alreadyShownOptions = false;
@@ -128,10 +127,6 @@ export default class DialogueController {
     this.dialogue = dialogue;
     this.interactiveGameObject = interactiveGameObject;
     this.hero = hero;
-  }
-
-  progressDialogueNodeWithOptions() {
-    this.dialogue[this.currentDialogueIndex].showOptions();
   }
 
   triggerEventAfterDialogueEnds(eventName: string) {

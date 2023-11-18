@@ -1,4 +1,5 @@
 import LabHero from '../gameObjects/LabHero';
+import Laia from '../gameObjects/Laia';
 import IdleState from './IdleState';
 import RunState from './RunState';
 
@@ -9,7 +10,7 @@ export default class PlayerFiniteStateMachine {
     idle: IdleState;
     run: RunState;
   };
-  constructor(hero: LabHero) {
+  constructor(hero: LabHero | Laia) {
     this.idleState = new IdleState(hero);
     this.start();
     this.states = {

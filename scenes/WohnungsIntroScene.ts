@@ -29,9 +29,9 @@ export default class WohnungsIntroScene extends Phaser.Scene {
 
     cutsceneTransitionReverse(this, this.transitionRect);
 
-    this.time.delayedCall(1000, () => {
-      this.sound.play(cutSceneAudioNames.wohnung);
-    });
+    // this.time.delayedCall(1000, () => {
+    //   this.sound.play(cutSceneAudioNames.wohnung);
+    // });
 
     this.revealText();
   }
@@ -44,7 +44,10 @@ export default class WohnungsIntroScene extends Phaser.Scene {
     });
 
     this.time.delayedCall(8500, () => {
-      this.sprite.play(cutSceneAnimsInfo.wohnung.anims[1].name);
+      const anim = this.sprite.play(cutSceneAnimsInfo.wohnung.anims[1].name);
+      this.time.delayedCall(2000, () => {
+        this.sprite.play(cutSceneAnimsInfo.wohnung.anims[0].name);
+      });
 
       textDisappears(text1, 800, this);
       text2 = textAppears(text2, '1.6rem', 'Rainyhearts', 1000, 10, 400, this);
@@ -76,11 +79,12 @@ export default class WohnungsIntroScene extends Phaser.Scene {
       text6 = textAppears(text6, '1.6rem', 'Rainyhearts', 1000, 10, 400, this);
     });
 
-    // this.time.delayedCall(45000, () => {
-    //   textDisappears(text6, 800, this);
-    //   this.scene.start('WohnungsScene');
-    // }
-    // );
+    this.time.delayedCall(45000, () => {
+      textDisappears(text6, 800, this);
+      this.time.delayedCall(3000, () => {
+        this.scene.start('ApartmentScene');
+      });
+    });
   }
 
   cutsceneTransitionNormal() {

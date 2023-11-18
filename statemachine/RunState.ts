@@ -9,7 +9,10 @@ export default class RunState implements State {
   }
 
   enter() {
-    this.hero.anims.play('run-' + this.hero.lastDirection, true);
+    this.hero.anims.play(
+      this.hero.animPrefix + '-run-' + this.hero.lastDirection,
+      true,
+    );
   }
 
   update() {
@@ -35,6 +38,9 @@ export default class RunState implements State {
 
     // Update velocity and animation
     this.hero.setVelocity(x * this.hero.speed, y * this.hero.speed);
-    this.hero.anims.play('run-' + this.hero.lastDirection, true);
+    this.hero.anims.play(
+      this.hero.animPrefix + '-run-' + this.hero.lastDirection,
+      true,
+    );
   }
 }

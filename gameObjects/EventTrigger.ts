@@ -12,8 +12,8 @@ export default class EventTrigger extends InteractiveGameObject {
     x: number,
     y: number,
     texture: string,
-    dialogueIndictaorKey: string,
-    dialogueIndictaorText: string,
+    dialogueIndicatorKey: string,
+    dialogueIndicatorText: string,
     dialogueNodesObj: { nodes: DialogueNode[] },
     triggerEventWhenDialogueEnds: (scene: Phaser.Scene) => void,
     updateDialogueNodeBasedOnPlayerState: (
@@ -21,7 +21,7 @@ export default class EventTrigger extends InteractiveGameObject {
       trigger: InteractiveGameObject,
     ) => void,
   ) {
-    super(scene, x, y, texture, dialogueIndictaorKey, dialogueIndictaorText);
+    super(scene, x, y, texture, dialogueIndicatorKey, dialogueIndicatorText);
     this.setImmovable(true);
 
     this.dialogueNodesObj = dialogueNodesObj;

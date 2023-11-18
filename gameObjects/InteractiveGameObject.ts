@@ -7,8 +7,8 @@ import DialogueNode from '../dialogue/DialogueNode';
 export default class InteractiveGameObject extends Phaser.Physics.Arcade
   .Sprite {
   dialogueIndicator: Phaser.GameObjects.DOMElement | null;
-  dialogueIndictaorKey: string;
-  dialogueIndictaorText: string;
+  dialogueIndicatorKey: string;
+  dialogueIndicatorText: string;
   isSpeaking: boolean;
   dialogueNodesObj: { nodes: DialogueNode[] };
   updateDialogueNodeBasedOnPlayerState: (
@@ -23,15 +23,15 @@ export default class InteractiveGameObject extends Phaser.Physics.Arcade
     x: number,
     y: number,
     texture: string,
-    dialogueIndictaorKey?: string,
-    dialogueIndictaorText?: string,
+    dialogueIndicatorKey?: string,
+    dialogueIndicatorText?: string,
   ) {
     super(scene, x, y, texture);
     this.scene = scene;
     this.dialogueIndicator = null;
     this.isSpeaking = false;
-    this.dialogueIndictaorKey = dialogueIndictaorKey;
-    this.dialogueIndictaorText = dialogueIndictaorText;
+    this.dialogueIndicatorKey = dialogueIndicatorKey;
+    this.dialogueIndicatorText = dialogueIndicatorText;
     // Here we create our dialogue nodes
 
     this.bounds = this.getBounds();
@@ -56,8 +56,8 @@ export default class InteractiveGameObject extends Phaser.Physics.Arcade
         this.x,
         this.y - 55,
         new DialogueIndication(
-          this.dialogueIndictaorKey,
-          this.dialogueIndictaorText,
+          this.dialogueIndicatorKey,
+          this.dialogueIndicatorText,
         ).indication,
       );
       this.dialogueIndicator?.setDepth(1);

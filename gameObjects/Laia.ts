@@ -1,19 +1,14 @@
 import * as Phaser from 'phaser';
 
 import PlayerFiniteStateMachine from '../stateMachine/PlayerFiniteStateMachine';
+import LabHero from './LabHero';
 
-export default class LabHero extends Phaser.Physics.Arcade.Sprite {
+export default class Laia extends Phaser.Physics.Arcade.Sprite {
   cursors: Phaser.Types.Input.Keyboard.CursorKeys;
   lastDirection: string;
   speed: number;
   freeze: boolean;
-  shadow: Phaser.GameObjects.Graphics;
   heroBounds: Phaser.Geom.Rectangle;
-  hasTalkedToMainNPC: boolean;
-  hasKey: boolean;
-  hasBattledVirus: boolean;
-  hasDeliveredProbe: boolean;
-  hasBattledSleepDeprivation: boolean;
   stateMachine: PlayerFiniteStateMachine;
   animPrefix: string;
 
@@ -27,24 +22,16 @@ export default class LabHero extends Phaser.Physics.Arcade.Sprite {
     super(scene, x, y, texture, frame);
     // this.stateMachine = new StateMachine();
     this.freeze = false;
-    this.shadow = scene.add.graphics({
-      fillStyle: { color: 0x000000, alpha: 0.1 },
-    });
     this.heroBounds = this.getBounds();
-    this.hasKey = false;
-    this.hasBattledVirus = false;
-    this.hasDeliveredProbe = false;
-    this.hasBattledSleepDeprivation = false;
+    this.animPrefix = 'laia';
     this.stateMachine = new PlayerFiniteStateMachine(this);
-    this.animPrefix = 'lab';
-
     // Add this instance to the scene's display list and update list
 
     scene.add.existing(this);
     scene.physics.add.existing(this);
 
-    this.body.setSize(20, 20);
-    this.body.setOffset(11, 20);
+    this.body.setSize(15, 15);
+    this.body.setOffset(9.2, 20.5);
 
     // Initialize the cursors object and the lastDirection string
     this.cursors = this.scene.input.keyboard.createCursorKeys();
@@ -56,7 +43,7 @@ export default class LabHero extends Phaser.Physics.Arcade.Sprite {
     // Hero is frozen while talking or during a cuscene
     if (this.freeze) {
       this.body.enable = false; // disable collision response
-      this.anims.play(this.animPrefix + '-idle-' + this.lastDirection, true);
+      this.anims.play('laia-idle-' + this.lastDirection, true);
       return;
     }
 

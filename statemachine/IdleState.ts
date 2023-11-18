@@ -1,15 +1,19 @@
 import { State } from '../api/state';
 import LabHero from '../gameObjects/LabHero';
+import Laia from '../gameObjects/Laia';
 import { anyOfTheCursorKeysAreDown, keyIsDown } from '../utils/keyIsDown';
 
 export default class IdleState implements State {
-  hero: LabHero;
-  constructor(hero: LabHero) {
+  hero: LabHero | Laia;
+  constructor(hero: LabHero | Laia) {
     this.hero = hero;
   }
 
   enter() {
-    this.hero.anims.play('idle-' + this.hero.lastDirection, true);
+    this.hero.anims.play(
+      this.hero.animPrefix + '-idle-' + this.hero.lastDirection,
+      true,
+    );
   }
 
   update() {
@@ -19,6 +23,9 @@ export default class IdleState implements State {
       return;
     }
 
-    this.hero.play('idle-' + this.hero.lastDirection, true);
+    this.hero.play(
+      this.hero.animPrefix + '-idle-' + this.hero.lastDirection,
+      true,
+    );
   }
 }

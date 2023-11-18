@@ -24,6 +24,7 @@ export default class VirusBattleScene extends Phaser.Scene {
   hasPlayerChosenAttack: boolean = false;
   hasPlayerAttacked: boolean = false;
   gameEvents: Events.EventEmitter;
+  initialDialogue: string = '';
   deactivateKeydown: boolean = false;
   dialogueText: string = '';
   fullText: string = '';
@@ -79,6 +80,7 @@ export default class VirusBattleScene extends Phaser.Scene {
     this.battleHeroSpriteTexture = data.battleHeroSpriteTexture;
     this.enemyTexture = data.enemyTexture;
     this.enemyName = data.enemyName;
+    this.initialDialogue = data.initialDialogue;
     this.triggerEventsOnBattleEnd = data.triggerEventsOnBattleEnd;
     this.heroBattleAnimationName = data.heroBattleAnimationName;
     this.enemyBattleAnimationName = data.enemyBattleAnimationName;
@@ -174,11 +176,7 @@ export default class VirusBattleScene extends Phaser.Scene {
     this.anims.play(this.heroBattleAnimationName, this.player);
     this.anims.play(this.enemyBattleAnimationName, this.enemy);
     this.addDialogueField();
-    this.typeWriterEffect(
-      'You are being attacked by a new variant of the corona virus! \nIt is ... kind of cute? You chose to call it ' +
-        this.enemyName +
-        '.',
-    );
+    this.typeWriterEffect(this.initialDialogue);
     this.gameObjectsEnterTheScene();
     await this.waitForUserConfirmation();
     this.showAttackOptions();

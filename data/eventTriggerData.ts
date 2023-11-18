@@ -66,6 +66,8 @@ export const eventTriggerData = {
         backgroundImage: battleBackgroundSpriteNames.lab,
         battleHeroSpriteTexture: heroBattleSpriteNames.lab,
         enemyTexture: enemySpriteNames.virus,
+        initialDialogue:
+          'You are being attacked by a virus! You chose to call it Mr.Virus.',
         enemyName: 'Mr. Virus',
         triggerEventsOnBattleEnd: (scene: any) => {
           // @ts-ignore
@@ -175,6 +177,8 @@ export const eventTriggerData = {
         enemyAttacks: enemyAttacks.sleepDeprivationBattle,
         playerAttacks: playerAttacks.sleepDeprivationBattle,
         backgroundImage: battleBackgroundSpriteNames.lab,
+        initialDialogue:
+          "You're being attack by sleep deprivation! Fight Mr.Sleepyhead!",
         battleHeroSpriteTexture: heroBattleSpriteNames.lab,
         enemyTexture: enemySpriteNames.sleepDeprivation,
         enemyName: 'Mr. Sleepyhead',

@@ -4,6 +4,7 @@ import DialogueNode from '../dialogue/DialogueNode';
 import ObjectiveIndicator from '../gameObjects/ObjectiveIndicator';
 import InteractiveGameObject from './InteractiveGameObject';
 import Hero from './LabHero';
+import Laia from './Laia';
 
 export default class LabNPC extends InteractiveGameObject {
   shadow: Phaser.GameObjects.Graphics;
@@ -24,8 +25,8 @@ export default class LabNPC extends InteractiveGameObject {
     y: number,
     texture: string,
     initialAnimation: string,
-    dialogueIndictaorKey: string,
-    dialogueIndictaorText: string,
+    dialogueIndicatorKey: string,
+    dialogueIndicatorText: string,
     dialogueNodesObj: { nodes: DialogueNode[] },
     triggerEventWhenDialogueEnds: (
       scene: Phaser.Scene,
@@ -36,7 +37,7 @@ export default class LabNPC extends InteractiveGameObject {
       labNPC: LabNPC,
     ) => void,
   ) {
-    super(scene, x, y, texture, dialogueIndictaorKey, dialogueIndictaorText);
+    super(scene, x, y, texture, dialogueIndicatorKey, dialogueIndicatorText);
 
     // Here we create our dialogue nodes
     // this.behaviorLoop();
@@ -76,7 +77,7 @@ export default class LabNPC extends InteractiveGameObject {
     this.updateShadow();
   }
 
-  turnToHero = (hero: Hero) => {
+  turnToHero = (hero: Hero | Laia) => {
     console.log('turnToHero');
     console.log('current animation: ', this.anims.currentAnim.key);
     console.log('texture: ', this.texture);
