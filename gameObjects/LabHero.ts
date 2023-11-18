@@ -1,6 +1,6 @@
 import * as Phaser from 'phaser';
 
-import PlayerFiniteStateMachine from '../stateMachine/PlayerFiniteStateMachine';
+import PlayerFiniteStateMachine from '../statemachine/PlayerFiniteStateMachine';
 
 export default class LabHero extends Phaser.Physics.Arcade.Sprite {
   cursors: Phaser.Types.Input.Keyboard.CursorKeys;
