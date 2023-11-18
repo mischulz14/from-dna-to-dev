@@ -1,7 +1,6 @@
 import * as Phaser from 'phaser';
 
 import PlayerFiniteStateMachine from '../stateMachine/PlayerFiniteStateMachine';
-import LabHero from './LabHero';
 
 export default class Laia extends Phaser.Physics.Arcade.Sprite {
   cursors: Phaser.Types.Input.Keyboard.CursorKeys;
