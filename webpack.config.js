@@ -2,6 +2,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const path = require('path');
 
+// NOTE TO SELF: case matching matters when deploying to netlify
+
 module.exports = {
   entry: './src/app.ts',
   plugins: [
