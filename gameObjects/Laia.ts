@@ -1,8 +1,9 @@
 import * as Phaser from 'phaser';
 
 import PlayerFiniteStateMachine from '../statemachine/PlayerFiniteStateMachine';
+import Hero from './Hero';
 
-export default class Laia extends Phaser.Physics.Arcade.Sprite {
+export default class Laia extends Hero implements Phaser.Physics.Arcade.Sprite {
   cursors: Phaser.Types.Input.Keyboard.CursorKeys;
   lastDirection: string;
   speed: number;
@@ -18,7 +19,7 @@ export default class Laia extends Phaser.Physics.Arcade.Sprite {
     texture: string,
     frame?: string | number,
   ) {
-    super(scene, x, y, texture, frame);
+    super(scene, x, y, texture, {}, frame);
     // this.stateMachine = new StateMachine();
     this.freeze = false;
     this.heroBounds = this.getBounds();
@@ -36,32 +37,5 @@ export default class Laia extends Phaser.Physics.Arcade.Sprite {
     this.cursors = this.scene.input.keyboard.createCursorKeys();
     this.lastDirection = 'down';
     this.speed = 200;
-  }
-
-  update() {
-    // Hero is frozen while talking or during a cuscene
-    if (this.freeze) {
-      this.body.enable = false; // disable collision response
-      this.anims.play('laia-idle-' + this.lastDirection, true);
-      return;
-    }
-
-    this.body.enable = true; // enable collision response if not frozen
-    // Reset the velocity
-    this.setVelocity(0);
-    this.updateLastDirection();
-    this.stateMachine.update();
-  }
-
-  updateLastDirection() {
-    if (this.cursors.left.isDown) {
-      this.lastDirection = 'left';
-    } else if (this.cursors.right.isDown) {
-      this.lastDirection = 'right';
-    } else if (this.cursors.up.isDown) {
-      this.lastDirection = 'up';
-    } else if (this.cursors.down.isDown) {
-      this.lastDirection = 'down';
-    }
   }
 }

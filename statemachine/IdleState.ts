@@ -1,11 +1,10 @@
 import { State } from '../api/state';
-import LabHero from '../gameObjects/LabHero';
-import Laia from '../gameObjects/Laia';
-import { anyOfTheCursorKeysAreDown, keyIsDown } from '../utils/keyIsDown';
+import Hero from '../gameObjects/Hero';
+import { anyOfTheCursorKeysAreDown } from '../utils/keyIsDown';
 
 export default class IdleState implements State {
-  hero: LabHero | Laia;
-  constructor(hero: LabHero | Laia) {
+  hero: Hero;
+  constructor(hero: Hero) {
     this.hero = hero;
   }
 

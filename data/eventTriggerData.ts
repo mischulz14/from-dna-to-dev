@@ -16,7 +16,10 @@ export const eventTriggerData = {
       ],
     },
     updateDialogueNodeBasedOnPlayerState: (scene, eventtrigger) => {
-      if (scene.hero.hasKey && !scene.hero.hasBattledVirus) {
+      if (
+        scene.hero.booleanConditions.hasKey &&
+        !scene.hero.booleanConditions.hasBattledVirus
+      ) {
         eventtrigger.dialogueNodesObj = {
           nodes: [
             new DialogueNode('You open the refrigerator.'),
@@ -34,7 +37,10 @@ export const eventTriggerData = {
         };
       }
 
-      if (scene.hero.hasKey && scene.hero.hasBattledVirus) {
+      if (
+        scene.hero.booleanConditions.hasKey &&
+        scene.hero.booleanConditions.hasBattledVirus
+      ) {
         eventtrigger.dialogueNodesObj = {
           nodes: [
             new DialogueNode(
@@ -46,7 +52,10 @@ export const eventTriggerData = {
       }
     },
     triggerEventWhenDialogueEnds: (scene: any) => {
-      if (!scene.hero.hasKey || scene.hero.hasBattledVirus) {
+      if (
+        !scene.hero.booleanConditions.hasKey ||
+        scene.hero.booleanConditions.hasBattledVirus
+      ) {
         return;
       }
 
@@ -73,7 +82,8 @@ export const eventTriggerData = {
           // @ts-ignore
           scene.scene.get('LabScene').isEventTriggered = false;
           // @ts-ignore
-          scene.scene.get('LabScene').hero.hasBattledVirus = true;
+          scene.scene.get('LabScene').hero.booleanConditions.hasBattledVirus =
+            true;
           // @ts-ignore
           scene.scene.get('UIScene').objectives.forEach((objective) => {
             if (!objective.visible) return;
@@ -97,25 +107,28 @@ export const eventTriggerData = {
       nodes: [new DialogueNode('It seems there is a key here!')],
     },
     triggerEventWhenDialogueEnds: (scene: any) => {
-      if (!scene.hero.hasTalkedToMainNPC) {
+      if (!scene.hero.booleanConditions.hasTalkedToMainNPC) {
         console.log('triggerEventWhenDialogueEnds in fridgeKeyContainer');
         return;
       }
 
-      if (scene.hero.hasTalkedToMainNPC && !scene.hero.hasKey) {
+      if (
+        scene.hero.booleanConditions.hasTalkedToMainNPC &&
+        !scene.hero.booleanConditions.hasKey
+      ) {
         scene.events.emit('addObjective', {
           textBesidesCheckbox: 'Get a probe from the fridge',
           checkedCondition: 'hasBattledVirus',
         });
 
-        scene.hero.hasKey = true;
+        scene.hero.booleanConditions.hasKey = true;
         return;
       }
 
-      if (scene.hero.hasKey) return;
+      if (scene.hero.booleanConditions.hasKey) return;
     },
     updateDialogueNodeBasedOnPlayerState: (scene, eventtrigger) => {
-      if (!scene.hero.hasTalkedToMainNPC) {
+      if (!scene.hero.booleanConditions.hasTalkedToMainNPC) {
         eventtrigger.dialogueNodesObj = {
           nodes: [
             new DialogueNode(
@@ -123,14 +136,17 @@ export const eventTriggerData = {
             ),
           ],
         };
-      } else if (scene.hero.hasTalkedToMainNPC && !scene.hero.hasKey) {
+      } else if (
+        scene.hero.booleanConditions.hasTalkedToMainNPC &&
+        !scene.hero.booleanConditions.hasKey
+      ) {
         eventtrigger.dialogueNodesObj = {
           nodes: [
             new DialogueNode('There is a key in here!'),
             new DialogueNode('Maybe this opens the fridge! I should take it.'),
           ],
         };
-      } else if (scene.hero.hasKey) {
+      } else if (scene.hero.booleanConditions.hasKey) {
         eventtrigger.dialogueNodesObj = {
           nodes: [new DialogueNode('That key was hidden well!')],
         };
@@ -147,7 +163,7 @@ export const eventTriggerData = {
       ],
     },
     updateDialogueNodeBasedOnPlayerState: (scene, eventtrigger) => {
-      if (scene.hero.hasDeliveredProbe) {
+      if (scene.hero.booleanConditions.hasDeliveredProbe) {
         eventtrigger.dialogueNodesObj = {
           nodes: [
             new DialogueNode('You take a look at the DNA test.'),
@@ -162,7 +178,7 @@ export const eventTriggerData = {
       }
     },
     triggerEventWhenDialogueEnds: (scene: any) => {
-      if (!scene.hero.hasDeliveredProbe) {
+      if (!scene.hero.booleanConditions.hasDeliveredProbe) {
         return;
       }
 
@@ -198,7 +214,9 @@ export const eventTriggerData = {
             checkedCondition: 'hasDeliveredDNAResults',
           });
           // @ts-ignore
-          scene.scene.get('LabScene').hero.hasBattledSleepDeprivation = true;
+          scene.scene.get(
+            'LabScene',
+          ).hero.booleanConditions.hasBattledSleepDeprivation = true;
         },
       });
     },

@@ -5,14 +5,14 @@ import { npcLabData } from '../data/npcData';
 import DialogueController from '../dialogue/DialogueController';
 import DialogueNode from '../dialogue/DialogueNode';
 import EventTrigger from '../gameObjects/EventTrigger';
+import Hero from '../gameObjects/Hero';
 import InteractiveGameObject from '../gameObjects/InteractiveGameObject';
-import LabHero from '../gameObjects/LabHero';
 import LabNPC from '../gameObjects/LabNPC';
 import LevelIntro from '../levelIntro/LevelIntro';
 import areCollisionBoxesColliding from '../utils/collisonBoxCollison';
 
 export default class LabScene extends Phaser.Scene {
-  hero: LabHero;
+  hero: Hero;
   isDialoguePlaying: boolean;
   activeInteractiveGameObject: InteractiveGameObject | null;
   isEventTriggered: boolean;
@@ -170,14 +170,20 @@ export default class LabScene extends Phaser.Scene {
   /////////////////////////
 
   createHero() {
-    this.hero = new LabHero(this, 800, 170, 'labHero');
+    this.hero = new Hero(this, 800, 170, 'labHero', {
+      hasKey: false,
+      hasTalkedToMainNPC: false,
+      hasBattledVirus: false,
+      hasDeliveredProbe: false,
+      hasBattledSleepDeprivation: false,
+    });
     this.hero.setScale(2);
     this.add.existing(this.hero);
   }
 
   createCollisions() {
     this.children.each((child) => {
-      if (child instanceof InteractiveGameObject || LabHero) {
+      if (child instanceof InteractiveGameObject || Hero) {
         this.physics.add.collider(this.hero, child);
         this.physics.add.collider(this.collisionLayer, child);
       }

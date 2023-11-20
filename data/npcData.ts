@@ -16,13 +16,13 @@ export const npcLabData = {
       ],
     },
     updateDialogueNodeBasedOnHeroState: (scene, npc) => {
-      console.log('hero has key', scene.hero.hasKey);
+      console.log('hero has key', scene.hero.booleanConditions.hasKey);
       // @ts-ignore
-      const player = scene.hero as LabHero;
+      const player = scene.hero as Hero;
       if (
-        player.hasKey &&
-        !player.hasBattledVirus &&
-        !player.hasBattledSleepDeprivation
+        player.booleanConditions.hasKey &&
+        !player.booleanConditions.hasBattledVirus &&
+        !player.booleanConditions.hasBattledSleepDeprivation
       ) {
         npc.dialogueNodesObj = {
           nodes: [
@@ -33,9 +33,9 @@ export const npcLabData = {
       }
 
       if (
-        player.hasBattledVirus &&
-        player.hasKey &&
-        !player.hasBattledSleepDeprivation
+        player.booleanConditions.hasBattledVirus &&
+        player.booleanConditions.hasKey &&
+        !player.booleanConditions.hasBattledSleepDeprivation
       ) {
         npc.dialogueNodesObj = {
           nodes: [
@@ -54,9 +54,9 @@ export const npcLabData = {
       }
 
       if (
-        player.hasBattledSleepDeprivation &&
-        player.hasKey &&
-        player.hasBattledVirus
+        player.booleanConditions.hasBattledSleepDeprivation &&
+        player.booleanConditions.hasKey &&
+        player.booleanConditions.hasBattledVirus
       ) {
         npc.dialogueNodesObj = {
           nodes: [
@@ -71,12 +71,12 @@ export const npcLabData = {
     triggerEventWhenDialogueEnds: (scene: LabScene, npc) => {
       console.log('triggerEventWhenDialogueEnds in labnpc');
       if (
-        !scene.hero.hasBattledVirus &&
-        !scene.hero.hasKey &&
-        !scene.hero.hasBattledSleepDeprivation &&
-        !scene.hero.hasTalkedToMainNPC
+        !scene.hero.booleanConditions.hasBattledVirus &&
+        !scene.hero.booleanConditions.hasKey &&
+        !scene.hero.booleanConditions.hasBattledSleepDeprivation &&
+        !scene.hero.booleanConditions.hasTalkedToMainNPC
       ) {
-        scene.hero.hasTalkedToMainNPC = true;
+        scene.hero.booleanConditions.hasTalkedToMainNPC = true;
 
         scene.events.emit('addObjective', {
           textBesidesCheckbox: 'Find the key to the fridge',
@@ -86,27 +86,30 @@ export const npcLabData = {
         return;
       }
 
-      if (scene.hero.hasKey && !scene.hero.hasBattledVirus) {
+      if (
+        scene.hero.booleanConditions.hasKey &&
+        !scene.hero.booleanConditions.hasBattledVirus
+      ) {
         return;
       }
 
       if (
-        scene.hero.hasKey &&
-        scene.hero.hasBattledVirus &&
-        !scene.hero.hasBattledSleepDeprivation
+        scene.hero.booleanConditions.hasKey &&
+        scene.hero.booleanConditions.hasBattledVirus &&
+        !scene.hero.booleanConditions.hasBattledSleepDeprivation
       ) {
         scene.events.emit('addObjective', {
           textBesidesCheckbox: 'Evaluate DNA sequences',
           checkedCondition: 'hasBattledSleepDeprivation',
         });
 
-        scene.hero.hasDeliveredProbe = true;
+        scene.hero.booleanConditions.hasDeliveredProbe = true;
       }
 
       if (
-        scene.hero.hasKey &&
-        scene.hero.hasBattledVirus &&
-        scene.hero.hasBattledSleepDeprivation
+        scene.hero.booleanConditions.hasKey &&
+        scene.hero.booleanConditions.hasBattledVirus &&
+        scene.hero.booleanConditions.hasBattledSleepDeprivation
       ) {
         scene.scene.stop('LabScene');
         scene.scene.stop('UIScene');

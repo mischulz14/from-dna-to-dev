@@ -2,18 +2,14 @@ import * as Phaser from 'phaser';
 
 import PlayerFiniteStateMachine from '../statemachine/PlayerFiniteStateMachine';
 
-export default class LabHero extends Phaser.Physics.Arcade.Sprite {
+export default class Hero extends Phaser.Physics.Arcade.Sprite {
   cursors: Phaser.Types.Input.Keyboard.CursorKeys;
   lastDirection: string;
   speed: number;
   freeze: boolean;
   shadow: Phaser.GameObjects.Graphics;
   heroBounds: Phaser.Geom.Rectangle;
-  hasTalkedToMainNPC: boolean;
-  hasKey: boolean;
-  hasBattledVirus: boolean;
-  hasDeliveredProbe: boolean;
-  hasBattledSleepDeprivation: boolean;
+  booleanConditions: { [key: string]: boolean };
   stateMachine: PlayerFiniteStateMachine;
   animPrefix: string;
 
@@ -22,19 +18,16 @@ export default class LabHero extends Phaser.Physics.Arcade.Sprite {
     x: number,
     y: number,
     texture: string,
+    booleanConditions: { [key: string]: boolean },
     frame?: string | number,
   ) {
     super(scene, x, y, texture, frame);
-    // this.stateMachine = new StateMachine();
     this.freeze = false;
     this.shadow = scene.add.graphics({
       fillStyle: { color: 0x000000, alpha: 0.1 },
     });
     this.heroBounds = this.getBounds();
-    this.hasKey = false;
-    this.hasBattledVirus = false;
-    this.hasDeliveredProbe = false;
-    this.hasBattledSleepDeprivation = false;
+    this.booleanConditions = booleanConditions;
     this.stateMachine = new PlayerFiniteStateMachine(this);
     this.animPrefix = 'lab';
 

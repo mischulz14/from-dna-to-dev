@@ -44,13 +44,10 @@ export default class VirusBattleScene extends Phaser.Scene {
 
   constructor() {
     super({ key: 'BattleScene' });
-
     this.playerHealth = 130;
     this.enemyHealth = 10;
     this.gameEvents = new Events.EventEmitter();
-
     this.setUpGameEvents();
-    cutsceneTransitionReverse(this, this.transitionRect);
   }
 
   init(data: any) {
@@ -91,13 +88,13 @@ export default class VirusBattleScene extends Phaser.Scene {
       repeat: -1,
     });
 
-    this.transitionRect = this.add
-      .rectangle(0, 0, this.scale.width, this.scale.height, 0x000000)
-      .setOrigin(0, 0)
-      .setDepth(1000);
-    this.transitionRect.setAlpha(0); // Start with 0 opacity
+    // this.transitionRect = this.add
+    //   .rectangle(0, 0, this.scale.width, this.scale.height, 0x000000)
+    //   .setOrigin(0, 0)
+    //   .setDepth(1000);
+    // this.transitionRect.setAlpha(0); // Start with 0 opacity
 
-    this.cutsceneTransitionReverse();
+    // this.cutsceneTransitionReverse();
     this.startBattle();
 
     //triggers when the player presses enter.

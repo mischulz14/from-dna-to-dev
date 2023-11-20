@@ -1,9 +1,9 @@
 import { State } from '../api/state';
-import LabHero from '../gameObjects/LabHero';
-import { anyOfTheCursorKeysAreDown, keyIsDown } from '../utils/keyIsDown';
+import Hero from '../gameObjects/Hero';
+import { anyOfTheCursorKeysAreDown } from '../utils/keyIsDown';
 
 export default class RunState implements State {
-  hero: LabHero;
+  hero: Hero;
   constructor(hero) {
     this.hero = hero;
   }

@@ -2,8 +2,8 @@ import * as Phaser from 'phaser';
 
 import DialogueNode from '../dialogue/DialogueNode';
 import ObjectiveIndicator from '../gameObjects/ObjectiveIndicator';
+import Hero from './Hero';
 import InteractiveGameObject from './InteractiveGameObject';
-import Hero from './LabHero';
 import Laia from './Laia';
 
 export default class LabNPC extends InteractiveGameObject {
