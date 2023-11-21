@@ -28,6 +28,7 @@ export default class Hero extends Phaser.Physics.Arcade.Sprite {
     });
     this.heroBounds = this.getBounds();
     this.booleanConditions = booleanConditions;
+
     this.stateMachine = new PlayerFiniteStateMachine(this);
     this.animPrefix = 'lab';
 
@@ -36,8 +37,8 @@ export default class Hero extends Phaser.Physics.Arcade.Sprite {
     scene.add.existing(this);
     scene.physics.add.existing(this);
 
-    this.body.setSize(20, 20);
-    this.body.setOffset(11, 20);
+    this.body.setSize(15, 16);
+    this.body.setOffset(13, 22);
 
     // Initialize the cursors object and the lastDirection string
     this.cursors = this.scene.input.keyboard.createCursorKeys();

@@ -121,6 +121,8 @@ export const eventTriggerData = {
           checkedCondition: 'hasBattledVirus',
         });
 
+        console.log(scene.hero.booleanConditions);
+
         scene.hero.booleanConditions.hasKey = true;
         return;
       }

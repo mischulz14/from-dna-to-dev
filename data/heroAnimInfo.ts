@@ -101,7 +101,7 @@ export const laiaHeroAnimInfo = [
   {
     key: 'laia-run-down',
     textureName: 'laiaHero',
-    startFrame: 39,
+    startFrame: 38,
     endFrame: 45,
     frameRate: 10,
     repeat: -1,

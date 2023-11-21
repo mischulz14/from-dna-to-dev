@@ -7,9 +7,10 @@ import DialogueNode from '../dialogue/DialogueNode';
 import EventTrigger from '../gameObjects/EventTrigger';
 import Hero from '../gameObjects/Hero';
 import InteractiveGameObject from '../gameObjects/InteractiveGameObject';
-import LabNPC from '../gameObjects/LabNPC';
+import NPC from '../gameObjects/NPC';
 import LevelIntro from '../levelIntro/LevelIntro';
 import areCollisionBoxesColliding from '../utils/collisonBoxCollison';
+import UIScene from './UIScene';
 
 export default class LabScene extends Phaser.Scene {
   hero: Hero;
@@ -44,6 +45,12 @@ export default class LabScene extends Phaser.Scene {
 
     // Make the camera follow the hero
     this.cameras.main.startFollow(this.hero);
+    const uiScene = this.scene.get('UIScene') as UIScene;
+    uiScene.changeCurrentScene('LabScene');
+    uiScene.addInitialObjective(
+      'hasTalkedToMainNPC',
+      'Talk to the people in the Lab and see if someone has work for you.',
+    );
     this.scene.launch('UIScene');
     // this.playLevelIntroOnce();
   }
@@ -98,9 +105,9 @@ export default class LabScene extends Phaser.Scene {
     }
   }
 
-  hideSpeechIndication(child: LabNPC | EventTrigger) {
+  hideSpeechIndication(child: NPC | EventTrigger) {
     if (
-      (child instanceof LabNPC || child instanceof EventTrigger) &&
+      (child instanceof NPC || child instanceof EventTrigger) &&
       !areCollisionBoxesColliding(this.hero, child)
     ) {
       child.hideSpeechIndication();
@@ -120,7 +127,7 @@ export default class LabScene extends Phaser.Scene {
   }
 
   dialogueEvent(dialogue: DialogueNode[]) {
-    if (this.activeInteractiveGameObject instanceof LabNPC) {
+    if (this.activeInteractiveGameObject instanceof NPC) {
       this.activeInteractiveGameObject.turnToHero(this.hero);
     }
     this.activeInteractiveGameObject.hideSpeechIndication();
@@ -305,7 +312,7 @@ export default class LabScene extends Phaser.Scene {
     computerBattleTrigger.setOffset(5, 20);
 
     // NPCS
-    const mainNPC = new LabNPC(
+    const mainNPC = new NPC(
       this,
       880,
       645,
@@ -318,7 +325,7 @@ export default class LabScene extends Phaser.Scene {
       npcLabData.mainNPC.updateDialogueNodeBasedOnHeroState,
     );
 
-    const infoNPC = new LabNPC(
+    const infoNPC = new NPC(
       this,
       800,
       100,
@@ -340,7 +347,7 @@ export default class LabScene extends Phaser.Scene {
 
     mainNPC.setScale(2);
 
-    const labNPCA = new LabNPC(
+    const labNPCA = new NPC(
       this,
       1000,
       645,
@@ -354,7 +361,7 @@ export default class LabScene extends Phaser.Scene {
     );
     labNPCA.setScale(2);
 
-    const labNPCB = new LabNPC(
+    const labNPCB = new NPC(
       this,
       410,
       330,
@@ -369,7 +376,7 @@ export default class LabScene extends Phaser.Scene {
 
     labNPCB.setScale(2);
 
-    const labNPCC = new LabNPC(
+    const labNPCC = new NPC(
       this,
       910,
       380,

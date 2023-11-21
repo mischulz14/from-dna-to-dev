@@ -1,12 +1,12 @@
 import * as Phaser from 'phaser';
 
 import DialogueNode from '../dialogue/DialogueNode';
-import ObjectiveIndicator from '../gameObjects/ObjectiveIndicator';
 import Hero from './Hero';
 import InteractiveGameObject from './InteractiveGameObject';
 import Laia from './Laia';
+import ObjectiveIndicator from './ObjectiveIndicator';
 
-export default class LabNPC extends InteractiveGameObject {
+export default class NPC extends InteractiveGameObject {
   shadow: Phaser.GameObjects.Graphics;
   private behaviorTimer?: Phaser.Time.TimerEvent;
   dialogueNodesObj: { nodes: DialogueNode[] };
@@ -15,7 +15,7 @@ export default class LabNPC extends InteractiveGameObject {
   talkCount: number;
   updateDialogueNodeBasedOnPlayerState: (
     scene: Phaser.Scene,
-    labNPC: LabNPC,
+    labNPC: NPC,
   ) => void;
   initialAnimation: string;
 
@@ -34,7 +34,7 @@ export default class LabNPC extends InteractiveGameObject {
     ) => void,
     updateDialogueNodeBasedOnPlayerState: (
       scene: Phaser.Scene,
-      labNPC: LabNPC,
+      labNPC: NPC,
     ) => void,
   ) {
     super(scene, x, y, texture, dialogueIndicatorKey, dialogueIndicatorText);
@@ -162,7 +162,7 @@ export default class LabNPC extends InteractiveGameObject {
 
   moveAnotherNPC = () => {
     // @ts-ignore
-    const npcB = this.scene.children.list[8] as LabNPC;
+    const npcB = this.scene.children.list[8] as NPC;
     // npcB.x = 200;
   };
 }

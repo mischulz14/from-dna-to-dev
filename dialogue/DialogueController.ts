@@ -1,5 +1,5 @@
 import DialogueField from '../dialogue/DialogueField';
-import LabNPC from '../gameObjects/LabNPC';
+import NPC from '../gameObjects/NPC';
 import DialogueNode from './DialogueNode';
 
 export default class DialogueController {
@@ -62,7 +62,7 @@ export default class DialogueController {
       this.dialogueInProgress = false;
       this.currentDialogueIndex = 0;
       this.isTextComplete = false;
-      if (this.interactiveGameObject instanceof LabNPC)
+      if (this.interactiveGameObject instanceof NPC)
         this.interactiveGameObject.turnBackToOriginalPosition(this.hero);
       this.resetAlreadyShownOptions();
       this.scene.events.emit('dialogueEnded');

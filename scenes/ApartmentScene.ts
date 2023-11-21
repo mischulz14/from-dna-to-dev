@@ -6,10 +6,12 @@ import DialogueController from '../dialogue/DialogueController';
 import DialogueNode from '../dialogue/DialogueNode';
 import EventTrigger from '../gameObjects/EventTrigger';
 import InteractiveGameObject from '../gameObjects/InteractiveGameObject';
-import LabNPC from '../gameObjects/LabNPC';
 import Laia from '../gameObjects/Laia';
+import NPC from '../gameObjects/NPC';
+import ObjectiveIndicator from '../gameObjects/ObjectiveIndicator';
 import LevelIntro from '../levelIntro/LevelIntro';
 import areCollisionBoxesColliding from '../utils/collisonBoxCollison';
+import UIScene from './UIScene';
 
 export default class ApartmentScene extends Phaser.Scene {
   hero: Laia;
@@ -45,7 +47,16 @@ export default class ApartmentScene extends Phaser.Scene {
 
     // Make the camera follow the hero
     this.cameras.main.startFollow(this.hero);
-    // this.scene.launch('UIScene');
+    // this.scene.get('UIScene').removeAllObjectives();
+    const uiScene = this.scene.get('UIScene') as UIScene;
+    uiScene.changeCurrentScene('ApartmentScene');
+    uiScene.addInitialObjective(
+      'isTested',
+      'Talk to the people in the Lab and see if someone has work for you.',
+    );
+    this.scene.launch('UIScene');
+
+    // this.scene.bringToTop('ApartmentScene');
     // this.playLevelIntroOnce();
   }
 
@@ -99,9 +110,9 @@ export default class ApartmentScene extends Phaser.Scene {
     }
   }
 
-  hideSpeechIndication(child: LabNPC | EventTrigger) {
+  hideSpeechIndication(child: NPC | EventTrigger) {
     if (
-      (child instanceof LabNPC || child instanceof EventTrigger) &&
+      (child instanceof NPC || child instanceof EventTrigger) &&
       !areCollisionBoxesColliding(this.hero, child)
     ) {
       child.hideSpeechIndication();
@@ -121,7 +132,7 @@ export default class ApartmentScene extends Phaser.Scene {
   }
 
   dialogueEvent(dialogue: DialogueNode[]) {
-    if (this.activeInteractiveGameObject instanceof LabNPC) {
+    if (this.activeInteractiveGameObject instanceof NPC) {
       this.activeInteractiveGameObject.turnToHero(this.hero);
     }
     this.activeInteractiveGameObject.hideSpeechIndication();
@@ -171,7 +182,7 @@ export default class ApartmentScene extends Phaser.Scene {
   /////////////////////////
 
   createHero() {
-    this.hero = new Laia(this, 100, 100, 'laiaHero');
+    this.hero = new Laia(this, 430, 140, 'laiaHero');
     this.hero.setScale(2);
     this.add.existing(this.hero);
   }
@@ -200,7 +211,7 @@ export default class ApartmentScene extends Phaser.Scene {
 
     this.collisionLayer = map.createLayer('Collisions', tileset);
     console.log('collisions', this.collisionLayer);
-    // this.collisionLayer.setVisible(false);
+    this.collisionLayer.setVisible(false);
     // make collisionlayer visible
     // this.collisionLayer.renderDebug(this.add.graphics().setDepth(5000), {
     //   tileColor: null, // Color of non-colliding tiles

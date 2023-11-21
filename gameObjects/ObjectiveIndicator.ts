@@ -1,8 +1,10 @@
 import * as Phaser from 'phaser';
 
+import Hero from './Hero';
+
 export default class ObjectiveIndicator extends Phaser.GameObjects.Container {
-  checkboxEmptyImage: Phaser.GameObjects.Image;
-  checkboxCheckedImage: Phaser.GameObjects.Image;
+  checkboxEmptyCircle: any;
+  checkboxCheckedCircle: any;
   textBesidesCheckbox: Phaser.GameObjects.DOMElement;
   checkedCondition: string;
 
@@ -12,8 +14,6 @@ export default class ObjectiveIndicator extends Phaser.GameObjects.Container {
     y: number,
     checkedCondition: string,
     textBesidesCheckbox: string,
-    checkBoxEmptyKey: string,
-    checkBoxCheckedKey: string,
   ) {
     super(scene, x, y);
     scene.add.existing(this);
@@ -34,24 +34,25 @@ export default class ObjectiveIndicator extends Phaser.GameObjects.Container {
       .setOrigin(0, 0);
 
     // Add checkbox images
-    this.checkboxEmptyImage = this.scene.add.image(0, 0, checkBoxEmptyKey);
-    this.checkboxCheckedImage = this.scene.add.image(0, 0, checkBoxCheckedKey);
-    this.checkboxCheckedImage.setVisible(false);
+    this.checkboxEmptyCircle = this.scene.add.circle(0, 0, 10, 0x000000);
+    this.checkboxCheckedCircle = this.scene.add.circle(0, 0, 10, 0xffffff);
+    this.checkboxCheckedCircle.setVisible(false);
 
     this.add([
-      this.checkboxEmptyImage,
-      this.checkboxCheckedImage,
+      this.checkboxEmptyCircle,
+      this.checkboxCheckedCircle,
       this.textBesidesCheckbox,
     ]);
   }
 
-  update(hero: any) {
-    if (hero[this.checkedCondition]) {
-      this.checkboxEmptyImage.setVisible(false);
-      this.checkboxCheckedImage.setVisible(true);
+  update(hero: Hero) {
+    if (hero.booleanConditions[this.checkedCondition]) {
+      console.log('checked');
+      this.checkboxEmptyCircle.setVisible(false);
+      this.checkboxCheckedCircle.setVisible(true);
     } else {
-      this.checkboxEmptyImage.setVisible(true);
-      this.checkboxCheckedImage.setVisible(false);
+      this.checkboxEmptyCircle.setVisible(true);
+      this.checkboxCheckedCircle.setVisible(false);
     }
   }
 }

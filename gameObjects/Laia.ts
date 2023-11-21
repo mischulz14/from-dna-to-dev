@@ -11,6 +11,7 @@ export default class Laia extends Hero implements Phaser.Physics.Arcade.Sprite {
   heroBounds: Phaser.Geom.Rectangle;
   stateMachine: PlayerFiniteStateMachine;
   animPrefix: string;
+  isTested: boolean = false;
 
   constructor(
     scene: Phaser.Scene,
@@ -30,8 +31,8 @@ export default class Laia extends Hero implements Phaser.Physics.Arcade.Sprite {
     scene.add.existing(this);
     scene.physics.add.existing(this);
 
-    this.body.setSize(15, 15);
-    this.body.setOffset(9.2, 20.5);
+    this.body.setSize(15, 16);
+    this.body.setOffset(9.2, 19.5);
 
     // Initialize the cursors object and the lastDirection string
     this.cursors = this.scene.input.keyboard.createCursorKeys();

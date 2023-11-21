@@ -31,7 +31,7 @@ export default class StartScene extends Phaser.Scene {
 
   create() {
     this.introSceneSound = this.sound.add(cutSceneAudioNames.intro);
-    this.introSceneSound.on('complete', this.audioHasFinishedPlaying, this);
+    // this.introSceneSound.on('complete', this.audioHasFinishedPlaying, this);
     const background = this.add.image(0, 0, 'background').setOrigin(0, 0);
     this.anims.create({
       key: 'dna-spin',
@@ -70,7 +70,7 @@ export default class StartScene extends Phaser.Scene {
     this.input.keyboard.on('keydown', () => {
       if (this.audioIsStillPlaying) return;
       this.audioIsStillPlaying = true;
-      this.introSceneSound.play();
+      // this.introSceneSound.play();
       this.text.setVisible(false);
       dna.setVisible(false);
       codebrackets.setVisible(false);
@@ -88,7 +88,7 @@ export default class StartScene extends Phaser.Scene {
     });
   }
 
-  audioHasFinishedPlaying() {
+  progressToNextSection() {
     this.audioFinished = true;
 
     const text = this.add.text(300, 465, 'Press enter to continue', {
@@ -130,6 +130,9 @@ export default class StartScene extends Phaser.Scene {
 
     this.time.delayedCall(31500, () => {
       textAppears(text6, '1.6rem', 'Rainyhearts', 1000, 10, 290, this);
+      this.time.delayedCall(2000, () => {
+        this.progressToNextSection();
+      });
     });
   }
 }

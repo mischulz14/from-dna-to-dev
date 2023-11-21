@@ -10,7 +10,7 @@ import StartScene from '../scenes/StartScene';
 import UIScene from '../scenes/UIScene';
 import WohnungsIntroScene from '../scenes/WohnungsIntroScene';
 
-const config: Phaser.Types.Core.GameConfig = {
+export const config: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
   pixelArt: true,
   antialias: false,

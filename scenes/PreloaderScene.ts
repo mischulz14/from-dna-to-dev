@@ -8,7 +8,7 @@ import {
 } from '../data/cutSceneSprites';
 import { enemyBattleAnimationNames } from '../data/enemyBattleAnimationNames';
 import { enemySpriteNames } from '../data/enemySpriteNames';
-import { labHeroAnimInfo, laiaHeroAnimInfo } from '../data/heroAnimNames';
+import { labHeroAnimInfo, laiaHeroAnimInfo } from '../data/heroAnimInfo';
 import { heroBattleAnimationNames } from '../data/heroBattleAnimationNames';
 import { heroBattleSpriteNames } from '../data/heroBattleSpriteNames';
 
@@ -37,7 +37,7 @@ export default class PreloadScene extends Phaser.Scene {
     this.createLabBattleAnimations();
     this.createCutSceneAnimations();
     this.createHeroAnimations();
-    this.scene.start('ApartmentScene');
+    this.scene.start('LabScene');
   }
 
   addProgressBar() {
@@ -72,6 +72,11 @@ export default class PreloadScene extends Phaser.Scene {
       progressBox.destroy();
       loadingText.destroy();
     });
+  }
+
+  preloadCheckBoxImages() {
+    this.load.spritesheet('checkBoxEmpty', 'assets/checkBoxEmpty.png');
+    this.load.spritesheet('checkBoxChecked', 'assets/checkBoxChecked.png');
   }
 
   preloadAudio() {

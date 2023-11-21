@@ -1,10 +1,13 @@
+import Hero from '../gameObjects/Hero';
 import ObjectiveIndicator from '../gameObjects/ObjectiveIndicator';
+import ApartmentScene from './ApartmentScene';
+import LabScene from './LabScene';
 
 export default class UIScene extends Phaser.Scene {
   objectives: ObjectiveIndicator[];
-  currentScene: Phaser.Scene;
+  currentScene: string;
   checkedCondition: string;
-  currentHero: any;
+  currentHero: Hero;
   buttonText: Phaser.GameObjects.Text;
 
   currentPosition: {
@@ -18,11 +21,6 @@ export default class UIScene extends Phaser.Scene {
       x: 60,
       y: 100,
     };
-  }
-
-  preload() {
-    this.load.image('checkBoxEmpty', 'assets/checkBoxEmpty.png');
-    this.load.image('checkBoxChecked', 'assets/checkBoxChecked.png');
   }
 
   create() {
@@ -60,9 +58,9 @@ export default class UIScene extends Phaser.Scene {
     // Listen for the 'addObjective' event
     this.events.on('addObjective', this.handleAddObjective, this);
 
-    this.currentScene = this.scene.get('LabScene');
+    // @ts-ignore
+    this.currentHero = this.scene.get(this.currentScene).hero;
 
-    this.addInitialObjective();
     // set objectives invisible at first
     this.objectives.forEach((objective) => {
       objective.setVisible(false);
@@ -71,8 +69,6 @@ export default class UIScene extends Phaser.Scene {
 
   update(time: number, delta: number): void {
     // @ts-ignore
-    this.currentHero = this.currentScene.hero;
-    // Update your UI here
     this.objectives.forEach((objective) => {
       objective.update(this.currentHero);
     });
@@ -92,8 +88,6 @@ export default class UIScene extends Phaser.Scene {
       this.currentPosition.y,
       data.checkedCondition,
       data.textBesidesCheckbox,
-      'checkBoxEmpty',
-      'checkBoxChecked',
     );
 
     if (!this.objectives[0].visible) {
@@ -109,15 +103,13 @@ export default class UIScene extends Phaser.Scene {
     this.add.existing(objectiveIndicator);
   }
 
-  addInitialObjective() {
+  addInitialObjective(checkedCondition: string, textBesidesCheckbox: string) {
     let objectiveIndicator = new ObjectiveIndicator(
       this,
       this.currentPosition.x,
       this.currentPosition.y,
-      'hasTalkedToMainNPC',
-      'Talk to the people in the Lab and see if someone has work for you.',
-      'checkBoxEmpty',
-      'checkBoxChecked',
+      checkedCondition,
+      textBesidesCheckbox,
     );
 
     this.currentPosition.y += 60;
@@ -127,5 +119,20 @@ export default class UIScene extends Phaser.Scene {
     this.objectives.push(objectiveIndicator);
 
     this.add.existing(objectiveIndicator);
+  }
+
+  removeAllObjectives() {
+    this.objectives.forEach((objective) => {
+      objective.destroy();
+    });
+    this.objectives = [];
+    this.currentPosition = {
+      x: 60,
+      y: 100,
+    };
+  }
+
+  changeCurrentScene(scene: string) {
+    this.currentScene = scene;
   }
 }
