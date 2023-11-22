@@ -7,6 +7,7 @@ import DialogueNode from '../dialogue/DialogueNode';
 import EventTrigger from '../gameObjects/EventTrigger';
 import Hero from '../gameObjects/Hero';
 import InteractiveGameObject from '../gameObjects/InteractiveGameObject';
+import NonInteractiveGameObject from '../gameObjects/NonInteractiveGameObject';
 import NPC from '../gameObjects/NPC';
 import LevelIntro from '../levelIntro/LevelIntro';
 import areCollisionBoxesColliding from '../utils/collisonBoxCollison';
@@ -94,6 +95,7 @@ export default class LabScene extends Phaser.Scene {
         this.input.keyboard.addKey(child.dialogueIndicatorKey),
       )
     ) {
+      console.log(child);
       child.updateDialogueNodeBasedOnPlayerState(this, child);
 
       this.activeInteractiveGameObject = child;
@@ -323,7 +325,7 @@ export default class LabScene extends Phaser.Scene {
     // NPCS
     const mainNPC = new NPC(
       this,
-      880,
+      900,
       645,
       'npc',
       'npc-idle-up',
@@ -333,6 +335,13 @@ export default class LabScene extends Phaser.Scene {
       npcLabData.mainNPC.triggerEventWhenDialogueEnds,
       npcLabData.mainNPC.updateDialogueNodeBasedOnHeroState,
     );
+
+    mainNPC.updateDialogueNodeBasedOnPlayerState =
+      npcLabData.mainNPC.updateDialogueNodeBasedOnHeroState;
+    mainNPC.triggerEventWhenDialogueEnds =
+      npcLabData.mainNPC.triggerEventWhenDialogueEnds;
+
+    mainNPC.setScale(2);
 
     const infoNPC = new NPC(
       this,
@@ -354,11 +363,9 @@ export default class LabScene extends Phaser.Scene {
     };
     infoNPC.shadow.alpha = 0;
 
-    mainNPC.setScale(2);
-
     const labNPCA = new NPC(
       this,
-      1000,
+      1100,
       645,
       'npcA',
       'npcA-idle-up',
@@ -368,6 +375,12 @@ export default class LabScene extends Phaser.Scene {
       npcLabData.npcA.triggerEventWhenDialogueEnds,
       npcLabData.npcA.updateDialogueNodeBasedOnHeroState,
     );
+
+    labNPCA.updateDialogueNodeBasedOnPlayerState =
+      npcLabData.npcA.updateDialogueNodeBasedOnHeroState;
+    labNPCA.triggerEventWhenDialogueEnds =
+      npcLabData.npcA.triggerEventWhenDialogueEnds;
+
     labNPCA.setScale(2);
 
     const labNPCB = new NPC(
@@ -401,35 +414,26 @@ export default class LabScene extends Phaser.Scene {
     labNPCC.setScale(2);
 
     // OTHER GAME OBJECTS
-    const janus = new InteractiveGameObject(this, 870, 600, 'janus');
+    const janus = new NonInteractiveGameObject(this, 870, 600, 'janus');
     janus.setScale(4);
     janus.playAfterDelay('janus-idle', 1000);
     janus.setBodySize(30, 15);
     janus.setOffset(1.5, 13);
     janus.setImmovable(true);
-    janus.showSpeechIndication = () => {
-      return;
-    };
 
-    const janus2 = new InteractiveGameObject(this, 1000, 600, 'janus');
+    const janus2 = new NonInteractiveGameObject(this, 1000, 600, 'janus');
     janus2.setScale(4);
     janus2.play('janus-idle');
     janus2.setBodySize(30, 15);
     janus2.setOffset(1.5, 13);
     janus2.setImmovable(true);
-    janus2.showSpeechIndication = () => {
-      return;
-    };
 
-    const janus3 = new InteractiveGameObject(this, 1130, 600, 'janus');
+    const janus3 = new NonInteractiveGameObject(this, 1130, 600, 'janus');
     janus3.setScale(4);
     janus3.playAfterDelay('janus-idle', 2000);
     janus3.setBodySize(30, 15);
     janus3.setOffset(1.5, 13);
     janus3.setImmovable(true);
-    janus3.showSpeechIndication = () => {
-      return;
-    };
   }
 
   playLevelIntroOnce() {

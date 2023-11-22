@@ -41,7 +41,7 @@ export default class PreloadScene extends Phaser.Scene {
     this.createCutSceneAnimations();
     this.createHeroAnimations();
     this.createApartmentSceneAnimations();
-    this.scene.start('ApartmentScene');
+    this.scene.start('LabScene');
   }
 
   preloadAudio() {
@@ -327,7 +327,7 @@ export default class PreloadScene extends Phaser.Scene {
       key: 'infoNpc-idle-down',
       frames: this.anims.generateFrameNumbers('infoNpc', {
         start: 0,
-        end: 7,
+        end: 6,
       }),
       frameRate: 6,
       repeat: -1,

@@ -3,8 +3,6 @@ import * as Phaser from 'phaser';
 import DialogueNode from '../dialogue/DialogueNode';
 import Hero from './Hero';
 import InteractiveGameObject from './InteractiveGameObject';
-import Laia from './Laia';
-import ObjectiveIndicator from './ObjectiveIndicator';
 
 export default class NPC extends InteractiveGameObject {
   shadow: Phaser.GameObjects.Graphics;
@@ -77,7 +75,7 @@ export default class NPC extends InteractiveGameObject {
     this.updateShadow();
   }
 
-  turnToHero = (hero: Hero | Laia) => {
+  turnToHero = (hero: Hero) => {
     console.log('turnToHero');
     console.log('current animation: ', this.anims.currentAnim.key);
     console.log('texture: ', this.texture);

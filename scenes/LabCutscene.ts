@@ -61,9 +61,11 @@ export default class LabCutscene extends Phaser.Scene {
       this.dialogueController.dialogueField.hide();
       this.dialogueController.isDialogueInCutscene = false;
 
-      this.cutsceneTransitionNormal();
+      // this.cutsceneTransitionNormal();
+      this.cameras.main.fadeIn(5000, 0, 0, 0);
 
       setTimeout(() => {
+        this.cameras.main.fadeOut(5000, 0, 0, 0);
         this.scene.stop('LabCutscene');
         this.scene.start('WohnungsIntroScene');
       }, 2000);

@@ -43,11 +43,14 @@ export default class DialogueController {
 
   async progressDialogue() {
     console.log('progressing dialogue in dialogueController');
+
     if (!this.dialogue[this.currentDialogueIndex].text) {
       console.log('no text');
       return;
     }
     if (this.currentDialogueIndex < this.dialogue.length - 1) {
+      this.scene.events.emit('dialogueProgressed');
+      console.log('dialogue progressed in dialogueController');
       // Reset the states of the current node before progressing to the next node
       const currentNode = this.dialogue[this.currentDialogueIndex];
       currentNode.alreadyShownOptions = false;
@@ -71,7 +74,7 @@ export default class DialogueController {
   }
 
   playerPressesEnterEventListener = () => {
-    console.log('player presses enter to progress dialogue');
+    // console.log('player presses enter to progress dialogue');
     if (!this.isActiveNPCTalking && !this.isDialogueInCutscene) return;
     if (!this.isTextComplete) {
       this.isTextComplete = true;
@@ -129,9 +132,15 @@ export default class DialogueController {
     this.hero = hero;
   }
 
-  triggerEventAfterDialogueEnds(eventName: string) {
-    this.scene.events.on('dialogueEnded', () => {
-      this.scene.events.emit(eventName);
-    });
-  }
+  // triggerEventAfterDialogueEnds(eventName: string) {
+  //   this.scene.events.on('dialogueEnded', () => {
+  //     this.scene.events.emit(eventName);
+  //   });
+  // }
+
+  // triggerEventWhenDialogueIsProgressed(eventName: string) {
+  //   this.scene.events.on('dialogueProgressed', () => {
+  //     this.scene.events.emit(eventName);
+  //   });
+  // }
 }

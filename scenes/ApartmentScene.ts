@@ -52,8 +52,8 @@ export default class ApartmentScene extends Phaser.Scene {
     const uiScene = this.scene.get('UIScene') as UIScene;
     uiScene.changeCurrentScene('ApartmentScene');
     uiScene.addInitialObjective(
-      'isTested',
-      'Talk to the people in the Lab and see if someone has work for you.',
+      'hasFoundCoffeeBeens',
+      'Find coffee beens to make coffee',
     );
     this.scene.launch('UIScene');
 
@@ -224,13 +224,19 @@ export default class ApartmentScene extends Phaser.Scene {
     this.collisionLayer.setVisible(false);
 
     this.wallLayer = map.createLayer('Walls', tileset);
-    this.wallLayer.setDepth(2);
+    this.wallLayer.setDepth(1);
 
     const otherGameObjectsLayer = map.createLayer('OtherGameObjects', tileset);
     otherGameObjectsLayer.setDepth(2);
 
     const kitchenStuffLayer = map.createLayer('KitchenStuff', tileset);
     kitchenStuffLayer.setDepth(2);
+
+    const TVLayer = map.createLayer('TV', tileset);
+    TVLayer.setDepth(2);
+
+    const WindowsLayer = map.createLayer('Windows', tileset);
+    WindowsLayer.setDepth(1);
 
     this.foregroundLayer = map.createLayer('Foreground', tileset);
     this.foregroundLayer.setDepth(10000);

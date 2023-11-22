@@ -33,6 +33,8 @@ export default class AttackOptions {
     const optionsHTML = Array.from(
       document.querySelectorAll('.attack-options__option'),
     );
+
+    if (!optionsHTML) return;
     // Use a switch statement to handle the arrow key inputs
     switch (event.key) {
       case 'ArrowDown':
@@ -62,6 +64,7 @@ export default class AttackOptions {
     // Add active class to the new current option
     this.currentlySelectedOption = this.options[this.currentPosition];
 
+    if (!optionsHTML[this.currentPosition]) return;
     // @ts-ignore
     optionsHTML[this.currentPosition].focus();
   }

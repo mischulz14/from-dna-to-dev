@@ -4,7 +4,7 @@ export const interactiveGameObjectAnimInfo = {
     textureName: 'labHero',
     startFrame: 0,
     endFrame: 4,
-    frameRate: 6,
+    frameRate: 4,
     repeat: -1,
     frameWidth: 32,
     frameHeight: 32,

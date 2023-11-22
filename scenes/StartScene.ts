@@ -112,23 +112,26 @@ export default class StartScene extends Phaser.Scene {
 
     textAppears(text1, '1.6rem', 'Rainyhearts', 1000, 10, 10, this);
 
-    this.time.delayedCall(2000, () => {
+    // const delays = [2000, 9500, 18000, 24000, 31500];
+    const delays = [1000, 3000, 6000, 9000, 12000];
+
+    this.time.delayedCall(delays[0], () => {
       textAppears(text2, '1.6rem', 'Rainyhearts', 1000, 10, 60, this);
     });
 
-    this.time.delayedCall(9500, () => {
+    this.time.delayedCall(delays[1], () => {
       textAppears(text3, '1.6rem', 'Rainyhearts', 1000, 10, 120, this);
     });
 
-    this.time.delayedCall(18000, () => {
+    this.time.delayedCall(delays[2], () => {
       textAppears(text4, '1.6rem', 'Rainyhearts', 1000, 10, 180, this);
     });
 
-    this.time.delayedCall(24000, () => {
+    this.time.delayedCall(delays[3], () => {
       textAppears(text5, '1.6rem', 'Rainyhearts', 1000, 10, 220, this);
     });
 
-    this.time.delayedCall(31500, () => {
+    this.time.delayedCall(delays[4], () => {
       textAppears(text6, '1.6rem', 'Rainyhearts', 1000, 10, 290, this);
       this.time.delayedCall(2000, () => {
         this.progressToNextSection();
