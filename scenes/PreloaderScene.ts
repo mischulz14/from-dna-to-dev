@@ -11,6 +11,8 @@ import { enemySpriteNames } from '../data/enemySpriteNames';
 import { labHeroAnimInfo, laiaHeroAnimInfo } from '../data/heroAnimInfo';
 import { heroBattleAnimationNames } from '../data/heroBattleAnimationNames';
 import { heroBattleSpriteNames } from '../data/heroBattleSpriteNames';
+import { interactiveGameObjectAnimInfo } from '../data/interactiveGameObjectAnimInfo';
+import { addProgressBar } from '../utils/progressBar';
 
 export default class PreloadScene extends Phaser.Scene {
   canProceed: any;
@@ -22,12 +24,13 @@ export default class PreloadScene extends Phaser.Scene {
   }
 
   preload() {
-    this.addProgressBar();
+    addProgressBar(this);
     this.preloadCutsceneSprites();
     this.preloadHeroSprites();
     this.preloadLabSprites();
     this.preloadLabBattleSprites();
     this.preloadAudio();
+    this.preloadApartmentSprites();
     // this.preloadEnemySprites();
     this.preloadTilesets();
   }
@@ -37,46 +40,8 @@ export default class PreloadScene extends Phaser.Scene {
     this.createLabBattleAnimations();
     this.createCutSceneAnimations();
     this.createHeroAnimations();
-    this.scene.start('LabScene');
-  }
-
-  addProgressBar() {
-    // Create a progress bar here...
-    let progressBar = this.add.graphics();
-    let progressBox = this.add.graphics();
-    progressBox.fillStyle(0x222222, 0.8);
-    progressBox.fillRect(240, 270, 320, 50);
-
-    let width = this.cameras.main.width;
-    let height = this.cameras.main.height;
-    let loadingText = this.make.text({
-      x: width / 2,
-      y: height / 2 - 50,
-      text: 'Loading...',
-      style: {
-        font: '20px monospace',
-      },
-    });
-    loadingText.setOrigin(0.5, 0.5);
-
-    // Update progress bar based on the progress of the asset loader
-    this.load.on('progress', function (value) {
-      // console.log(value);
-      progressBar.clear();
-      progressBar.fillStyle(0xffffff, 1);
-      progressBar.fillRect(250, 280, 300 * value, 30);
-    });
-
-    this.load.on('complete', function () {
-      progressBar.destroy();
-      progressBox.destroy();
-      loadingText.destroy();
-    });
-  }
-
-  preloadCheckBoxImages() {
-    this.load.spritesheet('checkBoxEmpty', 'assets/checkBoxEmpty.png');
-    this.load.spritesheet('checkBoxChecked', 'assets/checkBoxChecked.png');
+    this.createApartmentSceneAnimations();
+    this.scene.start('ApartmentScene');
   }
 
   preloadAudio() {
@@ -208,6 +173,17 @@ export default class PreloadScene extends Phaser.Scene {
       {
         frameWidth: 64,
         frameHeight: 64,
+      },
+    );
+  }
+
+  preloadApartmentSprites() {
+    this.load.spritesheet(
+      interactiveGameObjectAnimInfo.michiSad.key,
+      '../assets/MichiSadSprite.png',
+      {
+        frameWidth: interactiveGameObjectAnimInfo.michiSad.frameWidth,
+        frameHeight: interactiveGameObjectAnimInfo.michiSad.frameHeight,
       },
     );
   }
@@ -375,6 +351,21 @@ export default class PreloadScene extends Phaser.Scene {
       }),
       frameRate: 8,
       repeat: -1,
+    });
+  }
+
+  createApartmentSceneAnimations() {
+    this.anims.create({
+      key: interactiveGameObjectAnimInfo.michiSad.key,
+      frames: this.anims.generateFrameNumbers(
+        interactiveGameObjectAnimInfo.michiSad.key,
+        {
+          start: interactiveGameObjectAnimInfo.michiSad.startFrame,
+          end: interactiveGameObjectAnimInfo.michiSad.endFrame,
+        },
+      ),
+      frameRate: interactiveGameObjectAnimInfo.michiSad.frameRate,
+      repeat: interactiveGameObjectAnimInfo.michiSad.repeat,
     });
   }
 

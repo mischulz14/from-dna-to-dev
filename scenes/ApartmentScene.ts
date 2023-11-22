@@ -1,12 +1,13 @@
 import { DOM, Game } from 'phaser';
 
 import { eventTriggerData } from '../data/eventTriggerData';
+import { interactiveGameObjectAnimInfo } from '../data/interactiveGameObjectAnimInfo';
 import { npcLabData } from '../data/npcData';
 import DialogueController from '../dialogue/DialogueController';
 import DialogueNode from '../dialogue/DialogueNode';
 import EventTrigger from '../gameObjects/EventTrigger';
+import Hero from '../gameObjects/Hero';
 import InteractiveGameObject from '../gameObjects/InteractiveGameObject';
-import Laia from '../gameObjects/Laia';
 import NPC from '../gameObjects/NPC';
 import ObjectiveIndicator from '../gameObjects/ObjectiveIndicator';
 import LevelIntro from '../levelIntro/LevelIntro';
@@ -14,7 +15,7 @@ import areCollisionBoxesColliding from '../utils/collisonBoxCollison';
 import UIScene from './UIScene';
 
 export default class ApartmentScene extends Phaser.Scene {
-  hero: Laia;
+  hero: Hero;
   isDialoguePlaying: boolean;
   activeInteractiveGameObject: InteractiveGameObject | null;
   isEventTriggered: boolean;
@@ -39,7 +40,7 @@ export default class ApartmentScene extends Phaser.Scene {
   }
 
   create() {
-    // this.createInteractiveGameObjects();
+    this.createInteractiveGameObjects();
 
     this.createTilemap();
     this.createHero();
@@ -86,7 +87,7 @@ export default class ApartmentScene extends Phaser.Scene {
       ) {
         !this.isEventTriggered && child.showSpeechIndication();
         // CHECK FOR DIALOGUE TRIGGER
-        // this.handleDialogueTrigger(child);
+        this.handleDialogueTrigger(child);
       }
       // @ts-ignore
       this.hideSpeechIndication(child);
@@ -182,7 +183,16 @@ export default class ApartmentScene extends Phaser.Scene {
   /////////////////////////
 
   createHero() {
-    this.hero = new Laia(this, 430, 140, 'laiaHero');
+    this.hero = new Hero(
+      this,
+      430,
+      140,
+      'laiaHero',
+      { hasMadeCoffee: false },
+      'laia',
+      { x: 15, y: 16 },
+      { x: 9.2, y: 19.5 },
+    );
     this.hero.setScale(2);
     this.add.existing(this.hero);
   }
@@ -192,7 +202,7 @@ export default class ApartmentScene extends Phaser.Scene {
     this.collisionLayer.setCollisionByProperty({ collides: true });
 
     this.children.each((child) => {
-      if (child instanceof InteractiveGameObject || child instanceof Laia) {
+      if (child instanceof InteractiveGameObject || child instanceof Hero) {
         this.physics.add.collider(this.hero, child);
         this.physics.add.collider(this.collisionLayer, child);
       }
@@ -212,12 +222,6 @@ export default class ApartmentScene extends Phaser.Scene {
     this.collisionLayer = map.createLayer('Collisions', tileset);
     console.log('collisions', this.collisionLayer);
     this.collisionLayer.setVisible(false);
-    // make collisionlayer visible
-    // this.collisionLayer.renderDebug(this.add.graphics().setDepth(5000), {
-    //   tileColor: null, // Color of non-colliding tiles
-    //   collidingTileColor: new Phaser.Display.Color(243, 134, 48, 200), // Color of colliding tiles
-    //   faceColor: new Phaser.Display.Color(40, 39, 37, 255), // Color of colliding face edges
-    // });
 
     this.wallLayer = map.createLayer('Walls', tileset);
     this.wallLayer.setDepth(2);
@@ -225,47 +229,28 @@ export default class ApartmentScene extends Phaser.Scene {
     const otherGameObjectsLayer = map.createLayer('OtherGameObjects', tileset);
     otherGameObjectsLayer.setDepth(2);
 
+    const kitchenStuffLayer = map.createLayer('KitchenStuff', tileset);
+    kitchenStuffLayer.setDepth(2);
+
     this.foregroundLayer = map.createLayer('Foreground', tileset);
     this.foregroundLayer.setDepth(10000);
-
-    // const eventTriggerLayer = map.createLayer('FridgeKeyContainer', tileset);
-
-    // eventTriggerLayer.forEachTile((tile) => {
-    //   if (tile.index !== -1) {
-    //     // get the top left x and top left y
-    //     const worldX = tile.getCenterX() + tile.width / 2;
-    //     const worldY = tile.getCenterY() + tile.height / 2;
-
-    //     // Create a new instance of your custom GameObject at the tile's coordinates
-    //     const gameObject = new EventTrigger(
-    //       this,
-    //       worldX,
-    //       worldY,
-    //       'fridgeKeyContainer',
-    //       'E',
-    //       'Interact',
-    //       eventTriggerData.fridgeKeyContainer.dialogueNodesObj,
-    //       eventTriggerData.fridgeKeyContainer.triggerEventWhenDialogueEnds,
-    //       eventTriggerData.fridgeKeyContainer.updateDialogueNodeBasedOnPlayerState,
-    //     );
-    //     this.add.existing(gameObject);
-    //   }
-    // });
   }
 
   createInteractiveGameObjects() {
-    // EVENT TRIGGERS
-    // const fridgeKey = new EventTrigger(
-    //   this,
-    //   1512,
-    //   575,
-    //   'fridgeKeyContainer',
-    //   'E',
-    //   'Interact',
-    //   eventTriggerData.fridgeKeyContainer.dialogueNodesObj,
-    //   eventTriggerData.fridgeKeyContainer.triggerEventWhenDialogueEnds,
-    //   eventTriggerData.fridgeKeyContainer.updateDialogueNodeBasedOnPlayerState,
-    // );
+    const michiSad = new EventTrigger(
+      this,
+      400,
+      100,
+      interactiveGameObjectAnimInfo.michiSad.key,
+      'E',
+      'Talk',
+      eventTriggerData.michiSad.dialogueNodesObj,
+      eventTriggerData.michiSad.triggerEventWhenDialogueEnds,
+      eventTriggerData.michiSad.updateDialogueNodeBasedOnPlayerState,
+    );
+
+    michiSad.scale = 2;
+    michiSad.play(interactiveGameObjectAnimInfo.michiSad.key);
   }
 
   playLevelIntroOnce() {

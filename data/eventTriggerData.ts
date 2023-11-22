@@ -1,4 +1,5 @@
 import DialogueNode from '../dialogue/DialogueNode';
+import Hero from '../gameObjects/Hero';
 import { battleBackgroundSpriteNames } from './battleBackgroundSpriteNames';
 import { enemyAttacks } from './enemyAttacks';
 import { enemyBattleAnimationNames } from './enemyBattleAnimationNames';
@@ -221,6 +222,84 @@ export const eventTriggerData = {
           ).hero.booleanConditions.hasBattledSleepDeprivation = true;
         },
       });
+    },
+  },
+  michiSad: {
+    dialogueNodesObj: {
+      nodes: [
+        new DialogueNode('Please I just need some coffee..'),
+        new DialogueNode('Then we can talk...'),
+      ],
+    },
+    updateDialogueNodeBasedOnPlayerState: (scene, eventtrigger) => {
+      const hero = scene.hero as Hero;
+      // if (!hero.booleanConditions.hasMadeCoffee) {
+      //   eventtrigger.dialogueNodesObj = {
+      //     nodes: [new DialogueNode('Did you already make coffee?')],
+      //   };
+      // }
+
+      if (hero.booleanConditions.hasMadeCoffee) {
+        eventtrigger.dialogueNodesObj = {
+          nodes: [
+            new DialogueNode('Wow... That coffee tastes great, thank you!'),
+            new DialogueNode(
+              'I will tell you what happened, but I still feel sooo desperate right now',
+            ),
+          ],
+        };
+      }
+    },
+    triggerEventWhenDialogueEnds: (scene: any) => {
+      return;
+      if (
+        !scene.hero.booleanConditions.hasKey ||
+        scene.hero.booleanConditions.hasBattledVirus
+      ) {
+        return;
+      }
+
+      scene.scene.pause('UIScene');
+      scene.scene.get('UIScene').objectives.forEach((objective) => {
+        objective.setVisible(false);
+      });
+
+      console.log('trigger computer event');
+
+      scene.scene.pause('LabScene'); // Pause the LabScene
+      scene.scene.launch('BattleScene', {
+        heroBattleAnimationName: heroBattleAnimationNames.lab,
+        enemyBattleAnimationName: enemyBattleAnimationNames.virus,
+        enemyAttacks: enemyAttacks.virusBattle,
+        playerAttacks: playerAttacks.virusBattle,
+        backgroundImage: battleBackgroundSpriteNames.lab,
+        battleHeroSpriteTexture: heroBattleSpriteNames.lab,
+        enemyTexture: enemySpriteNames.virus,
+        initialDialogue:
+          'You are being attacked by a virus! You chose to call it Mr.Virus.',
+        enemyName: 'Mr. Virus',
+        triggerEventsOnBattleEnd: (scene: any) => {
+          // @ts-ignore
+          scene.scene.get('LabScene').isEventTriggered = false;
+          // @ts-ignore
+          scene.scene.get('LabScene').hero.booleanConditions.hasBattledVirus =
+            true;
+          // @ts-ignore
+          scene.scene.get('UIScene').objectives.forEach((objective) => {
+            if (!objective.visible) return;
+            objective.setVisible(true);
+          });
+
+          scene.scene.get('UIScene').events.emit('addObjective', {
+            textBesidesCheckbox: 'Deliver the probe.',
+            checkedCondition: 'hasDeliveredProbe',
+          });
+
+          scene.scene.stop('BattleScene');
+          scene.scene.resume('LabScene');
+          scene.scene.resume('UIScene');
+        },
+      }); // Launch the StartScene alongside LabScene
     },
   },
 };

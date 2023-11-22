@@ -7,7 +7,6 @@ export default class Hero extends Phaser.Physics.Arcade.Sprite {
   lastDirection: string;
   speed: number;
   freeze: boolean;
-  shadow: Phaser.GameObjects.Graphics;
   heroBounds: Phaser.Geom.Rectangle;
   booleanConditions: { [key: string]: boolean };
   stateMachine: PlayerFiniteStateMachine;
@@ -19,26 +18,26 @@ export default class Hero extends Phaser.Physics.Arcade.Sprite {
     y: number,
     texture: string,
     booleanConditions: { [key: string]: boolean },
+    animPrefix: string,
+    bodySizes: { x: number; y: number },
+    bodyOffset: { x: number; y: number },
     frame?: string | number,
   ) {
     super(scene, x, y, texture, frame);
     this.freeze = false;
-    this.shadow = scene.add.graphics({
-      fillStyle: { color: 0x000000, alpha: 0.1 },
-    });
     this.heroBounds = this.getBounds();
     this.booleanConditions = booleanConditions;
 
     this.stateMachine = new PlayerFiniteStateMachine(this);
-    this.animPrefix = 'lab';
+    this.animPrefix = animPrefix;
 
     // Add this instance to the scene's display list and update list
 
     scene.add.existing(this);
     scene.physics.add.existing(this);
 
-    this.body.setSize(15, 16);
-    this.body.setOffset(13, 22);
+    this.body.setSize(bodySizes.x, bodySizes.y);
+    this.body.setOffset(bodyOffset.x, bodyOffset.y);
 
     // Initialize the cursors object and the lastDirection string
     this.cursors = this.scene.input.keyboard.createCursorKeys();

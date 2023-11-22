@@ -177,13 +177,22 @@ export default class LabScene extends Phaser.Scene {
   /////////////////////////
 
   createHero() {
-    this.hero = new Hero(this, 800, 170, 'labHero', {
-      hasKey: false,
-      hasTalkedToMainNPC: false,
-      hasBattledVirus: false,
-      hasDeliveredProbe: false,
-      hasBattledSleepDeprivation: false,
-    });
+    this.hero = new Hero(
+      this,
+      800,
+      170,
+      'labHero',
+      {
+        hasKey: false,
+        hasTalkedToMainNPC: false,
+        hasBattledVirus: false,
+        hasDeliveredProbe: false,
+        hasBattledSleepDeprivation: false,
+      },
+      'lab',
+      { x: 15, y: 16 },
+      { x: 13, y: 22 },
+    );
     this.hero.setScale(2);
     this.add.existing(this.hero);
   }
