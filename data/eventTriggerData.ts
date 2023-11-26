@@ -252,54 +252,85 @@ export const eventTriggerData = {
     },
     triggerEventWhenDialogueEnds: (scene: any) => {
       return;
-      if (
-        !scene.hero.booleanConditions.hasKey ||
-        scene.hero.booleanConditions.hasBattledVirus
-      ) {
-        return;
+      // Launch the StartScene alongside LabScene
+    },
+  },
+
+  coffeeMachine: {
+    dialogueNodesObj: {
+      nodes: [
+        new DialogueNode('You can make coffee here.'),
+        new DialogueNode('But it seems there is some water missing.'),
+      ],
+    },
+    updateDialogueNodeBasedOnPlayerState: (scene, eventtrigger) => {
+      const hero = scene.hero as Hero;
+
+      if (hero.booleanConditions.hasFoundWater) {
+        eventtrigger.dialogueNodesObj = {
+          nodes: [
+            new DialogueNode('You fill in the water into the coffee machine.'),
+            new DialogueNode("Something doesn't sound right..."),
+            new DialogueNode('You decide to fix the coffee machine.'),
+          ],
+        };
       }
 
-      scene.scene.pause('UIScene');
-      scene.scene.get('UIScene').objectives.forEach((objective) => {
-        objective.setVisible(false);
-      });
-
-      console.log('trigger computer event');
-
-      scene.scene.pause('LabScene'); // Pause the LabScene
-      scene.scene.launch('BattleScene', {
-        heroBattleAnimationName: heroBattleAnimationNames.lab,
-        enemyBattleAnimationName: enemyBattleAnimationNames.virus,
-        enemyAttacks: enemyAttacks.virusBattle,
-        playerAttacks: playerAttacks.virusBattle,
-        backgroundImage: battleBackgroundSpriteNames.lab,
-        battleHeroSpriteTexture: heroBattleSpriteNames.lab,
-        enemyTexture: enemySpriteNames.virus,
-        initialDialogue:
-          'You are being attacked by a virus! You chose to call it Mr.Virus.',
-        enemyName: 'Mr. Virus',
-        triggerEventsOnBattleEnd: (scene: any) => {
-          // @ts-ignore
-          scene.scene.get('LabScene').isEventTriggered = false;
-          // @ts-ignore
-          scene.scene.get('LabScene').hero.booleanConditions.hasBattledVirus =
-            true;
-          // @ts-ignore
-          scene.scene.get('UIScene').objectives.forEach((objective) => {
-            if (!objective.visible) return;
-            objective.setVisible(true);
-          });
-
-          scene.scene.get('UIScene').events.emit('addObjective', {
-            textBesidesCheckbox: 'Deliver the probe.',
-            checkedCondition: 'hasDeliveredProbe',
-          });
-
-          scene.scene.stop('BattleScene');
-          scene.scene.resume('LabScene');
-          scene.scene.resume('UIScene');
-        },
-      }); // Launch the StartScene alongside LabScene
+      if (hero.booleanConditions.hasMadeCoffee) {
+        eventtrigger.dialogueNodesObj = {
+          nodes: [
+            new DialogueNode('You already made coffee.'),
+            new DialogueNode('You should bring it to Michi.'),
+          ],
+        };
+      }
+    },
+    triggerEventWhenDialogueEnds: (scene: any) => {
+      const hero = scene.hero as Hero;
+      if (!hero.booleanConditions.hasCheckedCoffeeMachine) {
+        hero.booleanConditions.hasCheckedCoffeeMachine = true;
+        scene.events.emit('addObjective', {
+          textBesidesCheckbox: 'Find Water',
+          checkedCondition: 'hasFoundWater',
+        });
+      }
+      return;
+    },
+  },
+  wasserHahn: {
+    dialogueNodesObj: {
+      nodes: [
+        new DialogueNode('Get some water from the sink?', [
+          {
+            text: 'Sure!',
+            nextNodeIndex: 1,
+            endDialogue: false,
+          },
+        ]),
+        new DialogueNode('Nice, you got some water!'),
+      ],
+    },
+    updateDialogueNodeBasedOnPlayerState: (scene, eventtrigger) => {
+      const hero = scene.hero as Hero;
+      if (hero.booleanConditions.hasFoundWater) {
+        eventtrigger.dialogueNodesObj = {
+          nodes: [
+            new DialogueNode('You already have water.'),
+            new DialogueNode('Try bringing it to the coffee machine.'),
+          ],
+        };
+      }
+    },
+    triggerEventWhenDialogueEnds: (scene: any) => {
+      const hero = scene.hero as Hero;
+      if (!hero.booleanConditions.hasFoundWater) {
+        hero.booleanConditions.hasFoundWater = true;
+        scene.events.emit('addObjective', {
+          textBesidesCheckbox: 'Make Coffee',
+          checkedCondition: 'hasMadeCoffee',
+        });
+      }
+      return;
     },
   },
 };

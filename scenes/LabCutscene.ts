@@ -62,13 +62,12 @@ export default class LabCutscene extends Phaser.Scene {
       this.dialogueController.isDialogueInCutscene = false;
 
       // this.cutsceneTransitionNormal();
-      this.cameras.main.fadeIn(5000, 0, 0, 0);
 
       setTimeout(() => {
-        this.cameras.main.fadeOut(5000, 0, 0, 0);
+        this.cameras.main.fadeOut(2000, 0, 0, 0);
         this.scene.stop('LabCutscene');
         this.scene.start('WohnungsIntroScene');
-      }, 2000);
+      }, 2200);
     });
 
     // rectangle for transitions
@@ -77,7 +76,7 @@ export default class LabCutscene extends Phaser.Scene {
       .setOrigin(0, 0);
     this.transitionRect.setAlpha(0); // Start with 0 opacity
 
-    this.cutsceneTransitionReverse();
+    this.cameras.main.fadeIn(3000, 0, 0, 0);
   }
 
   progressDialogue() {

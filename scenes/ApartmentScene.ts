@@ -12,6 +12,7 @@ import NPC from '../gameObjects/NPC';
 import ObjectiveIndicator from '../gameObjects/ObjectiveIndicator';
 import LevelIntro from '../levelIntro/LevelIntro';
 import areCollisionBoxesColliding from '../utils/collisonBoxCollison';
+import { placeGameObjectBasedOnLayer } from '../utils/placeGameObjectsBasedOnLayer';
 import UIScene from './UIScene';
 
 export default class ApartmentScene extends Phaser.Scene {
@@ -26,6 +27,7 @@ export default class ApartmentScene extends Phaser.Scene {
   wallLayer: Phaser.Tilemaps.TilemapLayer;
   transitionRect: any | object[];
   collisionLayer: Phaser.Tilemaps.TilemapLayer;
+  interactiveGameObjects: InteractiveGameObject[];
 
   constructor() {
     super({ key: 'ApartmentScene' });
@@ -51,9 +53,10 @@ export default class ApartmentScene extends Phaser.Scene {
     // this.scene.get('UIScene').removeAllObjectives();
     const uiScene = this.scene.get('UIScene') as UIScene;
     uiScene.changeCurrentScene('ApartmentScene');
+    uiScene.removeAllObjectives();
     uiScene.addInitialObjective(
-      'hasFoundCoffeeBeens',
-      'Find coffee beens to make coffee',
+      'hasCheckedCoffeeMachine',
+      'Find the coffee machine and try making some coffee',
     );
     this.scene.launch('UIScene');
 
@@ -162,10 +165,10 @@ export default class ApartmentScene extends Phaser.Scene {
       );
       this.isEventTriggered = true;
       this.dialogueController.isActiveNPCTalking = false;
-      console.log(
-        'current npc',
-        this.activeInteractiveGameObject.triggerEventWhenDialogueEnds,
-      );
+      // console.log(
+      //   'current npc',
+      //   this.activeInteractiveGameObject.triggerEventWhenDialogueEnds,
+      // );
       console.log('dialogue ended and event got triggered');
     });
 
@@ -188,7 +191,11 @@ export default class ApartmentScene extends Phaser.Scene {
       430,
       140,
       'laiaHero',
-      { hasMadeCoffee: false },
+      {
+        hasCheckedCoffeeMachine: false,
+        hasFoundWater: false,
+        hasMadeCoffee: false,
+      },
       'laia',
       { x: 15, y: 16 },
       { x: 9.2, y: 19.5 },
@@ -218,25 +225,49 @@ export default class ApartmentScene extends Phaser.Scene {
 
     // CREATE LAYERS
     const groundLayer = map.createLayer('Floor', tileset, 0, 0);
+    groundLayer.setDepth(0);
 
     this.collisionLayer = map.createLayer('Collisions', tileset);
     console.log('collisions', this.collisionLayer);
     this.collisionLayer.setVisible(false);
 
     this.wallLayer = map.createLayer('Walls', tileset);
-    this.wallLayer.setDepth(1);
+    this.wallLayer.setDepth(0);
 
+    let firstTileIsPainted = false;
+    const coffeeMachine = map.createLayer('coffeeMachine', tileset);
+    placeGameObjectBasedOnLayer(
+      this,
+      coffeeMachine,
+      EventTrigger,
+      interactiveGameObjectAnimInfo.coffeeMachine.key,
+      eventTriggerData.coffeeMachine,
+      42,
+      38,
+      true,
+    );
+    const wasserHahn = map.createLayer('WasserHahn', tileset);
+    placeGameObjectBasedOnLayer(
+      this,
+      wasserHahn,
+      EventTrigger,
+      'empty',
+      eventTriggerData.wasserHahn,
+      42,
+      38,
+      true,
+    );
     const otherGameObjectsLayer = map.createLayer('OtherGameObjects', tileset);
     otherGameObjectsLayer.setDepth(2);
 
+    const WindowsLayer = map.createLayer('Windows', tileset);
+    WindowsLayer.setDepth(0);
+
     const kitchenStuffLayer = map.createLayer('KitchenStuff', tileset);
-    kitchenStuffLayer.setDepth(2);
+    // kitchenStuffLayer.setDepth(2);
 
     const TVLayer = map.createLayer('TV', tileset);
-    TVLayer.setDepth(2);
-
-    const WindowsLayer = map.createLayer('Windows', tileset);
-    WindowsLayer.setDepth(1);
+    // TVLayer.setDepth(2);
 
     this.foregroundLayer = map.createLayer('Foreground', tileset);
     this.foregroundLayer.setDepth(10000);

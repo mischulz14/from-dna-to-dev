@@ -94,7 +94,7 @@ export default class VirusBattleScene extends Phaser.Scene {
     //   .setDepth(1000);
     // this.transitionRect.setAlpha(0); // Start with 0 opacity
 
-    this.cameras.main.fadeIn(5000, 0, 0, 0);
+    this.cameras.main.fadeIn(3000, 0, 0, 0);
     this.startBattle();
 
     //triggers when the player presses enter.
@@ -318,6 +318,12 @@ export default class VirusBattleScene extends Phaser.Scene {
         this.cameras.main.fadeOut(2000, 0, 0, 0);
         setTimeout(() => {
           this.triggerEventsOnBattleEnd(this);
+          this.dialogueField.hide();
+          this.player.destroy();
+          this.enemyHealthBar.destroy();
+          this.playerHealthBar.destroy();
+          this.playerHealthBarBackground.forEach((rect) => rect.destroy());
+          this.enemyHealthBarBackground.forEach((rect) => rect.destroy());
         }, 2200);
       });
     } else if (emittedEventAfterCheck === 'showAttackOptions') {

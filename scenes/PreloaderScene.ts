@@ -41,7 +41,7 @@ export default class PreloadScene extends Phaser.Scene {
     this.createCutSceneAnimations();
     this.createHeroAnimations();
     this.createApartmentSceneAnimations();
-    this.scene.start('LabScene');
+    this.scene.start('ApartmentScene');
   }
 
   preloadAudio() {
@@ -186,6 +186,20 @@ export default class PreloadScene extends Phaser.Scene {
         frameHeight: interactiveGameObjectAnimInfo.michiSad.frameHeight,
       },
     );
+
+    this.load.spritesheet(
+      interactiveGameObjectAnimInfo.coffeeMachine.key,
+      '../assets/coffeeMachine.png',
+      {
+        frameWidth: interactiveGameObjectAnimInfo.coffeeMachine.frameWidth,
+        frameHeight: interactiveGameObjectAnimInfo.coffeeMachine.frameHeight,
+      },
+    );
+
+    this.load.spritesheet('empty', '../assets/emptySprite.png', {
+      frameWidth: 64,
+      frameHeight: 64,
+    });
   }
 
   preloadTilesets() {
