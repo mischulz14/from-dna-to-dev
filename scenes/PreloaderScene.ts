@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 
+import { audioNames } from '../data/audioNames';
 import { battleBackgroundSpriteNames } from '../data/battleBackgroundSpriteNames';
 import {
   cutSceneAnimsInfo,
@@ -41,15 +42,13 @@ export default class PreloadScene extends Phaser.Scene {
     this.createCutSceneAnimations();
     this.createHeroAnimations();
     this.createApartmentSceneAnimations();
-    this.scene.start('ApartmentScene');
+    this.scene.start('StartScene');
   }
 
   preloadAudio() {
-    this.load.audio(cutSceneAudioNames.intro, 'assets/audio/LabIntro.wav');
-    this.load.audio(
-      cutSceneAudioNames.wohnung,
-      'assets/audio/WohnungsCutscene.mp3',
-    );
+    this.load.audio(audioNames.battle, 'assets/audio/BattleMusic.mp3');
+    this.load.audio(audioNames.lofi, 'assets/audio/lofi.mp3');
+    this.load.audio(audioNames.lofiCutscene, 'assets/audio/lofiCutscene.mp3');
   }
 
   preloadCutsceneSprites() {

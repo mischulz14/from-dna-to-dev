@@ -50,7 +50,7 @@ export const config: Phaser.Types.Core.GameConfig = {
 const game = new Phaser.Game(config);
 
 // accessing global audio manager
-const globalAudioManager = GlobalAudioManager.getInstance();
+export const globalAudioManager = GlobalAudioManager.getInstance();
 globalAudioManager.initialize(game);
 
 // add event listener to audio button and toggle sound on click

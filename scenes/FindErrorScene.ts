@@ -1,8 +1,10 @@
+import { audioNames } from '../data/audioNames';
 import { interactiveGameObjectAnimInfo } from '../data/interactiveGameObjectAnimInfo';
 import DialogueController from '../dialogue/DialogueController';
 import DialogueNode from '../dialogue/DialogueNode';
 import ErrorRectangle from '../gameObjects/ErrorRectangle';
 import Hero from '../gameObjects/Hero';
+import { globalAudioManager } from '../src/app';
 import { fadeCameraIn, fadeCameraOut } from '../utils/sceneTransitions';
 
 export default class FindErrorScene extends Phaser.Scene {
@@ -46,6 +48,7 @@ export default class FindErrorScene extends Phaser.Scene {
   }
 
   create() {
+    globalAudioManager.switchSoundTo(audioNames.battle);
     this.addCoffeeMachines();
     this.createHero();
     this.createErrorRectangles();

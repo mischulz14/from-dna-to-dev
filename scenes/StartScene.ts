@@ -1,4 +1,6 @@
+import { audioNames } from '../data/audioNames';
 import { cutSceneAudioNames } from '../data/cutSceneSprites';
+import { globalAudioManager } from '../src/app';
 import { textAppears } from '../utils/textEffects';
 
 export default class StartScene extends Phaser.Scene {
@@ -30,8 +32,7 @@ export default class StartScene extends Phaser.Scene {
   }
 
   create() {
-    this.introSceneSound = this.sound.add(cutSceneAudioNames.intro);
-    // this.introSceneSound.on('complete', this.audioHasFinishedPlaying, this);
+    globalAudioManager.switchSoundTo(audioNames.lofiCutscene);
     const background = this.add.image(0, 0, 'background').setOrigin(0, 0);
     this.anims.create({
       key: 'dna-spin',

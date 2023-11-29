@@ -1,5 +1,7 @@
+import { audioNames } from '../data/audioNames';
 import DialogueController from '../dialogue/DialogueController';
 import DialogueNode from '../dialogue/DialogueNode';
+import { globalAudioManager } from '../src/app';
 
 export default class LabCutscene extends Phaser.Scene {
   dialogueController: DialogueController;
@@ -36,6 +38,7 @@ export default class LabCutscene extends Phaser.Scene {
   }
 
   create() {
+    globalAudioManager.switchSoundTo(audioNames.lofiCutscene);
     this.dialogueController.dialogueField.show();
     this.dialogueController.typeText();
     this.dialogueController.isDialogueInCutscene = true;

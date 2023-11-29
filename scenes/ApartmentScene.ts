@@ -1,5 +1,6 @@
 import { DOM, Game } from 'phaser';
 
+import { audioNames } from '../data/audioNames';
 import { eventTriggerData } from '../data/eventTriggerData';
 import { interactiveGameObjectAnimInfo } from '../data/interactiveGameObjectAnimInfo';
 import { npcLabData } from '../data/npcData';
@@ -11,6 +12,7 @@ import InteractiveGameObject from '../gameObjects/InteractiveGameObject';
 import NPC from '../gameObjects/NPC';
 import ObjectiveIndicator from '../gameObjects/ObjectiveIndicator';
 import LevelIntro from '../levelIntro/LevelIntro';
+import { globalAudioManager } from '../src/app';
 import areCollisionBoxesColliding from '../utils/collisonBoxCollison';
 import { placeGameObjectBasedOnLayer } from '../utils/placeGameObjectsBasedOnLayer';
 import UIScene from './UIScene';
@@ -42,6 +44,7 @@ export default class ApartmentScene extends Phaser.Scene {
   }
 
   create() {
+    globalAudioManager.switchSoundTo(audioNames.lofi);
     this.createInteractiveGameObjects();
 
     this.createTilemap();

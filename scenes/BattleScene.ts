@@ -1,9 +1,14 @@
 import Phaser, { Events } from 'phaser';
 
 import AttackOptions from '../battle/AttackOptions';
+import { audioNames } from '../data/audioNames';
 import { heroBattleAnimationNames } from '../data/heroBattleAnimationNames';
 import DialogueField from '../dialogue/DialogueField';
-import { cutsceneTransitionReverse } from '../utils/sceneTransitions';
+import { globalAudioManager } from '../src/app';
+import {
+  cutsceneTransitionReverse,
+  fadeCameraOut,
+} from '../utils/sceneTransitions';
 
 export default class VirusBattleScene extends Phaser.Scene {
   player: any;
@@ -64,6 +69,7 @@ export default class VirusBattleScene extends Phaser.Scene {
   }
 
   create() {
+    globalAudioManager.switchSoundTo(audioNames.battle);
     this.playerAttackOptions = new AttackOptions(
       this.playerAttacks,
       this,
@@ -87,12 +93,6 @@ export default class VirusBattleScene extends Phaser.Scene {
       frameRate: 4,
       repeat: -1,
     });
-
-    // this.transitionRect = this.add
-    //   .rectangle(0, 0, this.scale.width, this.scale.height, 0x000000)
-    //   .setOrigin(0, 0)
-    //   .setDepth(1000);
-    // this.transitionRect.setAlpha(0); // Start with 0 opacity
 
     this.cameras.main.fadeIn(3000, 0, 0, 0);
     this.startBattle();
@@ -315,7 +315,7 @@ export default class VirusBattleScene extends Phaser.Scene {
       this.playerAttackOptions.removeHTMLOptionsFromDialogueField();
 
       this.waitForUserConfirmation().then(() => {
-        this.cameras.main.fadeOut(2000, 0, 0, 0);
+        fadeCameraOut(this, 2000);
         setTimeout(() => {
           this.triggerEventsOnBattleEnd(this);
           this.dialogueField.hide();
@@ -324,6 +324,7 @@ export default class VirusBattleScene extends Phaser.Scene {
           this.playerHealthBar.destroy();
           this.playerHealthBarBackground.forEach((rect) => rect.destroy());
           this.enemyHealthBarBackground.forEach((rect) => rect.destroy());
+          globalAudioManager.switchSoundTo(audioNames.lofi);
         }, 2200);
       });
     } else if (emittedEventAfterCheck === 'showAttackOptions') {
@@ -336,35 +337,6 @@ export default class VirusBattleScene extends Phaser.Scene {
   waitForUserConfirmation() {
     return new Promise((resolve) => {
       this.resolveInput = resolve;
-    });
-  }
-
-  cutsceneTransitionNormal() {
-    this.tweens.add({
-      targets: this.transitionRect,
-      alpha: { from: 0, to: 1 },
-      ease: 'Linear',
-      duration: 1000,
-      repeat: 0,
-      onComplete: () => {
-        // remove all rectangles and sprites
-        this.dialogueField.hide();
-        this.player.destroy();
-        this.enemyHealthBar.destroy();
-        this.playerHealthBar.destroy();
-        this.playerHealthBarBackground.forEach((rect) => rect.destroy());
-        this.enemyHealthBarBackground.forEach((rect) => rect.destroy());
-      },
-    });
-  }
-
-  cutsceneTransitionReverse() {
-    this.tweens.add({
-      targets: this.transitionRect,
-      alpha: { from: 1, to: 0 },
-      ease: 'Linear',
-      duration: 3000,
-      repeat: 0,
     });
   }
 

@@ -1,8 +1,10 @@
+import { audioNames } from '../data/audioNames';
 import {
   cutSceneAnimsInfo,
   cutSceneAudioNames,
   cutSceneSpriteNames,
 } from '../data/cutSceneSprites';
+import { globalAudioManager } from '../src/app';
 import { cutsceneTransitionReverse } from '../utils/sceneTransitions';
 import { textAppears, textDisappears } from '../utils/textEffects';
 
@@ -15,6 +17,7 @@ export default class WohnungsIntroScene extends Phaser.Scene {
   }
 
   create() {
+    globalAudioManager.switchSoundTo(audioNames.lofiCutscene);
     this.sprite = this.add
       .sprite(20, 0, cutSceneSpriteNames.wohnung)
       .setOrigin(0, 0);
