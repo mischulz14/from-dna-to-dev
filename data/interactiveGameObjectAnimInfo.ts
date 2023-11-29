@@ -19,4 +19,14 @@ export const interactiveGameObjectAnimInfo = {
     frameWidth: 64,
     frameHeight: 64,
   },
+  coffeeMachineWithErrors: {
+    key: 'coffee-machine-with-errors',
+    textureName: 'coffeeMachineWithErrors',
+    startFrame: 0,
+    endFrame: 4,
+    frameRate: 4,
+    repeat: -1,
+    frameWidth: 64,
+    frameHeight: 64,
+  },
 };

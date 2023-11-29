@@ -9,6 +9,8 @@ export default class UIScene extends Phaser.Scene {
   checkedCondition: string;
   currentHero: Hero;
   buttonText: Phaser.GameObjects.Text;
+  button: Phaser.GameObjects.Rectangle;
+  rectangles: Phaser.GameObjects.Rectangle[];
 
   currentPosition: {
     x: number;
@@ -24,13 +26,14 @@ export default class UIScene extends Phaser.Scene {
   }
 
   create() {
-    this.add.rectangle(12, 10, 185, 40, 0x000).setOrigin(0, 0);
-    this.add.rectangle(19, 17, 187, 42, 0x000).setOrigin(0, 0);
+    const rect1 = this.add.rectangle(12, 10, 185, 40, 0x000).setOrigin(0, 0);
+    const rect2 = this.add.rectangle(19, 17, 187, 42, 0x000).setOrigin(0, 0);
+    this.rectangles = [rect1, rect2];
 
     // white color: 0xffffff
-    let button = this.add.rectangle(20, 18, 185, 40, 0xffffff).setOrigin(0, 0);
-    button.setInteractive();
-    button.on('pointerdown', () => {
+    this.button = this.add.rectangle(20, 18, 185, 40, 0xffffff).setOrigin(0, 0);
+    this.button.setInteractive();
+    this.button.on('pointerdown', () => {
       // set button text to 'Hide Objectives' if objectives are visible
       if (this.objectives[0].visible) {
         this.buttonText.setText('Show Objectives');
@@ -134,5 +137,21 @@ export default class UIScene extends Phaser.Scene {
 
   changeCurrentScene(scene: string) {
     this.currentScene = scene;
+  }
+
+  hideObjectivesButton() {
+    this.buttonText.setVisible(false);
+    this.button.setVisible(false);
+    this.rectangles.forEach((rectangle) => {
+      rectangle.setVisible(false);
+    });
+  }
+
+  showObjectivesButton() {
+    this.buttonText.setVisible(true);
+    this.button.setVisible(true);
+    this.rectangles.forEach((rectangle) => {
+      rectangle.setVisible(true);
+    });
   }
 }

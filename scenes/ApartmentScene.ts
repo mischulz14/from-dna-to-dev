@@ -139,6 +139,7 @@ export default class ApartmentScene extends Phaser.Scene {
     if (this.activeInteractiveGameObject instanceof NPC) {
       this.activeInteractiveGameObject.turnToHero(this.hero);
     }
+    this.cameras.main.zoomTo(2, 300);
     this.activeInteractiveGameObject.hideSpeechIndication();
     this.dialogueController.dialogueField.show();
     this.dialogueController.initiateDialogueNodesArray(
@@ -159,6 +160,7 @@ export default class ApartmentScene extends Phaser.Scene {
       this.dialogueController.playerPressesEnterEventListener,
     );
     this.events.on('dialogueEnded', () => {
+      this.cameras.main.zoomTo(1, 300);
       this.activeInteractiveGameObject.triggerEventWhenDialogueEnds(
         this,
         this.activeInteractiveGameObject,
@@ -221,14 +223,14 @@ export default class ApartmentScene extends Phaser.Scene {
     // console.log(map);
 
     const tileset = map.addTilesetImage('apartmentTileset', 'apartmentTileset');
-    console.log(tileset);
+    // console.log(tileset);
 
     // CREATE LAYERS
     const groundLayer = map.createLayer('Floor', tileset, 0, 0);
     groundLayer.setDepth(0);
 
     this.collisionLayer = map.createLayer('Collisions', tileset);
-    console.log('collisions', this.collisionLayer);
+    // console.log('collisions', this.collisionLayer);
     this.collisionLayer.setVisible(false);
 
     this.wallLayer = map.createLayer('Walls', tileset);

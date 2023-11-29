@@ -25,3 +25,11 @@ export function cutsceneTransitionReverse(
     },
   });
 }
+
+export function fadeCameraIn(scene: Phaser.Scene, duration: number) {
+  scene.cameras.main.fadeIn(duration);
+}
+
+export function fadeCameraOut(scene: Phaser.Scene, duration: number) {
+  scene.cameras.main.fadeOut(duration);
+}

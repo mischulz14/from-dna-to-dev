@@ -132,6 +132,7 @@ export default class LabScene extends Phaser.Scene {
     if (this.activeInteractiveGameObject instanceof NPC) {
       this.activeInteractiveGameObject.turnToHero(this.hero);
     }
+    this.cameras.main.zoomTo(2, 300);
     this.activeInteractiveGameObject.hideSpeechIndication();
     this.dialogueController.dialogueField.show();
     this.dialogueController.initiateDialogueNodesArray(
@@ -152,6 +153,7 @@ export default class LabScene extends Phaser.Scene {
       this.dialogueController.playerPressesEnterEventListener,
     );
     this.events.on('dialogueEnded', () => {
+      this.cameras.main.zoomTo(1, 300);
       this.activeInteractiveGameObject.triggerEventWhenDialogueEnds(
         this,
         this.activeInteractiveGameObject,

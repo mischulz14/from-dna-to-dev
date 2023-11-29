@@ -178,6 +178,11 @@ export default class PreloadScene extends Phaser.Scene {
   }
 
   preloadApartmentSprites() {
+    this.load.spritesheet('XAnim', '../assets/X-anim.png', {
+      frameWidth: 64,
+      frameHeight: 64,
+    });
+
     this.load.spritesheet(
       interactiveGameObjectAnimInfo.michiSad.key,
       '../assets/MichiSadSprite.png',
@@ -193,6 +198,17 @@ export default class PreloadScene extends Phaser.Scene {
       {
         frameWidth: interactiveGameObjectAnimInfo.coffeeMachine.frameWidth,
         frameHeight: interactiveGameObjectAnimInfo.coffeeMachine.frameHeight,
+      },
+    );
+
+    this.load.spritesheet(
+      interactiveGameObjectAnimInfo.coffeeMachineWithErrors.key,
+      '../assets/CoffeeMachineWithErrors.png',
+      {
+        frameWidth:
+          interactiveGameObjectAnimInfo.coffeeMachineWithErrors.frameWidth,
+        frameHeight:
+          interactiveGameObjectAnimInfo.coffeeMachineWithErrors.frameHeight,
       },
     );
 
@@ -380,6 +396,16 @@ export default class PreloadScene extends Phaser.Scene {
       ),
       frameRate: interactiveGameObjectAnimInfo.michiSad.frameRate,
       repeat: interactiveGameObjectAnimInfo.michiSad.repeat,
+    });
+
+    this.anims.create({
+      key: 'XAnim',
+      frames: this.anims.generateFrameNumbers('XAnim', {
+        start: 0,
+        end: 20,
+      }),
+      frameRate: 20,
+      repeat: 0,
     });
   }
 

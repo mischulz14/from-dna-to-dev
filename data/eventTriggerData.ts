@@ -1,5 +1,6 @@
 import DialogueNode from '../dialogue/DialogueNode';
 import Hero from '../gameObjects/Hero';
+import { fadeCameraIn, fadeCameraOut } from '../utils/sceneTransitions';
 import { battleBackgroundSpriteNames } from './battleBackgroundSpriteNames';
 import { enemyAttacks } from './enemyAttacks';
 import { enemyBattleAnimationNames } from './enemyBattleAnimationNames';
@@ -287,6 +288,7 @@ export const eventTriggerData = {
     },
     triggerEventWhenDialogueEnds: (scene: any) => {
       const hero = scene.hero as Hero;
+      if (hero.booleanConditions.hasMadeCoffee) return;
       if (!hero.booleanConditions.hasCheckedCoffeeMachine) {
         hero.booleanConditions.hasCheckedCoffeeMachine = true;
         scene.events.emit('addObjective', {
@@ -294,24 +296,52 @@ export const eventTriggerData = {
           checkedCondition: 'hasFoundWater',
         });
       }
+
+      if (hero.booleanConditions.hasFoundWater) {
+        // fadeCameraIn(scene, 1000);
+        hero.booleanConditions.hasMadeCoffee = true;
+        // fadeCameraOut(scene, 1000);
+        setTimeout(() => {
+          scene.activeInteractiveGameObject.hideSpeechIndication();
+          scene.scene.get('UIScene').hideObjectivesButton();
+          scene.scene.pause('ApartmentScene');
+          scene.scene.get('ApartmentScene').children.each((child) => {
+            child.setVisible(false);
+          });
+          scene.scene.launch('FindErrorScene');
+          scene.scene.bringToTop('FindErrorScene');
+        }, 20);
+      }
       return;
     },
   },
   wasserHahn: {
     dialogueNodesObj: {
-      nodes: [
-        new DialogueNode('Get some water from the sink?', [
-          {
-            text: 'Sure!',
-            nextNodeIndex: 1,
-            endDialogue: false,
-          },
-        ]),
-        new DialogueNode('Nice, you got some water!'),
-      ],
+      nodes: [new DialogueNode('That is a nice looking sink.')],
     },
     updateDialogueNodeBasedOnPlayerState: (scene, eventtrigger) => {
       const hero = scene.hero as Hero;
+
+      if (!hero.booleanConditions.hasCheckedCoffeeMachine) return;
+
+      if (
+        hero.booleanConditions.hasCheckedCoffeeMachine &&
+        !hero.booleanConditions.hasFoundWater
+      ) {
+        eventtrigger.dialogueNodesObj = {
+          nodes: [
+            new DialogueNode('Get some water from the sink?', [
+              {
+                text: 'Sure!',
+                nextNodeIndex: 1,
+                endDialogue: false,
+              },
+            ]),
+            new DialogueNode('Nice, you got some water!'),
+          ],
+        };
+      }
+
       if (hero.booleanConditions.hasFoundWater) {
         eventtrigger.dialogueNodesObj = {
           nodes: [
@@ -323,14 +353,18 @@ export const eventTriggerData = {
     },
     triggerEventWhenDialogueEnds: (scene: any) => {
       const hero = scene.hero as Hero;
-      if (!hero.booleanConditions.hasFoundWater) {
+
+      if (
+        hero.booleanConditions.hasCheckedCoffeeMachine &&
+        !hero.booleanConditions.hasFoundWater
+      ) {
+        hero.booleanConditions.hasFoundWater = true;
         hero.booleanConditions.hasFoundWater = true;
         scene.events.emit('addObjective', {
           textBesidesCheckbox: 'Make Coffee',
           checkedCondition: 'hasMadeCoffee',
         });
       }
-      return;
     },
   },
 };
