@@ -3,6 +3,7 @@ import 'phaser';
 import GlobalAudioManager from '../global/GlobalAudioManager';
 import ApartmentScene from '../scenes/ApartmentScene';
 import VirusBattleScene from '../scenes/BattleScene';
+import FindErrorScene from '../scenes/FindErrorScene';
 import LabCutscene from '../scenes/LabCutscene';
 import LabScene from '../scenes/LabScene';
 import PreloaderScene from '../scenes/PreloaderScene';
@@ -38,6 +39,7 @@ export const config: Phaser.Types.Core.GameConfig = {
     StartScene,
     LabScene,
     ApartmentScene,
+    FindErrorScene,
     UIScene,
     VirusBattleScene,
     LabCutscene,

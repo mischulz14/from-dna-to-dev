@@ -14,6 +14,10 @@ export default class DialogueField {
     dialogueField.innerHTML = `
       <div class="dialogue-field__content">
         <div class="dialogue-field__text"></div>
+        <div class="dialogue-field__enter">
+        <div class="dialogue-field__enter-text">Press Enter</div>
+          <div class="dialogue-field__enter-img"></div>
+        </div>
       </div>
     `;
     canvas.appendChild(dialogueField);

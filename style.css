@@ -119,23 +119,30 @@ canvas {
 }
 
 .dialogue-field__enter {
-  content: 'Enter' url('./assets/enter-outline.svg');
-  position: absolute;
+  /* background-image: url('./assets/Enter.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain; */
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 0.5rem;
-  /* make it pixelated */
-  image-rendering: pixelated;
+  position: absolute;
   bottom: 10px;
-  right: 10px;
-  border-top-color: #efefef;
-  border-bottom: 0;
-  border-right: 0;
+  right: 20px;
 }
 
-.enter {
-  padding-top: 5px;
+.dialogue-field__enter-img {
+  background-image: url('./assets/Enter.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  width: 32px;
+  height: 32px;
+}
+
+.dialogue-field__enter-text {
+  font-size: 1rem;
 }
 
 .dialogue-field__options {
