@@ -3,6 +3,7 @@ import 'phaser';
 import GlobalAudioManager from '../global/GlobalAudioManager';
 import ApartmentScene from '../scenes/ApartmentScene';
 import VirusBattleScene from '../scenes/BattleScene';
+import DNAScene from '../scenes/DNAScene';
 import FindErrorScene from '../scenes/FindErrorScene';
 import LabCutscene from '../scenes/LabCutscene';
 import LabScene from '../scenes/LabScene';
@@ -44,7 +45,8 @@ export const config: Phaser.Types.Core.GameConfig = {
     VirusBattleScene,
     LabCutscene,
     WohnungsIntroScene,
-  ], // order of scenes does not matter
+    DNAScene,
+  ],
 };
 
 const game = new Phaser.Game(config);

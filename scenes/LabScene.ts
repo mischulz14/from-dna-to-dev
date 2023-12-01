@@ -55,7 +55,7 @@ export default class LabScene extends Phaser.Scene {
       'Talk to the people in the Lab and see if someone has work for you.',
     );
     this.scene.launch('UIScene');
-    this.playLevelIntroOnce();
+    // this.playLevelIntroOnce();
   }
 
   /////////////////////////

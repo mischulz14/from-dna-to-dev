@@ -10,6 +10,8 @@ import {
   fadeCameraOut,
 } from '../utils/sceneTransitions';
 
+export type Attacks = { text: string; damage: number; damageText: string }[];
+
 export default class VirusBattleScene extends Phaser.Scene {
   player: any;
   enemy: any;
@@ -18,7 +20,7 @@ export default class VirusBattleScene extends Phaser.Scene {
   playerHealth: any;
   playerHealthBar: Phaser.GameObjects.Rectangle;
   enemyHealth: any;
-  enemyAttacks: any;
+  enemyAttacks: Attacks;
   enemyName: string;
   randomEnemyAttack: any;
   heroBattleAnimationName: string;
@@ -41,7 +43,7 @@ export default class VirusBattleScene extends Phaser.Scene {
   transitionRect: Phaser.GameObjects.Rectangle;
   playerHealthBarBackground: Phaser.GameObjects.Rectangle[];
   enemyHealthBarBackground: Phaser.GameObjects.Rectangle[];
-  playerAttacks: { text: string; damage: number; damageText: string }[];
+  playerAttacks: Attacks;
   backgroundImage: string;
   battleHeroSpriteTexture: string;
   enemyTexture: string;
@@ -55,7 +57,18 @@ export default class VirusBattleScene extends Phaser.Scene {
     this.setUpGameEvents();
   }
 
-  init(data: any) {
+  init(data: {
+    enemyAttacks: Attacks;
+    playerAttacks: Attacks;
+    backgroundImage: string;
+    battleHeroSpriteTexture: string;
+    enemyTexture: string;
+    enemyName: string;
+    initialDialogue: string;
+    triggerEventsOnBattleEnd: Function;
+    heroBattleAnimationName: string;
+    enemyBattleAnimationName: string;
+  }) {
     this.enemyAttacks = data.enemyAttacks;
     this.playerAttacks = data.playerAttacks;
     this.backgroundImage = data.backgroundImage;

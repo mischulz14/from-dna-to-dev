@@ -69,6 +69,14 @@ export default class PreloadScene extends Phaser.Scene {
         frameHeight: cutSceneAnimsInfo.wohnung.spriteHeight,
       },
     );
+    this.load.spritesheet(
+      cutSceneSpriteNames.dna,
+      '../assets/DNAFillAnim.png',
+      {
+        frameWidth: 128,
+        frameHeight: 48,
+      },
+    );
   }
 
   preloadHeroSprites() {
@@ -245,6 +253,18 @@ export default class PreloadScene extends Phaser.Scene {
           end: animInfo.end,
         }),
         frameRate: 6,
+        repeat: animInfo.repeat ? animInfo.repeat : 0,
+      });
+    });
+
+    cutSceneAnimsInfo.dna.anims.forEach((animInfo) => {
+      this.anims.create({
+        key: animInfo.name,
+        frames: this.anims.generateFrameNumbers(cutSceneSpriteNames.dna, {
+          start: animInfo.start,
+          end: animInfo.end,
+        }),
+        frameRate: 13,
         repeat: animInfo.repeat ? animInfo.repeat : 0,
       });
     });

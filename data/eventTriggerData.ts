@@ -1,5 +1,7 @@
 import DialogueNode from '../dialogue/DialogueNode';
 import Hero from '../gameObjects/Hero';
+import DNAScene from '../scenes/DNAScene';
+import LabScene from '../scenes/LabScene';
 import { fadeCameraIn, fadeCameraOut } from '../utils/sceneTransitions';
 import { battleBackgroundSpriteNames } from './battleBackgroundSpriteNames';
 import { enemyAttacks } from './enemyAttacks';
@@ -81,12 +83,13 @@ export const eventTriggerData = {
           'You are being attacked by a virus! You chose to call it Mr.Virus.',
         enemyName: 'Mr. Virus',
         triggerEventsOnBattleEnd: (scene: any) => {
-          // @ts-ignore
-          scene.scene.get('LabScene').isEventTriggered = false;
-          // @ts-ignore
-          scene.scene.get('LabScene').hero.booleanConditions.hasBattledVirus =
-            true;
-          // @ts-ignore
+          const labScene = scene.scene.get('LabScene') as LabScene;
+
+          labScene.isEventTriggered = false;
+
+          labScene.hero.booleanConditions.hasBattledVirus = true;
+          labScene.scene.sendToBack('LabScene');
+
           scene.scene.get('UIScene').objectives.forEach((objective) => {
             if (!objective.visible) return;
             objective.setVisible(true);
@@ -97,9 +100,17 @@ export const eventTriggerData = {
             checkedCondition: 'hasDeliveredProbe',
           });
 
+          const DNAScene = scene.scene.get('DNAScene') as DNAScene;
+          DNAScene.startNextScene = false;
+          scene.scene.resume('DNAScene');
+          // DNAScene.revealLevel(1);
+          DNAScene.nextScenes = ['LabScene', 'UIScene'];
+
+          setTimeout(() => {
+            DNAScene.revealLevel(1);
+          }, 1000);
+
           scene.scene.stop('BattleScene');
-          scene.scene.resume('LabScene');
-          scene.scene.resume('UIScene');
         },
       }); // Launch the StartScene alongside LabScene
     },

@@ -13,19 +13,18 @@
  */
 
 export function textAppears(
-  textContent: Phaser.GameObjects.Text | string,
-  fontSize,
-  fontFamily,
-  duration,
-  x,
-  y,
-  scene,
+  textContent: string,
+  fontSize: string,
+  fontFamily: string,
+  duration: number,
+  x: number,
+  y: number,
+  scene: Phaser.Scene,
 ) {
   const text = scene.add.text(x, y, textContent, {
     fontSize: fontSize,
     fontFamily: fontFamily,
     color: '#fff',
-    name: textContent,
   });
 
   text.setAlpha(0);

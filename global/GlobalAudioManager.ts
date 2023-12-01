@@ -13,6 +13,7 @@ export default class GlobalAudioManager {
   private audioOnSvg: string;
   public audioContext: AudioContext = new AudioContext();
   private audioOffSvg: string;
+  private currentSound: string;
 
   private constructor() {}
 
@@ -26,6 +27,7 @@ export default class GlobalAudioManager {
   public initialize(game: Phaser.Game): void {
     this.game = game;
     this.isSoundPaused = false;
+    this.currentSound = '';
     this.game.sound.resumeAll();
   }
 
@@ -46,7 +48,10 @@ export default class GlobalAudioManager {
   public switchSoundTo(soundKey: string): void {
     if (this.game) {
       this.game.sound.stopAll();
-      this.game.sound.play(soundKey, { loop: true });
+      this.currentSound = soundKey;
+      this.isSoundPaused
+        ? null
+        : this.game.sound.play(soundKey, { loop: true });
     }
   }
 
@@ -69,7 +74,7 @@ export default class GlobalAudioManager {
     if (!this.isSoundPaused) {
       console.log('resume');
       this.audioButton!.innerHTML = this.audioOnSvg;
-      this.resumeAll();
+      this.game.sound.play(this.currentSound, { loop: true });
     }
   }
 }

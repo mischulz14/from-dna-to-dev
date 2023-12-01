@@ -84,7 +84,7 @@ export default class StartScene extends Phaser.Scene {
     // on enter key, start the first level
     this.input.keyboard.on('keydown-ENTER', () => {
       if (this.hasContinuedToBackstory && this.audioFinished) {
-        this.scene.start('LabScene');
+        this.scene.start('DNAScene');
       }
     });
   }
