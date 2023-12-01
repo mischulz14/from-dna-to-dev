@@ -5,7 +5,11 @@ import {
   cutSceneSpriteNames,
 } from '../data/cutSceneSprites';
 import { globalAudioManager } from '../src/app';
-import { cutsceneTransitionReverse } from '../utils/sceneTransitions';
+import {
+  cutsceneTransitionReverse,
+  fadeCameraIn,
+  fadeCameraOut,
+} from '../utils/sceneTransitions';
 import { textAppears, textDisappears } from '../utils/textEffects';
 
 export default class WohnungsIntroScene extends Phaser.Scene {
@@ -30,7 +34,7 @@ export default class WohnungsIntroScene extends Phaser.Scene {
       .setOrigin(0, 0);
     this.transitionRect.setAlpha(0); // Start with 0 opacity
 
-    cutsceneTransitionReverse(this, this.transitionRect);
+    fadeCameraIn(this, 2200);
 
     // this.time.delayedCall(1000, () => {
     //   this.sound.play(cutSceneAudioNames.wohnung);
@@ -84,6 +88,7 @@ export default class WohnungsIntroScene extends Phaser.Scene {
 
     this.time.delayedCall(45000, () => {
       textDisappears(text6, 800, this);
+      fadeCameraOut(this, 2200);
       this.time.delayedCall(3000, () => {
         this.scene.start('ApartmentScene');
       });

@@ -2,7 +2,7 @@ import DialogueNode from '../dialogue/DialogueNode';
 import Hero from '../gameObjects/Hero';
 import DNAScene from '../scenes/DNAScene';
 import LabScene from '../scenes/LabScene';
-import { fadeCameraIn, fadeCameraOut } from '../utils/sceneTransitions';
+import { transitionToDNASceneAndBack } from '../utils/sceneTransitions';
 import { battleBackgroundSpriteNames } from './battleBackgroundSpriteNames';
 import { enemyAttacks } from './enemyAttacks';
 import { enemyBattleAnimationNames } from './enemyBattleAnimationNames';
@@ -80,7 +80,9 @@ export const eventTriggerData = {
         battleHeroSpriteTexture: heroBattleSpriteNames.lab,
         enemyTexture: enemySpriteNames.virus,
         initialDialogue:
-          'You are being attacked by a virus! You chose to call it Mr.Virus.',
+          'You are being attacked by a virus (Or at least that is what your stress response is telling you)! You chose to call it Mr.Virus.',
+        endDialogue:
+          'You defeat Mr.Virus and snap out of your stress response. You caught the probe!',
         enemyName: 'Mr. Virus',
         triggerEventsOnBattleEnd: (scene: any) => {
           const labScene = scene.scene.get('LabScene') as LabScene;
@@ -88,7 +90,6 @@ export const eventTriggerData = {
           labScene.isEventTriggered = false;
 
           labScene.hero.booleanConditions.hasBattledVirus = true;
-          labScene.scene.sendToBack('LabScene');
 
           scene.scene.get('UIScene').objectives.forEach((objective) => {
             if (!objective.visible) return;
@@ -100,15 +101,13 @@ export const eventTriggerData = {
             checkedCondition: 'hasDeliveredProbe',
           });
 
-          const DNAScene = scene.scene.get('DNAScene') as DNAScene;
-          DNAScene.startNextScene = false;
-          scene.scene.resume('DNAScene');
-          // DNAScene.revealLevel(1);
-          DNAScene.nextScenes = ['LabScene', 'UIScene'];
-
-          setTimeout(() => {
-            DNAScene.revealLevel(1);
-          }, 1000);
+          transitionToDNASceneAndBack(
+            scene,
+            'LabScene',
+            ['LabScene', 'UIScene'],
+            1,
+            2000,
+          );
 
           scene.scene.stop('BattleScene');
         },
@@ -209,15 +208,13 @@ export const eventTriggerData = {
         playerAttacks: playerAttacks.sleepDeprivationBattle,
         backgroundImage: battleBackgroundSpriteNames.lab,
         initialDialogue:
-          "You're being attack by sleep deprivation! Fight Mr.Sleepyhead!",
+          'The sleep deprivation hits hard! Fight Mr.Sleepyhead!',
+        endDialogue: 'You defeated Mr.Sleepyhead and your sleep deprived mind!',
         battleHeroSpriteTexture: heroBattleSpriteNames.lab,
         enemyTexture: enemySpriteNames.sleepDeprivation,
         enemyName: 'Mr. Sleepyhead',
         triggerEventsOnBattleEnd: (scene: any) => {
           scene.scene.stop('BattleScene');
-          scene.scene.resume('LabScene');
-          scene.scene.resume('UIScene');
-
           // @ts-ignore
           scene.scene.get('UIScene').objectives.forEach((objective) => {
             if (!objective.visible) return;
@@ -232,6 +229,14 @@ export const eventTriggerData = {
           scene.scene.get(
             'LabScene',
           ).hero.booleanConditions.hasBattledSleepDeprivation = true;
+
+          transitionToDNASceneAndBack(
+            scene,
+            'LabScene',
+            ['LabScene', 'UIScene'],
+            2,
+            2000,
+          );
         },
       });
     },

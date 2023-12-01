@@ -2,6 +2,7 @@ import { audioNames } from '../data/audioNames';
 import DialogueController from '../dialogue/DialogueController';
 import DialogueNode from '../dialogue/DialogueNode';
 import { globalAudioManager } from '../src/app';
+import { fadeCameraIn, fadeCameraOut } from '../utils/sceneTransitions';
 
 export default class LabCutscene extends Phaser.Scene {
   dialogueController: DialogueController;
@@ -38,6 +39,7 @@ export default class LabCutscene extends Phaser.Scene {
   }
 
   create() {
+    fadeCameraIn(this, 2200);
     globalAudioManager.switchSoundTo(audioNames.lofiCutscene);
     this.dialogueController.dialogueField.show();
     this.dialogueController.typeText();
@@ -60,60 +62,20 @@ export default class LabCutscene extends Phaser.Scene {
     sprite.play('labCutsceneSprite');
 
     this.events.on('dialogueEnded', () => {
+      fadeCameraOut(this, 2200);
       // this.input.keyboard.removeAllListeners('keydown-ENTER');
-      this.dialogueController.dialogueField.hide();
       this.dialogueController.isDialogueInCutscene = false;
 
       // this.cutsceneTransitionNormal();
 
       setTimeout(() => {
-        this.cameras.main.fadeOut(2000, 0, 0, 0);
         this.scene.stop('LabCutscene');
         this.scene.start('WohnungsIntroScene');
       }, 2200);
     });
-
-    // rectangle for transitions
-    this.transitionRect = this.add
-      .rectangle(0, 0, this.scale.width, this.scale.height, 0x000000)
-      .setOrigin(0, 0);
-    this.transitionRect.setAlpha(0); // Start with 0 opacity
-
-    this.cameras.main.fadeIn(3000, 0, 0, 0);
   }
 
   progressDialogue() {
     this.dialogueController.progressDialogue();
-  }
-
-  cutsceneTransitionNormal() {
-    this.tweens.add({
-      targets: this.transitionRect,
-      alpha: { from: 0, to: 1 },
-      ease: 'Linear',
-      duration: 3000,
-      repeat: 0,
-    });
-  }
-
-  cutsceneTransitionBlinking() {
-    this.tweens.add({
-      targets: this.transitionRect,
-      alpha: { from: 0, to: 1 },
-      ease: 'Linear',
-      duration: 300,
-      yoyo: true,
-      repeat: 3,
-    });
-  }
-
-  cutsceneTransitionReverse() {
-    this.tweens.add({
-      targets: this.transitionRect,
-      alpha: { from: 1, to: 0 },
-      ease: 'Linear',
-      duration: 5000,
-      repeat: 0,
-    });
   }
 }

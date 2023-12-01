@@ -17,11 +17,16 @@ export default class DNAScene extends Phaser.Scene {
   canProgressToNextScene: boolean;
   nextScenes: string[];
   startNextScene: boolean;
+  headerText: Phaser.GameObjects.Text;
+  headerTextContent: string;
   continueText: Phaser.GameObjects.Text;
+  anim: Phaser.Tweens.Tween;
 
   constructor() {
     super({ key: 'DNAScene' });
-    this.canProgressToNextScene = true;
+    setTimeout(() => {
+      this.canProgressToNextScene = true;
+    }, 3000);
     this.nextScenes = ['LabScene'];
     this.level = 1;
     this.startNextScene = true;
@@ -49,6 +54,7 @@ export default class DNAScene extends Phaser.Scene {
   }
 
   revealLevel(level: number) {
+    this.headerTextContent = this.getHeaderText()[`text${level}`];
     this.scene.bringToTop();
     const timeOut = 1000;
     let y = 300;
@@ -57,12 +63,22 @@ export default class DNAScene extends Phaser.Scene {
     }
     this.anims.play(cutSceneAnimsInfo.dna.anims[level - 1].name, this.sprite);
     textAppears(
-      this.getCutSceneText()[`text${level}`],
+      this.getAchievementText()[`text${level}`],
       '1.2rem',
       'Rainyhearts',
       timeOut,
       (this.scale.width - 130) * (0.25 * level) - 100,
       y,
+      this,
+    );
+
+    this.headerText = textAppears(
+      this.headerTextContent,
+      '1.2rem',
+      'Rainyhearts',
+      2000,
+      150,
+      30,
       this,
     );
   }
@@ -72,7 +88,9 @@ export default class DNAScene extends Phaser.Scene {
   }
 
   handleContinueToNextScene() {
+    this.headerText.destroy();
     this.continueText.setAlpha(0);
+    this.anim.stop();
     this.scene.sendToBack('DNAScene');
     this.scene.pause('DNAScene');
     this.scene.setVisible(false);
@@ -87,11 +105,13 @@ export default class DNAScene extends Phaser.Scene {
   }
 
   createInitialInterface() {
-    textAppears(
-      'This is your DNA right now. \n As you manage to beat the curveballs life throws at you, \n your DNA will change.',
+    this.headerTextContent =
+      'This is your DNA right now. \n As you manage to beat the curveballs life throws at you, \n your DNA will change.';
+    this.headerText = textAppears(
+      this.headerTextContent,
       '1.2rem',
       'Rainyhearts',
-      1000,
+      2000,
       150,
       50,
       this,
@@ -104,40 +124,58 @@ export default class DNAScene extends Phaser.Scene {
         color: '#fff',
       });
 
-      this.continueText.setAlpha(1).setDepth(999999);
+      this.continueText.setAlpha(1);
 
-      this.tweens.add({
-        targets: this.continueText,
+      this.anim = this.tweens.add({
+        targets: this.continueText.alpha === 1 ? this.continueText : null,
         alpha: 0,
         duration: 1000,
         ease: 'Linear',
         repeat: -1,
         yoyo: true,
       });
-    }, 2000);
+    }, 3000);
   }
 
   handleResume() {
+    fadeCameraIn(this, 1500);
     this.input.keyboard.enabled = true;
     this.scene.setVisible(true);
     console.log('Current Scene Stacking Order:');
     setTimeout(() => {
       this.canProgressToNextScene = true;
       this.continueText.setAlpha(1);
-    }, 2000);
+      this.anim = this.tweens.add({
+        targets: this.continueText.alpha === 1 ? this.continueText : null,
+        alpha: 0,
+        duration: 1000,
+        ease: 'Linear',
+        repeat: -1,
+        yoyo: true,
+      });
+    }, 3000);
     this.scene.bringToTop('DNAScene');
     console.log("Yoooo, DNA Scene just got resumed! Let's investigate 🧐");
   }
 
-  getCutSceneText() {
-    const text1 = 'Quick Stress Response \n and Sleepdeprivation';
+  getAchievementText() {
+    const text1 = 'Quick Stress Response';
     // 'This is your DNA right now. \n As you manage to beat the curveballs life throws at you, \n your DNA will change.';
 
-    const text2 = 'Love For Coffee';
-
-    const text3 = 'Quarter Life Crisis';
-
+    const text2 = "Sleep deprivation,\n what's that?";
+    const text3 = 'Quarter Life Crisis\n drowned with Coffee';
     const text4 = '';
+
+    return { text1, text2, text3, text4 };
+  }
+
+  getHeaderText() {
+    const text1 =
+      'You have unlocked a new DNA strand! \n Keep up with the quick stress response!';
+    const text2 =
+      'New DNA strand unlocked! \n Sleep deprivation is your friend! \n Try getting enough sleep though...';
+    const text3 = 'You have unlocked the following DNA:';
+    const text4 = 'You have unlocked the following DNA:';
 
     return { text1, text2, text3, text4 };
   }

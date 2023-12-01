@@ -1,5 +1,6 @@
 import DialogueNode from '../dialogue/DialogueNode';
 import LabScene from '../scenes/LabScene';
+import { fadeCameraOut } from '../utils/sceneTransitions';
 
 export const npcLabData = {
   mainNPC: {
@@ -111,9 +112,12 @@ export const npcLabData = {
         scene.hero.booleanConditions.hasBattledVirus &&
         scene.hero.booleanConditions.hasBattledSleepDeprivation
       ) {
-        scene.scene.stop('LabScene');
-        scene.scene.stop('UIScene');
-        scene.scene.start('LabCutscene');
+        fadeCameraOut(scene, 1500);
+        setTimeout(() => {
+          scene.scene.stop('LabScene');
+          scene.scene.stop('UIScene');
+          scene.scene.start('LabCutscene');
+        }, 1500);
       }
     },
   },

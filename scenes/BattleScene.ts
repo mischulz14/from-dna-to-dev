@@ -33,6 +33,7 @@ export default class VirusBattleScene extends Phaser.Scene {
   hasPlayerAttacked: boolean = false;
   gameEvents: Events.EventEmitter;
   initialDialogue: string = '';
+  endDialogue: string = '';
   deactivateKeydown: boolean = false;
   dialogueText: string = '';
   fullText: string = '';
@@ -65,6 +66,7 @@ export default class VirusBattleScene extends Phaser.Scene {
     enemyTexture: string;
     enemyName: string;
     initialDialogue: string;
+    endDialogue: string;
     triggerEventsOnBattleEnd: Function;
     heroBattleAnimationName: string;
     enemyBattleAnimationName: string;
@@ -76,6 +78,7 @@ export default class VirusBattleScene extends Phaser.Scene {
     this.enemyTexture = data.enemyTexture;
     this.enemyName = data.enemyName;
     this.initialDialogue = data.initialDialogue;
+    this.endDialogue = data.endDialogue;
     this.triggerEventsOnBattleEnd = data.triggerEventsOnBattleEnd;
     this.heroBattleAnimationName = data.heroBattleAnimationName;
     this.enemyBattleAnimationName = data.enemyBattleAnimationName;
@@ -323,7 +326,7 @@ export default class VirusBattleScene extends Phaser.Scene {
   checkBattleEnd(emittedEventAfterCheck: string) {
     console.log('checkBattleEnd');
     if (this.enemyHealth <= 0) {
-      this.typeWriterEffect('The virus demutates and dies!');
+      this.typeWriterEffect(this.endDialogue);
       this.enemyDestroyedAnimation();
       this.playerAttackOptions.removeHTMLOptionsFromDialogueField();
 

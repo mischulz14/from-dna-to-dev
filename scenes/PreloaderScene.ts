@@ -42,7 +42,7 @@ export default class PreloadScene extends Phaser.Scene {
     this.createCutSceneAnimations();
     this.createHeroAnimations();
     this.createApartmentSceneAnimations();
-    this.scene.start('StartScene');
+    this.scene.start('ApartmentScene');
   }
 
   preloadAudio() {
