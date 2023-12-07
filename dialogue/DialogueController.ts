@@ -49,7 +49,7 @@ export default class DialogueController {
       return;
     }
     if (this.currentDialogueIndex < this.dialogue.length - 1) {
-      this.scene.events.emit('dialogueProgressed');
+      this.triggerEventWhenDialogueIsProgressed();
       console.log('dialogue progressed in dialogueController');
       // Reset the states of the current node before progressing to the next node
       const currentNode = this.dialogue[this.currentDialogueIndex];
@@ -61,15 +61,7 @@ export default class DialogueController {
       this.dialogueInProgress = true;
       await this.typeText();
     } else {
-      this.dialogueField.hide();
-      this.dialogueInProgress = false;
-      this.currentDialogueIndex = 0;
-      this.isTextComplete = false;
-      if (this.interactiveGameObject instanceof NPC)
-        this.interactiveGameObject.turnBackToOriginalPosition(this.hero);
-      this.resetAlreadyShownOptions();
-      this.scene.events.emit('dialogueEnded');
-      console.log('dialogue ended in dialogueController');
+      this.resetDialogueAfterDialogueEnds();
     }
   }
 
@@ -77,10 +69,12 @@ export default class DialogueController {
     // console.log('player presses enter to progress dialogue');
     if (!this.isActiveNPCTalking && !this.isDialogueInCutscene) return;
     if (!this.isTextComplete) {
+      // handle the case when the text is not complete yet
       this.isTextComplete = true;
       clearTimeout(this.typeTimeoutId);
       this.dialogueField.setText(this.dialogue[this.currentDialogueIndex].text);
     } else {
+      // handle the case when the text is complete
       const currentNode = this.dialogue[this.currentDialogueIndex];
       if (currentNode.options.length > 0) {
         if (!currentNode.alreadyShownOptions) {
@@ -91,14 +85,7 @@ export default class DialogueController {
           const selectedOption = currentNode.currentlySelectedOption;
           if (selectedOption) {
             if (selectedOption.endDialogue) {
-              this.dialogueField.hide();
-              currentNode.hideOptions();
-              this.dialogueInProgress = false;
-              this.currentDialogueIndex = 0;
-              this.isTextComplete = false;
-              this.resetAlreadyShownOptions(); // <-- Add this line
-              console.log('dialogue ended in dialogueController');
-              this.scene.events.emit('dialogueEnded');
+              this.resetDialogueAfterDialogueEnds(currentNode);
             } else {
               // Move to the next dialogue according to the selected option
               this.currentDialogueIndex = selectedOption.nextNodeIndex;
@@ -132,15 +119,24 @@ export default class DialogueController {
     this.hero = hero;
   }
 
-  // triggerEventAfterDialogueEnds(eventName: string) {
-  //   this.scene.events.on('dialogueEnded', () => {
-  //     this.scene.events.emit(eventName);
-  //   });
-  // }
+  triggerEventAfterDialogueEnds() {
+    this.scene.events.emit('dialogueEnded');
+  }
 
-  // triggerEventWhenDialogueIsProgressed(eventName: string) {
-  //   this.scene.events.on('dialogueProgressed', () => {
-  //     this.scene.events.emit(eventName);
-  //   });
-  // }
+  triggerEventWhenDialogueIsProgressed() {
+    this.scene.events.emit('dialogueProgressed');
+  }
+
+  resetDialogueAfterDialogueEnds(currentNode?: DialogueNode) {
+    this.dialogueField.hide();
+    this.dialogueInProgress = false;
+    this.currentDialogueIndex = 0;
+    this.isTextComplete = false;
+    if (this.interactiveGameObject instanceof NPC)
+      this.interactiveGameObject.turnBackToOriginalPosition(this.hero);
+    this.resetAlreadyShownOptions();
+    this.triggerEventAfterDialogueEnds();
+    currentNode.hideOptions();
+    console.log('dialogue ended in dialogueController');
+  }
 }

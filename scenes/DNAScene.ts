@@ -10,6 +10,7 @@ import {
   fadeCameraIn,
 } from '../utils/sceneTransitions';
 import { textAppears, textDisappears } from '../utils/textEffects';
+import ObjectivesUIScene from './ObjectivesUIScene';
 
 export default class DNAScene extends Phaser.Scene {
   sprite: Phaser.GameObjects.Sprite;
@@ -96,6 +97,10 @@ export default class DNAScene extends Phaser.Scene {
     this.scene.setVisible(false);
     if (this.canProgressToNextScene) {
       this.nextScenes.forEach((scene) => {
+        if (scene.includes('UIScene')) {
+          const UIScene = this.scene.get(scene) as ObjectivesUIScene;
+          UIScene.showUI();
+        }
         this.startNextScene
           ? this.scene.launch(scene)
           : this.scene.resume(scene);

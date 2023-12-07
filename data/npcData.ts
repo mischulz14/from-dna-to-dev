@@ -115,7 +115,7 @@ export const npcLabData = {
         fadeCameraOut(scene, 1500);
         setTimeout(() => {
           scene.scene.stop('LabScene');
-          scene.scene.stop('UIScene');
+          scene.scene.stop('ObjectivesUIScene');
           scene.scene.start('LabCutscene');
         }, 1500);
       }

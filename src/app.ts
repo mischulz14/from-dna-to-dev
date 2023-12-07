@@ -7,9 +7,9 @@ import DNAScene from '../scenes/DNAScene';
 import FindErrorScene from '../scenes/FindErrorScene';
 import LabCutscene from '../scenes/LabCutscene';
 import LabScene from '../scenes/LabScene';
+import ObjectivesUIScene from '../scenes/ObjectivesUIScene';
 import PreloaderScene from '../scenes/PreloaderScene';
 import StartScene from '../scenes/StartScene';
-import UIScene from '../scenes/UIScene';
 import WohnungsIntroScene from '../scenes/WohnungsIntroScene';
 
 export const config: Phaser.Types.Core.GameConfig = {
@@ -41,7 +41,7 @@ export const config: Phaser.Types.Core.GameConfig = {
     LabScene,
     ApartmentScene,
     FindErrorScene,
-    UIScene,
+    ObjectivesUIScene,
     VirusBattleScene,
     LabCutscene,
     WohnungsIntroScene,

@@ -3,21 +3,19 @@ import ObjectiveIndicator from '../gameObjects/ObjectiveIndicator';
 import ApartmentScene from './ApartmentScene';
 import LabScene from './LabScene';
 
-export default class UIScene extends Phaser.Scene {
+export default class ObjectivesUIScene extends Phaser.Scene {
   objectives: ObjectiveIndicator[];
   currentScene: string;
   checkedCondition: string;
   currentHero: Hero;
-  buttonText: Phaser.GameObjects.Text;
-  button: Phaser.GameObjects.Rectangle;
-  rectangles: Phaser.GameObjects.Rectangle[];
+  button: Phaser.GameObjects.DOMElement;
 
   currentPosition: {
     x: number;
     y: number;
   };
   constructor() {
-    super({ key: 'UIScene' });
+    super({ key: 'ObjectivesUIScene' });
     this.objectives = [];
     this.currentPosition = {
       x: 60,
@@ -26,19 +24,20 @@ export default class UIScene extends Phaser.Scene {
   }
 
   create() {
-    const rect1 = this.add.rectangle(12, 10, 185, 40, 0x000).setOrigin(0, 0);
-    const rect2 = this.add.rectangle(19, 17, 187, 42, 0x000).setOrigin(0, 0);
-    this.rectangles = [rect1, rect2];
+    const button = document.createElement('div');
+    button.classList.add('objectives-button');
 
     // white color: 0xffffff
-    this.button = this.add.rectangle(20, 18, 185, 40, 0xffffff).setOrigin(0, 0);
-    this.button.setInteractive();
-    this.button.on('pointerdown', () => {
+    this.button = this.add
+      .dom(0, 0, button, 'color: #000', 'Show Objectives')
+      .setOrigin(0, 0);
+
+    button.addEventListener('click', () => {
       // set button text to 'Hide Objectives' if objectives are visible
       if (this.objectives[0].visible) {
-        this.buttonText.setText('Show Objectives');
+        button.innerText = 'Show Objectives';
       } else {
-        this.buttonText.setText('Hide Objectives');
+        button.innerText = 'Hide Objectives';
       }
 
       if (this.objectives.length < 1) return;
@@ -48,11 +47,6 @@ export default class UIScene extends Phaser.Scene {
       });
     });
 
-    this.buttonText = this.add.text(32, 26, 'Show Objectives', {
-      fontSize: '1.5rem',
-      fontFamily: 'Rainyhearts',
-      color: '#000',
-    });
     // Listen for the 'objectiveMet' event
     this.scene
       .get('LabScene')
@@ -104,6 +98,12 @@ export default class UIScene extends Phaser.Scene {
     this.objectives.push(objectiveIndicator);
 
     this.add.existing(objectiveIndicator);
+
+    const button = document.querySelector('.objectives-button');
+    button.classList.add('objectives-animation');
+    setTimeout(() => {
+      button.classList.remove('objectives-animation');
+    }, 3000);
   }
 
   addInitialObjective(checkedCondition: string, textBesidesCheckbox: string) {
@@ -139,19 +139,14 @@ export default class UIScene extends Phaser.Scene {
     this.currentScene = scene;
   }
 
-  hideObjectivesButton() {
-    this.buttonText.setVisible(false);
+  hideUI() {
     this.button.setVisible(false);
-    this.rectangles.forEach((rectangle) => {
-      rectangle.setVisible(false);
+    this.objectives.forEach((objective) => {
+      objective.setVisible(false);
     });
   }
 
-  showObjectivesButton() {
-    this.buttonText.setVisible(true);
+  showUI() {
     this.button.setVisible(true);
-    this.rectangles.forEach((rectangle) => {
-      rectangle.setVisible(true);
-    });
   }
 }

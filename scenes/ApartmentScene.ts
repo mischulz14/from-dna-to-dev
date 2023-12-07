@@ -15,7 +15,7 @@ import LevelIntro from '../levelIntro/LevelIntro';
 import { globalAudioManager } from '../src/app';
 import areCollisionBoxesColliding from '../utils/collisonBoxCollison';
 import { placeGameObjectBasedOnLayer } from '../utils/placeGameObjectsBasedOnLayer';
-import UIScene from './UIScene';
+import ObjectivesUIScene from './ObjectivesUIScene';
 
 export default class ApartmentScene extends Phaser.Scene {
   hero: Hero;
@@ -53,15 +53,15 @@ export default class ApartmentScene extends Phaser.Scene {
 
     // Make the camera follow the hero
     this.cameras.main.startFollow(this.hero);
-    // this.scene.get('UIScene').removeAllObjectives();
-    const uiScene = this.scene.get('UIScene') as UIScene;
+    // this.scene.get('ObjectivesUIScene').removeAllObjectives();
+    const uiScene = this.scene.get('ObjectivesUIScene') as ObjectivesUIScene;
     uiScene.changeCurrentScene('ApartmentScene');
     uiScene.removeAllObjectives();
     uiScene.addInitialObjective(
       'hasCheckedCoffeeMachine',
       'Find the coffee machine and try making some coffee',
     );
-    this.scene.launch('UIScene');
+    this.scene.launch('ObjectivesUIScene');
 
     // this.scene.bringToTop('ApartmentScene');
     // this.playLevelIntroOnce();
@@ -178,10 +178,10 @@ export default class ApartmentScene extends Phaser.Scene {
     });
 
     this.events.on('addObjective', (data) => {
-      // check if the UIScene is active
-      if (this.scene.isActive('UIScene')) {
+      // check if the ObjectivesUIScene is active
+      if (this.scene.isActive('ObjectivesUIScene')) {
         // Emit the event in the ui scene
-        this.scene.get('UIScene').events.emit('addObjective', data);
+        this.scene.get('ObjectivesUIScene').events.emit('addObjective', data);
       }
     });
   }

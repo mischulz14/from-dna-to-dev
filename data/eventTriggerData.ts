@@ -1,7 +1,7 @@
 import DialogueNode from '../dialogue/DialogueNode';
 import Hero from '../gameObjects/Hero';
-import DNAScene from '../scenes/DNAScene';
 import LabScene from '../scenes/LabScene';
+import ObjectivesUIScene from '../scenes/ObjectivesUIScene';
 import { transitionToDNASceneAndBack } from '../utils/sceneTransitions';
 import { battleBackgroundSpriteNames } from './battleBackgroundSpriteNames';
 import { enemyAttacks } from './enemyAttacks';
@@ -56,6 +56,9 @@ export const eventTriggerData = {
       }
     },
     triggerEventWhenDialogueEnds: (scene: any) => {
+      const objectivesUI = scene.scene.get(
+        'ObjectivesUIScene',
+      ) as ObjectivesUIScene;
       if (
         !scene.hero.booleanConditions.hasKey ||
         scene.hero.booleanConditions.hasBattledVirus
@@ -63,10 +66,8 @@ export const eventTriggerData = {
         return;
       }
 
-      scene.scene.pause('UIScene');
-      scene.scene.get('UIScene').objectives.forEach((objective) => {
-        objective.setVisible(false);
-      });
+      scene.scene.pause('ObjectivesUIScene');
+      objectivesUI.hideUI();
 
       console.log('trigger computer event');
 
@@ -91,12 +92,12 @@ export const eventTriggerData = {
 
           labScene.hero.booleanConditions.hasBattledVirus = true;
 
-          scene.scene.get('UIScene').objectives.forEach((objective) => {
-            if (!objective.visible) return;
-            objective.setVisible(true);
-          });
+          const objectivesUI = scene.scene.get(
+            'ObjectivesUIScene',
+          ) as ObjectivesUIScene;
+          objectivesUI.hideUI();
 
-          scene.scene.get('UIScene').events.emit('addObjective', {
+          objectivesUI.events.emit('addObjective', {
             textBesidesCheckbox: 'Deliver the probe.',
             checkedCondition: 'hasDeliveredProbe',
           });
@@ -104,7 +105,7 @@ export const eventTriggerData = {
           transitionToDNASceneAndBack(
             scene,
             'LabScene',
-            ['LabScene', 'UIScene'],
+            ['LabScene', 'ObjectivesUIScene'],
             1,
             2000,
           );
@@ -192,14 +193,18 @@ export const eventTriggerData = {
       }
     },
     triggerEventWhenDialogueEnds: (scene: any) => {
+      const objectivesUI = scene.scene.get(
+        'ObjectivesUIScene',
+      ) as ObjectivesUIScene;
       if (!scene.hero.booleanConditions.hasDeliveredProbe) {
         return;
       }
 
-      scene.scene.pause('UIScene');
-      scene.scene.get('UIScene').objectives.forEach((objective) => {
+      scene.scene.pause('ObjectivesUIScene');
+      objectivesUI.objectives.forEach((objective) => {
         objective.setVisible(false);
       });
+      objectivesUI.hideUI();
       scene.scene.pause('LabScene'); // Pause the LabScene
       scene.scene.launch('BattleScene', {
         heroBattleAnimationName: heroBattleAnimationNames.lab,
@@ -215,13 +220,12 @@ export const eventTriggerData = {
         enemyName: 'Mr. Sleepyhead',
         triggerEventsOnBattleEnd: (scene: any) => {
           scene.scene.stop('BattleScene');
-          // @ts-ignore
-          scene.scene.get('UIScene').objectives.forEach((objective) => {
-            if (!objective.visible) return;
-            objective.setVisible(true);
-          });
+          const objectivesUI = scene.scene.get(
+            'ObjectivesUIScene',
+          ) as ObjectivesUIScene;
+          objectivesUI.hideUI();
 
-          scene.scene.get('UIScene').events.emit('addObjective', {
+          objectivesUI.events.emit('addObjective', {
             textBesidesCheckbox: 'Deliver the DNA results.',
             checkedCondition: 'hasDeliveredDNAResults',
           });
@@ -233,7 +237,7 @@ export const eventTriggerData = {
           transitionToDNASceneAndBack(
             scene,
             'LabScene',
-            ['LabScene', 'UIScene'],
+            ['LabScene', 'ObjectivesUIScene'],
             2,
             2000,
           );
@@ -319,7 +323,10 @@ export const eventTriggerData = {
         // fadeCameraOut(scene, 1000);
         setTimeout(() => {
           scene.activeInteractiveGameObject.hideSpeechIndication();
-          scene.scene.get('UIScene').hideObjectivesButton();
+          const objectivesUI = scene.scene.get(
+            'ObjectivesUIScene',
+          ) as ObjectivesUIScene;
+          objectivesUI.hideUI();
           scene.scene.pause('ApartmentScene');
           scene.scene.get('ApartmentScene').children.each((child) => {
             child.setVisible(false);

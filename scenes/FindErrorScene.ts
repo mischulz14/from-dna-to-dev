@@ -209,9 +209,9 @@ export default class FindErrorScene extends Phaser.Scene {
       fadeCameraOut(this, 3000);
 
       setTimeout(() => {
-        this.scene.bringToTop('UIScene');
+        this.scene.bringToTop('ObjectivesUIScene');
         // @ts-ignore
-        this.scene.get('UIScene').showObjectivesButton();
+        this.scene.get('ObjectivesUIScene').showObjectivesButton();
         this.scene.stop('FindErrorScene');
         this.scene.get('ApartmentScene').children.each((child) => {
           // @ts-ignore
