@@ -13,6 +13,7 @@ import { labHeroAnimInfo, laiaHeroAnimInfo } from '../data/heroAnimInfo';
 import { heroBattleAnimationNames } from '../data/heroBattleAnimationNames';
 import { heroBattleSpriteNames } from '../data/heroBattleSpriteNames';
 import { interactiveGameObjectAnimInfo } from '../data/interactiveGameObjectAnimInfo';
+import { UISpritesData } from '../data/uiSpritesData';
 import { addProgressBar } from '../utils/progressBar';
 
 export default class PreloadScene extends Phaser.Scene {
@@ -42,7 +43,7 @@ export default class PreloadScene extends Phaser.Scene {
     this.createCutSceneAnimations();
     this.createHeroAnimations();
     this.createApartmentSceneAnimations();
-    this.scene.start('ApartmentScene');
+    this.scene.start('FindErrorScene');
   }
 
   preloadAudio() {
@@ -222,6 +223,11 @@ export default class PreloadScene extends Phaser.Scene {
     this.load.spritesheet('empty', '../assets/emptySprite.png', {
       frameWidth: 64,
       frameHeight: 64,
+    });
+
+    this.load.spritesheet(UISpritesData.heart.name, UISpritesData.heart.src, {
+      frameWidth: UISpritesData.heart.frameWidth,
+      frameHeight: UISpritesData.heart.frameHeight,
     });
   }
 
@@ -425,6 +431,16 @@ export default class PreloadScene extends Phaser.Scene {
       }),
       frameRate: 20,
       repeat: 0,
+    });
+
+    this.anims.create({
+      key: UISpritesData.heart.name,
+      frames: this.anims.generateFrameNumbers(UISpritesData.heart.name, {
+        start: UISpritesData.heart.startFrame,
+        end: UISpritesData.heart.endFrame,
+      }),
+      frameRate: 25,
+      repeat: UISpritesData.heart.repeat,
     });
   }
 

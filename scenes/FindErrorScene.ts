@@ -1,9 +1,11 @@
 import { audioNames } from '../data/audioNames';
 import { interactiveGameObjectAnimInfo } from '../data/interactiveGameObjectAnimInfo';
+import { UISpritesData } from '../data/uiSpritesData';
 import DialogueController from '../dialogue/DialogueController';
 import DialogueNode from '../dialogue/DialogueNode';
-import ErrorRectangle from '../gameObjects/ErrorRectangle';
 import Hero from '../gameObjects/Hero';
+import ErrorRectangle from '../gameObjects/ui/ErrorRectangle';
+import Heart from '../gameObjects/ui/Heart';
 import { globalAudioManager } from '../src/app';
 import { fadeCameraIn, fadeCameraOut } from '../utils/sceneTransitions';
 
@@ -15,6 +17,8 @@ export default class FindErrorScene extends Phaser.Scene {
   isOverlappingWithError: boolean;
   overlappingRect: ErrorRectangle | null;
   initiatedFadeOut: boolean;
+  heartContainer: Phaser.GameObjects.Container;
+  isClickingEDisabled: boolean;
 
   constructor() {
     super({ key: 'FindErrorScene' });
@@ -23,6 +27,7 @@ export default class FindErrorScene extends Phaser.Scene {
     this.isOverlappingWithError = false;
     this.overlappingRect = null;
     this.initiatedFadeOut = false;
+    this.isClickingEDisabled = true;
     const dialogue = [
       new DialogueNode(
         'Before you there are two pictures of a coffee machine.',
@@ -33,6 +38,7 @@ export default class FindErrorScene extends Phaser.Scene {
       new DialogueNode(
         'Find the errors by running over them and clicking E when standing on them.',
       ),
+      new DialogueNode('Keep in mind, you only have three lives!'),
     ];
     this.dialogueController = new DialogueController(this);
     this.dialogueController.initiateDialogueNodesArray(dialogue, null, null);
@@ -48,6 +54,20 @@ export default class FindErrorScene extends Phaser.Scene {
   }
 
   create() {
+    this.heartContainer = this.add
+      .container(650, 50, [
+        new Heart(this, 0, 0, UISpritesData.heart.name, 0)
+          .setScrollFactor(0)
+          .setScale(2),
+        new Heart(this, 40, 0, UISpritesData.heart.name, 0)
+          .setScrollFactor(0)
+          .setScale(2),
+        new Heart(this, 80, 0, UISpritesData.heart.name, 0)
+          .setScrollFactor(0)
+          .setScale(2),
+      ])
+      .setDepth(999);
+
     globalAudioManager.switchSoundTo(audioNames.battle);
     this.addCoffeeMachines();
     this.createHero();
@@ -67,26 +87,16 @@ export default class FindErrorScene extends Phaser.Scene {
       this.events.emit('playerPressedE');
     });
 
-    this.events.on('playerPressedE', () => {
-      // console.log('player pressed E', this.isOverlappingWithError);
+    this.events.on('gameOver', () => this.handleGameOver(this));
 
-      const hasErrorAlreadyBeenFound = this.foundErrorRectangles.includes(
-        this.overlappingRect.id,
-      );
-
-      if (!this.isOverlappingWithError || hasErrorAlreadyBeenFound) {
-        return;
-      }
-      this.overlappingRect.revealRectangle();
-      this.foundErrorRectangles.push(this.overlappingRect.id);
-      // console.log('added error', this.foundErrorRectangles);
-    });
+    this.events.on('playerPressedE', () => this.handlePlayerEPress(this));
 
     this.events.on('dialogueEnded', () => {
       // console.log('dialogue ended');
       this.hero.freeze = false;
       this.dialogueController.dialogueField.hide();
       this.dialogueController.isDialogueInCutscene = false;
+      this.isClickingEDisabled = false;
     });
 
     fadeCameraIn(this, 3000);
@@ -117,8 +127,55 @@ export default class FindErrorScene extends Phaser.Scene {
       this.overlappingRect = null;
       // console.log('Sprites not overlapping anymore');
     }
+  }
 
-    // make for loop instead of forEach to be able to break out of it
+  handlePlayerEPress(scene) {
+    if (scene.isClickingEDisabled) return;
+    this.isClickingEDisabled = true;
+    // console.log('player pressed E', this.isOverlappingWithError);
+
+    if (!scene.isOverlappingWithError) {
+      // destroy one heart
+      console.log(scene.heartContainer);
+      console.log('hi');
+      const heart = scene.heartContainer.first as Heart;
+      heart.anims.play(UISpritesData.heart.name).on('animationcomplete', () => {
+        setTimeout(() => {
+          scene.heartContainer.list.shift();
+          this.isClickingEDisabled = false;
+
+          if (scene.heartContainer.list.length <= 0) {
+            scene.events.emit('gameOver');
+          }
+        }, 1000);
+      });
+    }
+
+    if (!scene.overlappingRect) return;
+    const hasErrorAlreadyBeenFound = scene.foundErrorRectangles.includes(
+      scene.overlappingRect.id,
+    );
+
+    if (!this.isOverlappingWithError || hasErrorAlreadyBeenFound) {
+      return;
+    }
+    this.overlappingRect.revealRectangle();
+    this.foundErrorRectangles.push(this.overlappingRect.id);
+    // console.log('added error', this.foundErrorRectangles);
+    this.isClickingEDisabled = false;
+  }
+
+  handleGameOver(scene: Phaser.Scene) {
+    fadeCameraOut(scene, 2000);
+    setTimeout(() => {
+      scene.game.scene.getScenes().forEach((scene: Phaser.Scene) => {
+        if (scene.scene.key === 'FindErrorScene') return;
+        scene.scene.stop();
+      });
+    }, 2000);
+    setTimeout(() => {
+      scene.scene.start('StartScene');
+    }, 2100);
   }
 
   progressDialogue() {
@@ -201,11 +258,6 @@ export default class FindErrorScene extends Phaser.Scene {
       this.hero.freeze = true;
       this.hero.stateMachine.switchState('idle');
       this.initiatedFadeOut = true;
-      // this.input.keyboard.removeAllListeners('keydown-ENTER');
-      // this.dialogueController.dialogueField.hide();
-      // this.dialogueController.isDialogueInCutscene = true;
-
-      // this.cutsceneTransitionNormal();
       fadeCameraOut(this, 3000);
 
       setTimeout(() => {

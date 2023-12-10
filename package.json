@@ -6,7 +6,7 @@
   "scripts": {
     "clean": "rm -rf dist",
     "build": "npm run clean && webpack",
-    "start": "webpack --watch & live-server --port=3001"
+    "start": "webpack --watch & live-server --port=3200"
   },
   "keywords": [],
   "author": "",
