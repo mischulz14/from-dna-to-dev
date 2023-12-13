@@ -47,4 +47,27 @@ export const playerAttacks = {
         "I won't say no to a late snacking session. This should keep me awake for a while.",
     },
   ],
+  apartmentBattle: [
+    {
+      text: 'Words of Encouragement',
+      damage: 30,
+      damageText: 'You will find something else, I am sure of it!',
+    },
+    {
+      text: 'Distraction',
+      damage: 5,
+      damageText: 'He is not falling for that... Please keep your clothes on.',
+    },
+    {
+      text: 'Self-Care',
+      damage: 25,
+      damageText: 'Just concentrate on yourself, you are doing great!',
+    },
+    {
+      text: 'Self-Confidence',
+      damage: 25,
+      damageText:
+        'You are the best! You can do it! Also, you look great today!',
+    },
+  ],
 };

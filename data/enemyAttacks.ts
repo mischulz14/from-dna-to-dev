@@ -43,4 +43,26 @@ export const enemyAttacks = {
       damageText: "I'm just gonna lie down for a second..",
     },
   ],
+  apartmentBattle: [
+    {
+      name: 'Emotional Outburst',
+      damage: 25,
+      damageText: 'I feel so sad and lonely...',
+    },
+    {
+      name: 'Trauma Dumping',
+      damage: 25,
+      damageText: 'Thinking about your trauma is making me sad as well.',
+    },
+    {
+      name: 'Self-Loathing',
+      damage: 5,
+      damageText: 'Self loathing never helped anyone.',
+    },
+    {
+      name: 'Anxiety Attack',
+      damage: 20,
+      damageText: 'I feel like my life is leading nowhere.',
+    },
+  ],
 };
