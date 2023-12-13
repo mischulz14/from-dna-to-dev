@@ -1,6 +1,6 @@
 import { audioNames } from '../data/audioNames';
 import { interactiveGameObjectAnimInfo } from '../data/interactiveGameObjectAnimInfo';
-import { UISpritesData } from '../data/uiSpritesData';
+import { UISpritesData } from '../data/UISpritesData';
 import DialogueController from '../dialogue/DialogueController';
 import DialogueNode from '../dialogue/DialogueNode';
 import Hero from '../gameObjects/Hero';
@@ -8,6 +8,7 @@ import ErrorRectangle from '../gameObjects/ui/ErrorRectangle';
 import Heart from '../gameObjects/ui/Heart';
 import { globalAudioManager } from '../src/app';
 import { fadeCameraIn, fadeCameraOut } from '../utils/sceneTransitions';
+import ObjectivesUIScene from './ObjectivesUIScene';
 
 export default class FindErrorScene extends Phaser.Scene {
   dialogueController: DialogueController;
@@ -68,7 +69,6 @@ export default class FindErrorScene extends Phaser.Scene {
       ])
       .setDepth(999);
 
-    globalAudioManager.switchSoundTo(audioNames.battle);
     this.addCoffeeMachines();
     this.createHero();
     this.createErrorRectangles();
@@ -263,7 +263,10 @@ export default class FindErrorScene extends Phaser.Scene {
       setTimeout(() => {
         this.scene.bringToTop('ObjectivesUIScene');
         // @ts-ignore
-        this.scene.get('ObjectivesUIScene').showObjectivesButton();
+        const ObjectivesUIScene = this.scene.get(
+          'ObjectivesUIScene',
+        ) as ObjectivesUIScene;
+        ObjectivesUIScene.showUI();
         this.scene.stop('FindErrorScene');
         this.scene.get('ApartmentScene').children.each((child) => {
           // @ts-ignore

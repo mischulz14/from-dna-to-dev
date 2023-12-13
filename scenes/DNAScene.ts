@@ -168,7 +168,7 @@ export default class DNAScene extends Phaser.Scene {
     // 'This is your DNA right now. \n As you manage to beat the curveballs life throws at you, \n your DNA will change.';
 
     const text2 = "Sleep deprivation,\n what's that?";
-    const text3 = 'Quarter Life Crisis\n drowned with Coffee';
+    const text3 = 'Quarter Life Crisis\n drowned with Coffee\n and Love';
     const text4 = '';
 
     return { text1, text2, text3, text4 };

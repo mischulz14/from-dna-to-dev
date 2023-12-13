@@ -64,7 +64,7 @@ export default class ApartmentScene extends Phaser.Scene {
     this.scene.launch('ObjectivesUIScene');
 
     // this.scene.bringToTop('ApartmentScene');
-    // this.playLevelIntroOnce();
+    this.playLevelIntroOnce();
   }
 
   /////////////////////////

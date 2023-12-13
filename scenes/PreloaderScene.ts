@@ -13,7 +13,7 @@ import { labHeroAnimInfo, laiaHeroAnimInfo } from '../data/heroAnimInfo';
 import { heroBattleAnimationNames } from '../data/heroBattleAnimationNames';
 import { heroBattleSpriteNames } from '../data/heroBattleSpriteNames';
 import { interactiveGameObjectAnimInfo } from '../data/interactiveGameObjectAnimInfo';
-import { UISpritesData } from '../data/uiSpritesData';
+import { UISpritesData } from '../data/UISpritesData';
 import { addProgressBar } from '../utils/progressBar';
 
 export default class PreloadScene extends Phaser.Scene {
@@ -43,7 +43,7 @@ export default class PreloadScene extends Phaser.Scene {
     this.createCutSceneAnimations();
     this.createHeroAnimations();
     this.createApartmentSceneAnimations();
-    this.scene.start('FindErrorScene');
+    this.scene.start('StartScene');
   }
 
   preloadAudio() {
@@ -229,6 +229,33 @@ export default class PreloadScene extends Phaser.Scene {
       frameWidth: UISpritesData.heart.frameWidth,
       frameHeight: UISpritesData.heart.frameHeight,
     });
+
+    this.load.spritesheet(
+      heroBattleSpriteNames.apartment,
+      '../assets/LaiaBattle.png',
+      {
+        frameWidth: 50,
+        frameHeight: 50,
+      },
+    );
+
+    this.load.spritesheet(
+      enemySpriteNames.apartment,
+      '../assets/DepressedMichiEnemy.png',
+      {
+        frameWidth: 50,
+        frameHeight: 50,
+      },
+    );
+
+    this.load.spritesheet(
+      battleBackgroundSpriteNames.apartment,
+      '../assets/ApartmentBattleBackground.png',
+      {
+        frameWidth: 800,
+        frameHeight: 600,
+      },
+    );
   }
 
   preloadTilesets() {
@@ -441,6 +468,26 @@ export default class PreloadScene extends Phaser.Scene {
       }),
       frameRate: 25,
       repeat: UISpritesData.heart.repeat,
+    });
+
+    this.anims.create({
+      key: heroBattleAnimationNames.apartment,
+      frames: this.anims.generateFrameNumbers(heroBattleSpriteNames.apartment, {
+        start: 0,
+        end: 4,
+      }),
+      frameRate: 4,
+      repeat: -1,
+    });
+
+    this.anims.create({
+      key: enemyBattleAnimationNames.apartment,
+      frames: this.anims.generateFrameNumbers(enemySpriteNames.apartment, {
+        start: 0,
+        end: 4,
+      }),
+      frameRate: 4,
+      repeat: -1,
     });
   }
 
