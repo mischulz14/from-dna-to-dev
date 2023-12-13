@@ -85,6 +85,8 @@ export const eventTriggerData = {
         endDialogue:
           'You defeat Mr.Virus and snap out of your stress response. You caught the probe!',
         enemyName: 'Mr. Virus',
+        initialPlayerHealth: 100,
+        initialEnemyHealth: 80,
         triggerEventsOnBattleEnd: (scene: any) => {
           const labScene = scene.scene.get('LabScene') as LabScene;
 
@@ -218,6 +220,8 @@ export const eventTriggerData = {
         battleHeroSpriteTexture: heroBattleSpriteNames.lab,
         enemyTexture: enemySpriteNames.sleepDeprivation,
         enemyName: 'Mr. Sleepyhead',
+        initialPlayerHealth: 120,
+        initialEnemyHealth: 100,
         triggerEventsOnBattleEnd: (scene: any) => {
           scene.scene.stop('BattleScene');
           const objectivesUI = scene.scene.get(
@@ -267,13 +271,53 @@ export const eventTriggerData = {
             new DialogueNode(
               'I will tell you what happened, but I still feel sooo desperate right now',
             ),
+            new DialogueNode("I don't know what to do with my life anymore..."),
           ],
         };
       }
     },
     triggerEventWhenDialogueEnds: (scene: any) => {
-      return;
-      // Launch the StartScene alongside LabScene
+      const hero = scene.hero as Hero;
+
+      if (!hero.booleanConditions.hasMadeCoffee) {
+        console.log('has not made coffee yet');
+        return;
+      }
+
+      const objectivesUI = scene.scene.get(
+        'ObjectivesUIScene',
+      ) as ObjectivesUIScene;
+
+      scene.scene.pause('ObjectivesUIScene');
+      objectivesUI.objectives.forEach((objective) => {
+        objective.setVisible(false);
+      });
+      objectivesUI.hideUI();
+      scene.scene.pause('ApartmentScene'); // Pause the LabScene
+      scene.scene.launch('BattleScene', {
+        heroBattleAnimationName: heroBattleAnimationNames.apartment,
+        enemyBattleAnimationName: enemyBattleAnimationNames.apartment,
+        enemyAttacks: enemyAttacks.apartmentBattle,
+        playerAttacks: playerAttacks.apartmentBattle,
+        backgroundImage: battleBackgroundSpriteNames.apartment,
+        initialDialogue:
+          'Your Boyfriend is extremely sad! Fight his quarter life crisis!',
+        endDialogue: 'You defeated his quarter life crisis! Nicely done!',
+        battleHeroSpriteTexture: heroBattleSpriteNames.apartment,
+        enemyTexture: enemySpriteNames.apartment,
+        enemyName: 'Sad Boyfriend',
+        initialPlayerHealth: 90,
+        initialEnemyHealth: 80,
+        triggerEventsOnBattleEnd: (scene: any) => {
+          scene.scene.stop('BattleScene');
+          const objectivesUI = scene.scene.get(
+            'ObjectivesUIScene',
+          ) as ObjectivesUIScene;
+          objectivesUI.hideUI();
+
+          transitionToDNASceneAndBack(scene, 'StartScene', [], 3, 2000);
+        },
+      });
     },
   },
 
@@ -292,7 +336,11 @@ export const eventTriggerData = {
           nodes: [
             new DialogueNode('You fill in the water into the coffee machine.'),
             new DialogueNode("Something doesn't sound right..."),
-            new DialogueNode('You decide to fix the coffee machine.'),
+            new DialogueNode('Maybe this button does something?'),
+            new DialogueNode(
+              'It seems like you have to fix the coffee machine...',
+            ),
+            new DialogueNode('Let me just...'),
           ],
         };
       }
@@ -301,7 +349,7 @@ export const eventTriggerData = {
         eventtrigger.dialogueNodesObj = {
           nodes: [
             new DialogueNode('You already made coffee.'),
-            new DialogueNode('You should bring it to Michi.'),
+            new DialogueNode('You should bring it to your boyfriend.'),
           ],
         };
       }

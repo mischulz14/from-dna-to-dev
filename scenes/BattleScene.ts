@@ -17,9 +17,11 @@ export default class VirusBattleScene extends Phaser.Scene {
   enemy: any;
   playerAttackOptions: AttackOptions;
   enemyAttackOptions: any;
-  playerHealth: any;
+  playerHealth: number;
+  initialPlayerHealth: number;
   playerHealthBar: Phaser.GameObjects.Rectangle;
-  enemyHealth: any;
+  enemyHealth: number;
+  initialEnemyHealth: number;
   enemyAttacks: Attacks;
   enemyName: string;
   randomEnemyAttack: any;
@@ -49,11 +51,16 @@ export default class VirusBattleScene extends Phaser.Scene {
   battleHeroSpriteTexture: string;
   enemyTexture: string;
   triggerEventsOnBattleEnd: Function;
+  playerHealthNumber: Phaser.GameObjects.Text;
+  enemyHealthBarNumber: Phaser.GameObjects.Text;
 
   constructor() {
     super({ key: 'BattleScene' });
-    this.playerHealth = 130;
-    this.enemyHealth = 10;
+
+    // this.initialPlayerHealth = 130;
+    // this.playerHealth = this.initialPlayerHealth;
+    // this.initialEnemyHealth = 100;
+    // this.enemyHealth = this.initialEnemyHealth;
     this.gameEvents = new Events.EventEmitter();
     this.setUpGameEvents();
   }
@@ -70,6 +77,8 @@ export default class VirusBattleScene extends Phaser.Scene {
     triggerEventsOnBattleEnd: Function;
     heroBattleAnimationName: string;
     enemyBattleAnimationName: string;
+    initialPlayerHealth: number;
+    initialEnemyHealth: number;
   }) {
     this.enemyAttacks = data.enemyAttacks;
     this.playerAttacks = data.playerAttacks;
@@ -82,6 +91,10 @@ export default class VirusBattleScene extends Phaser.Scene {
     this.triggerEventsOnBattleEnd = data.triggerEventsOnBattleEnd;
     this.heroBattleAnimationName = data.heroBattleAnimationName;
     this.enemyBattleAnimationName = data.enemyBattleAnimationName;
+    this.initialPlayerHealth = data.initialPlayerHealth;
+    this.initialEnemyHealth = data.initialEnemyHealth;
+    this.playerHealth = this.initialPlayerHealth;
+    this.enemyHealth = this.initialEnemyHealth;
   }
 
   create() {
@@ -217,8 +230,15 @@ export default class VirusBattleScene extends Phaser.Scene {
   }
 
   reduceEnemyHealth() {
-    this.enemyHealth -= this.playerAttackOptions.currentlySelectedOption.damage;
-    this.updateEnemyHealthBar();
+    this.playDamageAnimation(this.enemy);
+    this.updateHealthBar(
+      this.enemyHealth,
+      this.initialEnemyHealth,
+      this.enemyHealthBar,
+      this.enemyHealthBarNumber,
+      this.playerAttackOptions.currentlySelectedOption,
+      false,
+    );
 
     this.waitForUserConfirmation().then(() => {
       this.showPlayerAttackMessage();
@@ -226,7 +246,6 @@ export default class VirusBattleScene extends Phaser.Scene {
   }
 
   showPlayerAttackMessage() {
-    this.playDamageAnimation(this.enemy);
     this.typeWriterEffect(
       this.playerAttackOptions.currentlySelectedOption.damageText,
     );
@@ -239,7 +258,9 @@ export default class VirusBattleScene extends Phaser.Scene {
   async enemyAttackChosen() {
     this.randomEnemyAttack =
       this.enemyAttacks[Math.floor(Math.random() * this.enemyAttacks.length)];
-    this.typeWriterEffect(`Mr.Virus uses ${this.randomEnemyAttack.name}!`);
+    this.typeWriterEffect(
+      `${this.enemyName} uses ${this.randomEnemyAttack.name}!`,
+    );
 
     await this.waitForUserConfirmation();
     this.playEnemyAttackAnimation();
@@ -256,16 +277,6 @@ export default class VirusBattleScene extends Phaser.Scene {
       ease: 'Power1',
       duration: 300,
       yoyo: true,
-    });
-  }
-
-  reducePlayerHealth() {
-    this.playerHealth -= this.randomEnemyAttack.damage;
-    this.updatePlayerHealthBar();
-    this.typeWriterEffect(this.randomEnemyAttack.damageText);
-
-    this.waitForUserConfirmation().then(() => {
-      this.checkBattleEnd('showAttackOptions');
     });
   }
 
@@ -294,6 +305,14 @@ export default class VirusBattleScene extends Phaser.Scene {
     const rect2 = this.add
       .rectangle(60, 120, 160, 30, 0xf3f3f3)
       .setOrigin(0, 0);
+    this.playerHealthNumber = this.add
+      .text(50, 75, JSON.stringify(this.playerHealth), {
+        fontSize: '2rem',
+        fontFamily: 'Rainyhearts',
+        color: '#000',
+      })
+      .setOrigin(0, 0);
+
     this.playerHealthBarBackground = [rect1, rect2];
 
     this.playerHealthBar = this.add.rectangle(80, 130, 120, 10, 0x45a47d);
@@ -306,21 +325,86 @@ export default class VirusBattleScene extends Phaser.Scene {
       .rectangle(410, 40, 160, 30, 0xf3f3f3)
       .setOrigin(0, 0);
     this.enemyHealthBarBackground = [rect1, rect2];
+    this.enemyHealthBarNumber = this.add.text(
+      520,
+      75,
+      JSON.stringify(this.enemyHealth),
+      {
+        fontSize: '2rem',
+        fontFamily: 'Rainyhearts',
+        color: '#000',
+      },
+    );
 
     this.enemyHealthBar = this.add.rectangle(430, 50, 120, 10, 0x45a47d);
     this.enemyHealthBar.setOrigin(0, 0);
   }
 
-  updatePlayerHealthBar() {
-    // if player health is smaller than 0, set it to 0
-    if (this.playerHealth < 0) this.playerHealth = 0;
-    this.playerHealthBar.setDisplaySize(this.playerHealth, 10);
+  reducePlayerHealth() {
+    this.updateHealthBar(
+      this.playerHealth,
+      this.initialPlayerHealth,
+      this.playerHealthBar,
+      this.playerHealthNumber,
+      this.randomEnemyAttack,
+    );
+    this.typeWriterEffect(this.randomEnemyAttack.damageText);
+
+    this.waitForUserConfirmation().then(() => {
+      this.checkBattleEnd('showAttackOptions');
+    });
   }
 
-  updateEnemyHealthBar() {
-    // if enemy health is smaller than 0, set it to 0
-    if (this.enemyHealth < 0) this.enemyHealth = 0;
-    this.enemyHealthBar.setDisplaySize(this.enemyHealth, 10);
+  updateHealthBar(
+    entityHealth,
+    initialEntityHealth,
+    entityHealthBar,
+    entityHealthNumber,
+    randomAttack,
+    isPlayer = true,
+  ) {
+    // if player health is smaller than 0, set it to 0
+    if (entityHealth < 0) entityHealth = 0;
+
+    if (entityHealth === 0) {
+      return;
+    }
+
+    const timer = this.scene.scene.time.addEvent({
+      delay: 50,
+      repeat: randomAttack.damage - 1, // subtract 1 to account for the initial run
+      callback: () => {
+        if (entityHealth === 0) {
+          timer.destroy(); // destroy the timer if health is 0
+          return;
+        }
+
+        // reduce health points by amount each tick
+        entityHealth--;
+        entityHealthNumber.setText(JSON.stringify(entityHealth));
+
+        // calculate the new width based on the updated health percentage
+        const newWidth = (entityHealth / initialEntityHealth) * 100;
+
+        console.log(entityHealthBar.width);
+        console.log('newWidth', newWidth);
+
+        entityHealthBar.setDisplaySize(newWidth, entityHealthBar.height);
+
+        if (isPlayer) {
+          this.playerHealth = entityHealth;
+        } else {
+          this.enemyHealth = entityHealth;
+        }
+
+        // ensure health bar and health points don't go negative
+        // if (newWidth < 0) {
+        //   this.bar.style.width = '0%';
+        //   this.healthText.innerHTML = '0';
+        // }
+      },
+    });
+    return entityHealth;
   }
 
   checkBattleEnd(emittedEventAfterCheck: string) {
