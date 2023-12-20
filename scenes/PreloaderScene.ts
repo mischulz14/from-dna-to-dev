@@ -17,7 +17,7 @@ import {
 import { heroBattleAnimationNames } from '../data/heroBattleAnimationNames';
 import { heroBattleSpriteNames } from '../data/heroBattleSpriteNames';
 import { interactiveGameObjectAnimInfo } from '../data/interactiveGameObjectAnimInfo';
-import { NPCAnimInfo } from '../data/NPCAnimInfo';
+import { NPCAnimInfo } from '../data/npcAnimInfo';
 import { UISpritesData } from '../data/UISpritesData';
 import { addProgressBar } from '../utils/progressBar';
 
