@@ -9,10 +9,15 @@ import {
 } from '../data/cutSceneSprites';
 import { enemyBattleAnimationNames } from '../data/enemyBattleAnimationNames';
 import { enemySpriteNames } from '../data/enemySpriteNames';
-import { labHeroAnimInfo, laiaHeroAnimInfo } from '../data/heroAnimInfo';
+import {
+  bootcampHeroAnimInfo,
+  labHeroAnimInfo,
+  laiaHeroAnimInfo,
+} from '../data/heroAnimInfo';
 import { heroBattleAnimationNames } from '../data/heroBattleAnimationNames';
 import { heroBattleSpriteNames } from '../data/heroBattleSpriteNames';
 import { interactiveGameObjectAnimInfo } from '../data/interactiveGameObjectAnimInfo';
+import { NPCAnimInfo } from '../data/NPCAnimInfo';
 import { UISpritesData } from '../data/UISpritesData';
 import { addProgressBar } from '../utils/progressBar';
 
@@ -33,6 +38,7 @@ export default class PreloadScene extends Phaser.Scene {
     this.preloadLabBattleSprites();
     this.preloadAudio();
     this.preloadApartmentSprites();
+    this.preloadBootcampSprites();
     // this.preloadEnemySprites();
     this.preloadTilesets();
   }
@@ -43,7 +49,8 @@ export default class PreloadScene extends Phaser.Scene {
     this.createCutSceneAnimations();
     this.createHeroAnimations();
     this.createApartmentSceneAnimations();
-    this.scene.start('StartScene');
+    this.createBootcampAnimations();
+    this.scene.start('BootcampScene');
   }
 
   preloadAudio() {
@@ -89,6 +96,11 @@ export default class PreloadScene extends Phaser.Scene {
 
     this.load.spritesheet('laiaHero', '../assets/LaiaHeroSprite.png', {
       frameWidth: 32,
+      frameHeight: 36,
+    });
+
+    this.load.spritesheet('bootcampHero', '../assets/bootcampHero.png', {
+      frameWidth: 38,
       frameHeight: 36,
     });
   }
@@ -258,6 +270,19 @@ export default class PreloadScene extends Phaser.Scene {
     );
   }
 
+  preloadBootcampSprites() {
+    NPCAnimInfo.forEach((animInfo) => {
+      this.load.spritesheet(
+        animInfo.textureName,
+        `../assets/${animInfo.textureName}.png`,
+        {
+          frameWidth: 32,
+          frameHeight: 38,
+        },
+      );
+    });
+  }
+
   preloadTilesets() {
     // LABSCENE
     this.load.tilemapTiledJSON('map', '../assets/labMapJson.json');
@@ -275,6 +300,11 @@ export default class PreloadScene extends Phaser.Scene {
     this.load.tilemapTiledJSON('apartmentMap', '../assets/apartmentMap.json');
 
     this.load.image('apartmentTileset', '../assets/apartmentTileset.png');
+
+    this.load.tilemapTiledJSON('bootcampMap', '../assets/bootcampMapJson.json');
+
+    // BOOTCAMP SCENE
+    this.load.image('bootcampTileset', '../assets/bootcampTileset.png');
   }
 
   createCutSceneAnimations() {
@@ -317,6 +347,18 @@ export default class PreloadScene extends Phaser.Scene {
     });
 
     laiaHeroAnimInfo.forEach((animInfo) => {
+      this.anims.create({
+        key: animInfo.key,
+        frames: this.anims.generateFrameNumbers(animInfo.textureName, {
+          start: animInfo.startFrame,
+          end: animInfo.endFrame,
+        }),
+        frameRate: animInfo.frameRate,
+        repeat: animInfo.repeat,
+      });
+    });
+
+    bootcampHeroAnimInfo.forEach((animInfo) => {
       this.anims.create({
         key: animInfo.key,
         frames: this.anims.generateFrameNumbers(animInfo.textureName, {
@@ -488,6 +530,20 @@ export default class PreloadScene extends Phaser.Scene {
       }),
       frameRate: 4,
       repeat: -1,
+    });
+  }
+
+  createBootcampAnimations() {
+    NPCAnimInfo.forEach((animInfo) => {
+      this.anims.create({
+        key: animInfo.key,
+        frames: this.anims.generateFrameNumbers(animInfo.textureName, {
+          start: animInfo.startFrame,
+          end: animInfo.endFrame,
+        }),
+        frameRate: animInfo.frameRate,
+        repeat: animInfo.repeat,
+      });
     });
   }
 

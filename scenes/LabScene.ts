@@ -15,7 +15,7 @@ import areCollisionBoxesColliding from '../utils/collisonBoxCollison';
 import ObjectivesUIScene from './ObjectivesUIScene';
 
 export default class LabScene extends Phaser.Scene {
-  hero: Hero;
+  hero: Hero<{ hasKey: boolean; hasTalkedToMainNPC: boolean; hasBattledVirus: boolean; hasDeliveredProbe: boolean; hasBattledSleepDeprivation: boolean }>;
   isDialoguePlaying: boolean;
   activeInteractiveGameObject: InteractiveGameObject | null;
   isEventTriggered: boolean;

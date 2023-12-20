@@ -38,7 +38,7 @@ export const playerAttacks = {
       text: 'Mindfulness Meditate',
       damage: 5,
       damageText:
-        'Meditation relaxes you even further! Why would you relaxed when you are being attacked?!',
+        'Meditation relaxes you even further! Why would you relax when you are being attacked?!',
     },
     {
       text: 'Late Night Snack',

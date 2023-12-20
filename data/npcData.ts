@@ -1,6 +1,14 @@
 import DialogueNode from '../dialogue/DialogueNode';
+import BootcampScene from '../scenes/BootcampScene';
 import LabScene from '../scenes/LabScene';
 import { fadeCameraOut } from '../utils/sceneTransitions';
+
+interface NpcData {
+  position?: { x: number; y: number };
+  dialogueNodesObj: { nodes: DialogueNode[] };
+  updateDialogueNodeBasedOnHeroState: (scene: LabScene, npc: any) => void;
+  triggerEventWhenDialogueEnds: (scene: LabScene, npc: any) => void;
+}
 
 export const npcLabData = {
   mainNPC: {
@@ -238,6 +246,217 @@ export const npcLabData = {
     },
     triggerEventWhenDialogueEnds: (scene, npc) => {
       npc.talkCount++;
+      return;
+    },
+  },
+};
+
+export const npcBootcampData = {
+  timon: {
+    texture: 'timon',
+    position: { x: 170, y: 340 },
+    initialAnimation: 'timon-idle-up',
+    dialogueNodesObj: {
+      nodes: [
+        new DialogueNode('Hey there! My name is Timon.'),
+        new DialogueNode('Before going to this bootcamp I was a doctor.'),
+        new DialogueNode('Is there anything else you would like to know?', [
+          {
+            text: 'Why did you change careers?',
+            nextNodeIndex: 3,
+            endDialogue: false,
+          },
+          {
+            text: 'What do you do in your free time?',
+            nextNodeIndex: 4,
+            endDialogue: false,
+          },
+          {
+            text: 'No, I am good.',
+            nextNodeIndex: null,
+            endDialogue: true,
+          },
+        ]),
+        new DialogueNode(
+          'That is waaay to long to answer... Long story short, I was not happy with my job.',
+          [
+            {
+              text: 'Ok thanks!',
+              nextNodeIndex: null,
+              endDialogue: true,
+            },
+          ],
+        ),
+        new DialogueNode(
+          'I like photography, I like to play video games and I like metal concerts (:',
+          [
+            {
+              text: 'Nice!',
+              nextNodeIndex: null,
+              endDialogue: true,
+            },
+          ],
+        ),
+      ],
+    },
+    updateDialogueNodeBasedOnHeroState: (scene: BootcampScene, npc) => {
+      if (scene.hero.booleanConditions.hasTalkedToJose) {
+        npc.dialogueNodesObj = {
+          nodes: [new DialogueNode('I hope you are enjoying the bootcamp!')],
+        };
+      }
+      return;
+    },
+    triggerEventWhenDialogueEnds: (scene: BootcampScene, npc) => {
+      // scene.hero.booleanConditions.hasTalkedToJose = true;
+      return;
+    },
+  },
+  jose: {
+    texture: 'jose',
+    position: { x: 490, y: 100 },
+    initialAnimation: 'jose-idle-left',
+    dialogueNodesObj: {
+      nodes: [
+        new DialogueNode('Eeey my friend what is up?'),
+        new DialogueNode(
+          'This is the good vibes zone here. Coding and good vibes is all you need.',
+        ),
+        new DialogueNode('Feel free to ask anything', [
+          {
+            text: 'What type of bootcamp is this? What will we learn here?',
+            nextNodeIndex: 3,
+            endDialogue: false,
+          },
+          {
+            text: 'What should I do on my first day?',
+            nextNodeIndex: 4,
+            endDialogue: false,
+          },
+        ]),
+        new DialogueNode(
+          'This is a fullstack web development bootcamp, my friend. You will learn how to build websites and web applications from scratch.',
+          [
+            {
+              text: 'Sounds great!',
+              nextNodeIndex: null,
+              endDialogue: true,
+            },
+          ],
+        ),
+        new DialogueNode(
+          'You should get to know the people here, amigo, and then you should start coding.',
+          [
+            {
+              text: 'Will do!',
+              nextNodeIndex: null,
+              endDialogue: true,
+            },
+          ],
+        ),
+      ],
+    },
+    updateDialogueNodeBasedOnHeroState: (scene: BootcampScene, npc) => {
+      return;
+    },
+    triggerEventWhenDialogueEnds: (scene: BootcampScene, npc) => {
+      scene.hero.booleanConditions.hasTalkedToJose = true;
+
+      scene.events.emit('addObjective', {
+        textBesidesCheckbox: 'Talk to the other bootcamp participants',
+        checkedCondition: 'hasTalkedToEveryone',
+      });
+
+      return;
+    },
+  },
+  ute: {
+    texture: 'ute',
+    position: { x: 340, y: 460 },
+    initialAnimation: 'ute-idle-up',
+    dialogueNodesObj: {
+      nodes: [
+        new DialogueNode(
+          "Hey there, my name is Ute but some call me 'the machine'",
+        ),
+        new DialogueNode(
+          'What do you want to know about me? I am an open book.',
+          [
+            {
+              text: 'Why do they call you the machine?',
+              nextNodeIndex: 2,
+              endDialogue: false,
+            },
+            {
+              text: 'Anything else you would like to share?',
+              nextNodeIndex: 4,
+              endDialogue: false,
+            },
+          ],
+        ),
+        new DialogueNode(
+          "Because I'm always doing something, be it working, studying or working out.",
+        ),
+        new DialogueNode("I don't even know what 'resting' means, my guy.", [
+          {
+            text: 'You really are a machine!',
+            nextNodeIndex: null,
+            endDialogue: true,
+          },
+        ]),
+        new DialogueNode(
+          "Sure, my passion is and always will be food. Don't be surprised if you see me open a café one day!",
+        ),
+      ],
+    },
+    updateDialogueNodeBasedOnHeroState: (scene: BootcampScene, npc) => {
+      return;
+    },
+    triggerEventWhenDialogueEnds: (scene: BootcampScene, npc) => {
+      return;
+    },
+  },
+  judy: {
+    texture: 'judy',
+    position: { x: 340, y: 460 },
+    initialAnimation: 'judy-idle-right',
+    dialogueNodesObj: {
+      nodes: [
+        new DialogueNode("Hi, I'm Judy!"),
+        new DialogueNode('Do you need anything?', [
+          {
+            text: 'You seem a bit tense, is everything alright?',
+            nextNodeIndex: 2,
+            endDialogue: false,
+          },
+          {
+            text: 'Why did you decide to do this bootcamp?',
+            nextNodeIndex: 4,
+            endDialogue: false,
+          },
+        ]),
+        new DialogueNode(
+          "Yeah, don't worry, my husband just forgot to wash the dishes AGAIN.",
+        ),
+        new DialogueNode(
+          "But of course, I'm also nervous starting this bootcamp",
+          [
+            {
+              text: 'I get it. I am also nervous.',
+              nextNodeIndex: null,
+              endDialogue: true,
+            },
+          ],
+        ),
+        new DialogueNode(
+          "I worked at an airline for some time, but that won't lead to any career growth in my life, so I quit!",
+        ),
+      ],
+    },
+    updateDialogueNodeBasedOnHeroState: (scene: BootcampScene, npc) => {
+      return;
+    },
+    triggerEventWhenDialogueEnds: (scene: BootcampScene, npc) => {
       return;
     },
   },

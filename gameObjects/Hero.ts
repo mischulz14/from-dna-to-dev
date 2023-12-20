@@ -2,13 +2,14 @@ import * as Phaser from 'phaser';
 
 import PlayerFiniteStateMachine from '../statemachine/PlayerFiniteStateMachine';
 
-export default class Hero extends Phaser.Physics.Arcade.Sprite {
+export default class Hero<TBooleanConditions> extends Phaser.Physics.Arcade
+  .Sprite {
   cursors: Phaser.Types.Input.Keyboard.CursorKeys;
   lastDirection: string;
   speed: number;
   freeze: boolean;
   heroBounds: Phaser.Geom.Rectangle;
-  booleanConditions: { [key: string]: boolean };
+  booleanConditions: TBooleanConditions;
   stateMachine: PlayerFiniteStateMachine;
   animPrefix: string;
 
@@ -17,7 +18,7 @@ export default class Hero extends Phaser.Physics.Arcade.Sprite {
     x: number,
     y: number,
     texture: string,
-    booleanConditions: { [key: string]: boolean },
+    booleanConditions: TBooleanConditions,
     animPrefix: string,
     bodySizes: { x: number; y: number },
     bodyOffset: { x: number; y: number },

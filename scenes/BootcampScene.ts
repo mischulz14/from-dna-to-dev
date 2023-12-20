@@ -3,7 +3,8 @@ import { DOM, Game } from 'phaser';
 import { audioNames } from '../data/audioNames';
 import { eventTriggerData } from '../data/eventTriggerData';
 import { interactiveGameObjectAnimInfo } from '../data/interactiveGameObjectAnimInfo';
-import { npcLabData } from '../data/npcData';
+import { NPCAnimInfo } from '../data/NPCAnimInfo';
+import { npcBootcampData, npcLabData } from '../data/npcData';
 import DialogueController from '../dialogue/DialogueController';
 import DialogueNode from '../dialogue/DialogueNode';
 import EventTrigger from '../gameObjects/EventTrigger';
@@ -17,11 +18,14 @@ import areCollisionBoxesColliding from '../utils/collisonBoxCollison';
 import { placeGameObjectBasedOnLayer } from '../utils/placeGameObjectsBasedOnLayer';
 import ObjectivesUIScene from './ObjectivesUIScene';
 
-export default class ApartmentScene extends Phaser.Scene {
+export default class BootcampScene extends Phaser.Scene {
   hero: Hero<{
-    hasCheckedCoffeeMachine: boolean;
-    hasFoundWater: boolean;
-    hasMadeCoffee: boolean;
+    hasTalkedToJose: boolean;
+    hasTalkedToEveryone: boolean;
+    hasLearnedHTML: boolean;
+    hasLearnedCSS: boolean;
+    hasLearnedJavascriptAndReact: boolean;
+    hasProgressedToNextPhase: boolean;
   }>;
   isDialoguePlaying: boolean;
   activeInteractiveGameObject: InteractiveGameObject | null;
@@ -36,7 +40,7 @@ export default class ApartmentScene extends Phaser.Scene {
   interactiveGameObjects: InteractiveGameObject[];
 
   constructor() {
-    super({ key: 'ApartmentScene' });
+    super({ key: 'BootcampScene' });
     this.activeInteractiveGameObject = null;
     this.isEventTriggered = false;
     this.isDialoguePlaying = false;
@@ -49,8 +53,8 @@ export default class ApartmentScene extends Phaser.Scene {
 
   create() {
     globalAudioManager.switchSoundTo(audioNames.lofi);
-    this.createInteractiveGameObjects();
 
+    this.createInteractiveGameObjects();
     this.createTilemap();
     this.createHero();
     this.createCollisions();
@@ -59,16 +63,16 @@ export default class ApartmentScene extends Phaser.Scene {
     this.cameras.main.startFollow(this.hero);
     // this.scene.get('ObjectivesUIScene').removeAllObjectives();
     const uiScene = this.scene.get('ObjectivesUIScene') as ObjectivesUIScene;
-    uiScene.changeCurrentScene('ApartmentScene');
+    uiScene.changeCurrentScene('BootcampScene');
     uiScene.removeAllObjectives();
     uiScene.addInitialObjective(
-      'hasCheckedCoffeeMachine',
-      'Find the coffee machine and try making some coffee',
+      'hasTalkedToJose',
+      'Talk to one of your Tutors standing besides the big screen',
     );
     this.scene.launch('ObjectivesUIScene');
 
-    // this.scene.bringToTop('ApartmentScene');
-    this.playLevelIntroOnce();
+    // this.scene.bringToTop('BootcampScene');
+    // this.playLevelIntroOnce();
   }
 
   /////////////////////////
@@ -197,17 +201,20 @@ export default class ApartmentScene extends Phaser.Scene {
   createHero() {
     this.hero = new Hero(
       this,
-      430,
+      230,
       140,
-      'laiaHero',
+      'bootcampHero',
       {
-        hasCheckedCoffeeMachine: false,
-        hasFoundWater: false,
-        hasMadeCoffee: false,
+        hasTalkedToJose: false,
+        hasTalkedToEveryone: false,
+        hasLearnedHTML: false,
+        hasLearnedCSS: false,
+        hasLearnedJavascriptAndReact: false,
+        hasProgressedToNextPhase: false,
       },
-      'laia',
-      { x: 15, y: 16 },
-      { x: 9.2, y: 19.5 },
+      'bootcamp',
+      { x: 11, y: 12 },
+      { x: 14, y: 22 },
     );
     this.hero.setScale(2);
     this.add.existing(this.hero);
@@ -226,77 +233,58 @@ export default class ApartmentScene extends Phaser.Scene {
   }
 
   createTilemap() {
-    const map = this.make.tilemap({ key: 'apartmentMap' });
-    // console.log(map);
+    const map = this.make.tilemap({ key: 'bootcampMap' });
+    console.log(map);
 
-    const tileset = map.addTilesetImage('apartmentTileset', 'apartmentTileset');
-    // console.log(tileset);
+    const tileset = map.addTilesetImage('bootcampTileset', 'bootcampTileset');
+    console.log(tileset);
 
-    // CREATE LAYERS
-    const groundLayer = map.createLayer('Floor', tileset, 0, 0);
-    groundLayer.setDepth(0);
+    map.layers.forEach((layer) => {
+      const layerName = layer.name;
+      if (layerName === 'Collisions') {
+        this.collisionLayer = map.createLayer(
+          layerName,
+          tileset,
+          0,
+          0,
+        ) as Phaser.Tilemaps.TilemapLayer;
+        this.collisionLayer.setDepth(1);
+        this.collisionLayer.setVisible(false);
+        return;
+      }
+      if (layerName === 'Foreground') {
+        this.foregroundLayer = map.createLayer(
+          layerName,
+          tileset,
+          0,
+          0,
+        ) as Phaser.Tilemaps.TilemapLayer;
+        this.foregroundLayer.setDepth(10000);
+        map.createLayer(layerName, tileset, 0, 0);
+        return;
+      }
 
-    this.collisionLayer = map.createLayer('Collisions', tileset);
-    // console.log('collisions', this.collisionLayer);
-    this.collisionLayer.setVisible(false);
-
-    this.wallLayer = map.createLayer('Walls', tileset);
-    this.wallLayer.setDepth(0);
-
-    let firstTileIsPainted = false;
-    const coffeeMachine = map.createLayer('coffeeMachine', tileset);
-    placeGameObjectBasedOnLayer(
-      this,
-      coffeeMachine,
-      EventTrigger,
-      interactiveGameObjectAnimInfo.coffeeMachine.key,
-      eventTriggerData.coffeeMachine,
-      42,
-      38,
-      true,
-    );
-    const wasserHahn = map.createLayer('WasserHahn', tileset);
-    placeGameObjectBasedOnLayer(
-      this,
-      wasserHahn,
-      EventTrigger,
-      'empty',
-      eventTriggerData.wasserHahn,
-      42,
-      38,
-      true,
-    );
-    const otherGameObjectsLayer = map.createLayer('OtherGameObjects', tileset);
-    otherGameObjectsLayer.setDepth(2);
-
-    const WindowsLayer = map.createLayer('Windows', tileset);
-    WindowsLayer.setDepth(0);
-
-    const kitchenStuffLayer = map.createLayer('KitchenStuff', tileset);
-    // kitchenStuffLayer.setDepth(2);
-
-    const TVLayer = map.createLayer('TV', tileset);
-    // TVLayer.setDepth(2);
-
-    this.foregroundLayer = map.createLayer('Foreground', tileset);
-    this.foregroundLayer.setDepth(10000);
+      map.createLayer(layerName, tileset, 0, 0);
+    });
   }
 
   createInteractiveGameObjects() {
-    const michiSad = new EventTrigger(
-      this,
-      400,
-      100,
-      interactiveGameObjectAnimInfo.michiSad.key,
-      'E',
-      'Talk',
-      eventTriggerData.michiSad.dialogueNodesObj,
-      eventTriggerData.michiSad.triggerEventWhenDialogueEnds,
-      eventTriggerData.michiSad.updateDialogueNodeBasedOnPlayerState,
-    );
-
-    michiSad.scale = 2;
-    michiSad.play(interactiveGameObjectAnimInfo.michiSad.key);
+    Object.entries(npcBootcampData).forEach(([key, value]) => {
+      const npc = new NPC(
+        this,
+        value.position.x,
+        value.position.y,
+        value.texture,
+        value.initialAnimation,
+        'E',
+        'Talk',
+        value.dialogueNodesObj,
+        value.triggerEventWhenDialogueEnds,
+        value.updateDialogueNodeBasedOnHeroState,
+      );
+      npc.setScale(2);
+      this.add.existing(npc);
+    });
   }
 
   playLevelIntroOnce() {
@@ -306,8 +294,8 @@ export default class ApartmentScene extends Phaser.Scene {
     this.hasLevelIntroPlayed = true;
     this.hero.freeze = true;
     this.levelIntro = new LevelIntro({
-      levelNr: 2,
-      levelName: 'The Quarter Life Crisis',
+      levelNr: 3,
+      levelName: 'The Bug Fest',
     });
     this.levelIntro.createHTML();
     setTimeout(() => {

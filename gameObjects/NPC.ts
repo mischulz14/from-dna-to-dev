@@ -54,9 +54,11 @@ export default class NPC extends InteractiveGameObject {
 
     // make body immovable so it doesn't get pushed around upon collision
     this.body!.immovable = true;
-    this.shadow = scene.add.graphics({
-      fillStyle: { color: 0x000000, alpha: 0.25 },
-    });
+    this.shadow = scene.add
+      .graphics({
+        fillStyle: { color: 0x000000, alpha: 0.15 },
+      })
+      .setDepth(1);
 
     this.initialAnimation = initialAnimation;
     // Play the initial idle animation with a random delay
@@ -65,20 +67,21 @@ export default class NPC extends InteractiveGameObject {
       this.anims.play(initialAnimation, true);
     });
 
-    this.shadow.fillEllipse(this.x, this.y + 35, 30, 16);
+    this.shadow.fillEllipse(this.x, this.y + 32, 30, 20);
   }
 
   preload() {}
 
   update() {
     super.update();
-    this.updateShadow();
+    // this.updateShadow();
   }
 
-  turnToHero = (hero: Hero) => {
+  turnToHero = (hero: Hero<any>) => {
     console.log('turnToHero');
     console.log('current animation: ', this.anims.currentAnim.key);
     console.log('texture: ', this.texture);
+
     // based on the last held direction, turn to face the hero
     if (hero.lastDirection === 'up') {
       this.anims.play(`${this.texture.key}-idle-down`, true);
@@ -91,7 +94,7 @@ export default class NPC extends InteractiveGameObject {
     }
   };
 
-  turnBackToOriginalPosition = (hero: Hero) => {
+  turnBackToOriginalPosition = (hero: Hero<any>) => {
     this.anims.play(this.initialAnimation, true);
   };
 
@@ -149,10 +152,10 @@ export default class NPC extends InteractiveGameObject {
     }
   };
 
-  updateShadow = () => {
-    this.shadow.clear();
-    this.shadow.fillEllipse(this.x, this.y + 35, 30, 16);
-  };
+  // updateShadow = () => {
+  //   this.shadow.clear();
+  //   this.shadow.fillEllipse(this.x, this.y + 35, 30, 16);
+  // };
 
   incrementTalkingCount = () => {
     this.talkCount += 1;

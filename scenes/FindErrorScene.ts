@@ -12,7 +12,7 @@ import ObjectivesUIScene from './ObjectivesUIScene';
 
 export default class FindErrorScene extends Phaser.Scene {
   dialogueController: DialogueController;
-  hero: Hero;
+  hero: Hero<any>;
   errorRectangles: ErrorRectangle[];
   foundErrorRectangles: string[];
   isOverlappingWithError: boolean;

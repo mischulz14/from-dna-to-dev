@@ -7,7 +7,7 @@ export default class ObjectivesUIScene extends Phaser.Scene {
   objectives: ObjectiveIndicator[];
   currentScene: string;
   checkedCondition: string;
-  currentHero: Hero;
+  currentHero: Hero<any>;
   button: Phaser.GameObjects.DOMElement;
 
   currentPosition: {
