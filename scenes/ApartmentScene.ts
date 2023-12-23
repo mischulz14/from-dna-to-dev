@@ -11,7 +11,7 @@ import Hero from '../gameObjects/Hero';
 import InteractiveGameObject from '../gameObjects/InteractiveGameObject';
 import NPC from '../gameObjects/NPC';
 import ObjectiveIndicator from '../gameObjects/ObjectiveIndicator';
-import LevelIntro from '../levelIntro/LevelIntro';
+import LevelIntro from '../sceneoverlay/SceneOverlay';
 import { globalAudioManager } from '../src/app';
 import areCollisionBoxesColliding from '../utils/collisonBoxCollison';
 import { placeGameObjectBasedOnLayer } from '../utils/placeGameObjectsBasedOnLayer';
@@ -306,8 +306,8 @@ export default class ApartmentScene extends Phaser.Scene {
     this.hasLevelIntroPlayed = true;
     this.hero.freeze = true;
     this.levelIntro = new LevelIntro({
-      levelNr: 2,
-      levelName: 'The Quarter Life Crisis',
+      topText: 2,
+      bottomText: 'The Quarter Life Crisis',
     });
     this.levelIntro.createHTML();
     setTimeout(() => {

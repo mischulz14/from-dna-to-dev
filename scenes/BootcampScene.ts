@@ -11,7 +11,7 @@ import Hero from '../gameObjects/Hero';
 import InteractiveGameObject from '../gameObjects/InteractiveGameObject';
 import NPC from '../gameObjects/NPC';
 import ObjectiveIndicator from '../gameObjects/ObjectiveIndicator';
-import LevelIntro from '../levelIntro/LevelIntro';
+import LevelIntro from '../sceneoverlay/SceneOverlay';
 import { globalAudioManager } from '../src/app';
 import areCollisionBoxesColliding from '../utils/collisonBoxCollison';
 import { placeGameObjectBasedOnLayer } from '../utils/placeGameObjectsBasedOnLayer';
@@ -21,11 +21,10 @@ export default class BootcampScene extends Phaser.Scene {
   hero: Hero<{
     hasTalkedToJose: boolean;
     hasTalkedToEveryone: boolean;
-    hasLearnedHTML: boolean;
-    hasLearnedCSS: boolean;
-    hasLearnedJavascriptAndReact: boolean;
     hasProgressedToNextPhase: boolean;
+    isReadyForBattle: boolean;
   }>;
+  NPCsPlayerHasTalkedTo: NPC[];
   isDialoguePlaying: boolean;
   activeInteractiveGameObject: InteractiveGameObject | null;
   isEventTriggered: boolean;
@@ -44,6 +43,7 @@ export default class BootcampScene extends Phaser.Scene {
     this.isEventTriggered = false;
     this.isDialoguePlaying = false;
     this.dialogueController = new DialogueController(this);
+    this.NPCsPlayerHasTalkedTo = [];
   }
 
   preload() {
@@ -71,7 +71,7 @@ export default class BootcampScene extends Phaser.Scene {
     this.scene.launch('ObjectivesUIScene');
 
     // this.scene.bringToTop('BootcampScene');
-    // this.playLevelIntroOnce();
+    // this.playSceneOverlay(3, 'The Bootcamp starts');
   }
 
   /////////////////////////
@@ -113,7 +113,8 @@ export default class BootcampScene extends Phaser.Scene {
         this.input.keyboard.addKey(child.dialogueIndicatorKey),
       )
     ) {
-      child.updateDialogueNodeBasedOnPlayerState(this, child);
+      child.updateDialogueNodeBasedOnPlayerState ??
+        child.updateDialogueNodeBasedOnPlayerState(this, child);
 
       this.activeInteractiveGameObject = child;
       this.hero.freeze = true;
@@ -124,9 +125,9 @@ export default class BootcampScene extends Phaser.Scene {
     }
   }
 
-  hideSpeechIndication(child: NPC | EventTrigger) {
+  hideSpeechIndication(child: InteractiveGameObject | EventTrigger) {
     if (
-      (child instanceof NPC || child instanceof EventTrigger) &&
+      child instanceof InteractiveGameObject &&
       !areCollisionBoxesColliding(this.hero, child)
     ) {
       child.hideSpeechIndication();
@@ -191,6 +192,8 @@ export default class BootcampScene extends Phaser.Scene {
         this.scene.get('ObjectivesUIScene').events.emit('addObjective', data);
       }
     });
+
+    this.events.on('changeContext', () => {});
   }
 
   /////////////////////////
@@ -206,10 +209,8 @@ export default class BootcampScene extends Phaser.Scene {
       {
         hasTalkedToJose: false,
         hasTalkedToEveryone: false,
-        hasLearnedHTML: false,
-        hasLearnedCSS: false,
-        hasLearnedJavascriptAndReact: false,
         hasProgressedToNextPhase: false,
+        isReadyForBattle: false,
       },
       'bootcamp',
       { x: 11, y: 12 },
@@ -286,19 +287,23 @@ export default class BootcampScene extends Phaser.Scene {
     });
   }
 
-  playLevelIntroOnce() {
+  playSceneOverlay(levelNumber: string | number, bottomText: string) {
+    const timeout = 3000;
     if (this.hasLevelIntroPlayed || !this.hero) {
       return;
     }
     this.hasLevelIntroPlayed = true;
     this.hero.freeze = true;
     this.levelIntro = new LevelIntro({
-      levelNr: 3,
-      levelName: 'The Bug Fest',
+      topText: levelNumber || null,
+      bottomText: bottomText,
     });
     this.levelIntro.createHTML();
     setTimeout(() => {
       this.hero.freeze = false;
-    }, 3000);
+      this.hasLevelIntroPlayed = false;
+    }, timeout);
+
+    return timeout;
   }
 }

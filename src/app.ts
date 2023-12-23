@@ -5,6 +5,7 @@ import ApartmentScene from '../scenes/ApartmentScene';
 import VirusBattleScene from '../scenes/BattleScene';
 import BootcampScene from '../scenes/BootcampScene';
 import DNAScene from '../scenes/DNAScene';
+import FinalBattleScene from '../scenes/FinalBattleScene';
 import FindErrorScene from '../scenes/FindErrorScene';
 import LabCutscene from '../scenes/LabCutscene';
 import LabScene from '../scenes/LabScene';
@@ -21,7 +22,7 @@ export const config: Phaser.Types.Core.GameConfig = {
     default: 'arcade',
     arcade: {
       gravity: { y: 0, x: 0 }, // Top down game, so no gravity
-      debug: false, // Change this to true to see hitboxes
+      debug: true, // Change this to true to see hitboxes
     },
   },
   width: 800,
@@ -48,6 +49,7 @@ export const config: Phaser.Types.Core.GameConfig = {
     LabCutscene,
     WohnungsIntroScene,
     DNAScene,
+    FinalBattleScene,
   ],
 };
 

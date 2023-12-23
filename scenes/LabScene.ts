@@ -9,13 +9,19 @@ import Hero from '../gameObjects/Hero';
 import InteractiveGameObject from '../gameObjects/InteractiveGameObject';
 import NonInteractiveGameObject from '../gameObjects/NonInteractiveGameObject';
 import NPC from '../gameObjects/NPC';
-import LevelIntro from '../levelIntro/LevelIntro';
+import LevelIntro from '../sceneoverlay/SceneOverlay';
 import { globalAudioManager } from '../src/app';
 import areCollisionBoxesColliding from '../utils/collisonBoxCollison';
 import ObjectivesUIScene from './ObjectivesUIScene';
 
 export default class LabScene extends Phaser.Scene {
-  hero: Hero<{ hasKey: boolean; hasTalkedToMainNPC: boolean; hasBattledVirus: boolean; hasDeliveredProbe: boolean; hasBattledSleepDeprivation: boolean }>;
+  hero: Hero<{
+    hasKey: boolean;
+    hasTalkedToMainNPC: boolean;
+    hasBattledVirus: boolean;
+    hasDeliveredProbe: boolean;
+    hasBattledSleepDeprivation: boolean;
+  }>;
   isDialoguePlaying: boolean;
   activeInteractiveGameObject: InteractiveGameObject | null;
   isEventTriggered: boolean;
@@ -447,8 +453,8 @@ export default class LabScene extends Phaser.Scene {
     this.hasLevelIntroPlayed = true;
     this.hero.freeze = true;
     this.levelIntro = new LevelIntro({
-      levelNr: 1,
-      levelName: 'The Lab',
+      topText: 1,
+      bottomText: 'The Lab',
     });
     this.levelIntro.createHTML();
     setTimeout(() => {

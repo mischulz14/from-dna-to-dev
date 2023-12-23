@@ -9,6 +9,7 @@ export default class ObjectivesUIScene extends Phaser.Scene {
   checkedCondition: string;
   currentHero: Hero<any>;
   button: Phaser.GameObjects.DOMElement;
+  areObjectivesVisible: boolean;
 
   currentPosition: {
     x: number;
@@ -21,6 +22,7 @@ export default class ObjectivesUIScene extends Phaser.Scene {
       x: 60,
       y: 100,
     };
+    this.areObjectivesVisible = false;
   }
 
   create() {
@@ -36,8 +38,10 @@ export default class ObjectivesUIScene extends Phaser.Scene {
       // set button text to 'Hide Objectives' if objectives are visible
       if (this.objectives[0].visible) {
         button.innerText = 'Show Objectives';
+        this.areObjectivesVisible = true;
       } else {
         button.innerText = 'Hide Objectives';
+        this.areObjectivesVisible = false;
       }
 
       if (this.objectives.length < 1) return;
@@ -87,7 +91,7 @@ export default class ObjectivesUIScene extends Phaser.Scene {
       data.textBesidesCheckbox,
     );
 
-    if (!this.objectives[0].visible) {
+    if (this.objectives[0] && !this.objectives[0].visible) {
       objectiveIndicator.setVisible(false);
     }
 
