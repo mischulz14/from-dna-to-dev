@@ -9,6 +9,7 @@ import {
 } from '../data/cutSceneSprites';
 import { enemyBattleAnimationNames } from '../data/enemyBattleAnimationNames';
 import { enemySpriteNames } from '../data/enemySpriteNames';
+import { finalBattleSpriteInfos } from '../data/finalBattleSpriteInfos';
 import {
   bootcampHeroAnimInfo,
   labHeroAnimInfo,
@@ -41,6 +42,7 @@ export default class PreloadScene extends Phaser.Scene {
     this.preloadBootcampSprites();
     // this.preloadEnemySprites();
     this.preloadTilesets();
+    this.preloadFinalBattleSprites();
   }
 
   create() {
@@ -50,7 +52,8 @@ export default class PreloadScene extends Phaser.Scene {
     this.createHeroAnimations();
     this.createApartmentSceneAnimations();
     this.createBootcampAnimations();
-    this.scene.start('BootcampScene');
+    this.createFinalBattleAnimations();
+    this.scene.start('FinalBattleScene');
   }
 
   preloadAudio() {
@@ -305,6 +308,17 @@ export default class PreloadScene extends Phaser.Scene {
 
     // BOOTCAMP SCENE
     this.load.image('bootcampTileset', '../assets/bootcampTileset.png');
+  }
+
+  preloadFinalBattleSprites() {
+    this.load.spritesheet(
+      finalBattleSpriteInfos.michi.texture,
+      finalBattleSpriteInfos.michi.src,
+      {
+        frameWidth: finalBattleSpriteInfos.michi.spriteWidth,
+        frameHeight: finalBattleSpriteInfos.michi.spriteHeight,
+      },
+    );
   }
 
   createCutSceneAnimations() {
@@ -579,6 +593,23 @@ export default class PreloadScene extends Phaser.Scene {
       ),
       frameRate: 4,
       repeat: -1,
+    });
+  }
+
+  createFinalBattleAnimations() {
+    finalBattleSpriteInfos.michi.animations.forEach((animInfo) => {
+      this.anims.create({
+        key: animInfo.name,
+        frames: this.anims.generateFrameNumbers(
+          finalBattleSpriteInfos.michi.texture,
+          {
+            start: animInfo.start,
+            end: animInfo.end,
+          },
+        ),
+        frameRate: animInfo.frameRate,
+        repeat: animInfo.repeat,
+      });
     });
   }
 }
