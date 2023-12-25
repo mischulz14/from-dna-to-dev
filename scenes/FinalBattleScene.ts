@@ -4,7 +4,7 @@ import { finalBattleSpriteInfos } from '../data/finalBattleSpriteInfos';
 import DialogueController from '../dialogue/DialogueController';
 import DialogueNode from '../dialogue/DialogueNode';
 import FinalBattleHero from '../gameObjects/FinalBattleHero';
-import FinalBattleSceneStateMachine from '../statemachine/finalBattleScene/FinalBattleSceneStateMachine';
+import FinalBattleSceneStateMachine from '../statemachine/finalBattleScene/FinalBattleStateMachine';
 
 export default class FinalBattleScene extends Phaser.Scene {
   keys: Phaser.Types.Input.Keyboard.CursorKeys;
