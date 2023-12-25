@@ -1,4 +1,4 @@
-import Hero from '../gameObjects/Hero';
+import Hero from '../../gameObjects/Hero';
 import IdleState from './IdleState';
 import RunState from './RunState';
 

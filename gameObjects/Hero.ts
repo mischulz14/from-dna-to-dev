@@ -1,6 +1,6 @@
 import * as Phaser from 'phaser';
 
-import PlayerFiniteStateMachine from '../statemachine/PlayerFiniteStateMachine';
+import PlayerFiniteStateMachine from '../statemachine/overworldHero/PlayerFiniteStateMachine';
 
 export default class Hero<TBooleanConditions> extends Phaser.Physics.Arcade
   .Sprite {

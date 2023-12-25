@@ -1,5 +1,5 @@
-import { State } from '../api/state';
-import FinalBattleHero from '../gameObjects/FinalBattleHero';
+import { State } from '../../api/state';
+import FinalBattleHero from '../../gameObjects/FinalBattleHero';
 
 export default class IdleCenterState implements State {
   hero: FinalBattleHero;

@@ -1,6 +1,6 @@
 import * as Phaser from 'phaser';
 
-import FinalBattleHeroFiniteStateMachine from '../statemachine/FinalBattleHeroFiniteStateMachine';
+import FinalBattleHeroFiniteStateMachine from '../statemachine/finalBattleHero/FinalBattleHeroFiniteStateMachine';
 
 export default class FinalBattleHero extends Phaser.Physics.Arcade.Sprite {
   cursors: Phaser.Types.Input.Keyboard.CursorKeys;

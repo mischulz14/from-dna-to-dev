@@ -1,6 +1,6 @@
-import { State } from '../api/state';
-import Hero from '../gameObjects/Hero';
-import { anyOfTheCursorKeysAreDown } from '../utils/keyIsDown';
+import { State } from '../../api/state';
+import Hero from '../../gameObjects/Hero';
+import { anyOfTheCursorKeysAreDown } from '../../utils/keyIsDown';
 
 export default class RunState implements State {
   hero: Hero;

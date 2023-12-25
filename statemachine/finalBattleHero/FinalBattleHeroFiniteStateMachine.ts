@@ -1,4 +1,4 @@
-import FinalBattleHero from '../gameObjects/FinalBattleHero';
+import FinalBattleHero from '../../gameObjects/FinalBattleHero';
 import IdleCenterState from './IdleCenterState';
 import IdleLeftState from './IdleLeftState';
 import IdleRightState from './IdleRightState';
