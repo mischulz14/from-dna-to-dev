@@ -109,7 +109,7 @@ export default class DialogueController {
     }
   }
 
-  initiateDialogueNodesArray(
+  initiateDialogue(
     dialogue: DialogueNode[],
     interactiveGameObject: any,
     hero: any,

@@ -28,4 +28,35 @@ export const finalBattleSpriteInfos = {
       },
     ],
   },
+  arrows: {
+    texture: 'arrows',
+    spriteWidth: 32,
+    spriteHeight: 32,
+    src: '../assets/arrows.png',
+    animations: [
+      {
+        name: 'arrow-animation',
+        start: 0,
+        end: 5,
+        frameRate: 6,
+        repeat: -1,
+      },
+    ],
+  },
+
+  mouse: {
+    texture: 'mouse',
+    spriteWidth: 32,
+    spriteHeight: 32,
+    src: '../assets/mouse.png',
+    animations: [
+      {
+        name: 'mouse-animation',
+        start: 0,
+        end: 6,
+        frameRate: 6,
+        repeat: -1,
+      },
+    ],
+  },
 };

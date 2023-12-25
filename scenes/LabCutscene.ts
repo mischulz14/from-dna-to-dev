@@ -26,7 +26,7 @@ export default class LabCutscene extends Phaser.Scene {
       ),
     ];
     this.dialogueController = new DialogueController(this);
-    this.dialogueController.initiateDialogueNodesArray(dialogue, null, null);
+    this.dialogueController.initiateDialogue(dialogue, null, null);
   }
 
   preload() {

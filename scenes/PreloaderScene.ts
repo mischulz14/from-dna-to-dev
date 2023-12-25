@@ -319,6 +319,22 @@ export default class PreloadScene extends Phaser.Scene {
         frameHeight: finalBattleSpriteInfos.michi.spriteHeight,
       },
     );
+    this.load.spritesheet(
+      finalBattleSpriteInfos.arrows.texture,
+      finalBattleSpriteInfos.arrows.src,
+      {
+        frameWidth: finalBattleSpriteInfos.arrows.spriteWidth,
+        frameHeight: finalBattleSpriteInfos.arrows.spriteHeight,
+      },
+    );
+    this.load.spritesheet(
+      finalBattleSpriteInfos.mouse.texture,
+      finalBattleSpriteInfos.mouse.src,
+      {
+        frameWidth: finalBattleSpriteInfos.mouse.spriteWidth,
+        frameHeight: finalBattleSpriteInfos.mouse.spriteHeight,
+      },
+    );
   }
 
   createCutSceneAnimations() {
@@ -597,18 +613,20 @@ export default class PreloadScene extends Phaser.Scene {
   }
 
   createFinalBattleAnimations() {
-    finalBattleSpriteInfos.michi.animations.forEach((animInfo) => {
-      this.anims.create({
-        key: animInfo.name,
-        frames: this.anims.generateFrameNumbers(
-          finalBattleSpriteInfos.michi.texture,
-          {
-            start: animInfo.start,
-            end: animInfo.end,
-          },
-        ),
-        frameRate: animInfo.frameRate,
-        repeat: animInfo.repeat,
+    Object.keys(finalBattleSpriteInfos).forEach((key) => {
+      finalBattleSpriteInfos[key].animations.forEach((animInfo) => {
+        this.anims.create({
+          key: animInfo.name,
+          frames: this.anims.generateFrameNumbers(
+            finalBattleSpriteInfos[key].texture,
+            {
+              start: animInfo.start,
+              end: animInfo.end,
+            },
+          ),
+          frameRate: animInfo.frameRate,
+          repeat: animInfo.repeat,
+        });
       });
     });
   }

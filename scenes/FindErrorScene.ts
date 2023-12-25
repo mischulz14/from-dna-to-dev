@@ -42,7 +42,7 @@ export default class FindErrorScene extends Phaser.Scene {
       new DialogueNode('Keep in mind, you only have three lives!'),
     ];
     this.dialogueController = new DialogueController(this);
-    this.dialogueController.initiateDialogueNodesArray(dialogue, null, null);
+    this.dialogueController.initiateDialogue(dialogue, null, null);
   }
 
   preload() {

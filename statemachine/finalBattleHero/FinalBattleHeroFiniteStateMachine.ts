@@ -23,6 +23,7 @@ export default class FinalBattleHeroFiniteStateMachine {
 
   start() {
     this.state = this.idleState;
+    this.state.enter();
   }
 
   update() {

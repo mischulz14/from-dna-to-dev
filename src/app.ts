@@ -22,7 +22,7 @@ export const config: Phaser.Types.Core.GameConfig = {
     default: 'arcade',
     arcade: {
       gravity: { y: 0, x: 0 }, // Top down game, so no gravity
-      debug: true, // Change this to true to see hitboxes
+      debug: false, // Change this to true to see hitboxes
     },
   },
   width: 800,

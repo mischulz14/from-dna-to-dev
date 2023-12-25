@@ -149,7 +149,7 @@ export default class ApartmentScene extends Phaser.Scene {
     this.cameras.main.zoomTo(2, 300);
     this.activeInteractiveGameObject.hideSpeechIndication();
     this.dialogueController.dialogueField.show();
-    this.dialogueController.initiateDialogueNodesArray(
+    this.dialogueController.initiateDialogue(
       dialogue,
       this.activeInteractiveGameObject,
       this.hero,
