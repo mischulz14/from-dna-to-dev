@@ -59,4 +59,41 @@ export const finalBattleSpriteInfos = {
       },
     ],
   },
+
+  finalBoss: {
+    texture: 'finalBoss',
+    spriteWidth: 50,
+    spriteHeight: 50,
+    src: '../assets/angryComputer.png',
+    animations: [
+      {
+        name: 'finalBoss-idle',
+        start: 0,
+        end: 3,
+        frameRate: 4,
+        repeat: 0,
+      },
+      {
+        name: 'finalBoss-punch-left',
+        start: 4,
+        end: 14,
+        frameRate: 7,
+        repeat: 0,
+      },
+      {
+        name: 'finalBoss-punch-right',
+        start: 15,
+        end: 25,
+        frameRate: 7,
+        repeat: 0,
+      },
+      {
+        name: 'finalBoss-punch-right',
+        start: 15,
+        end: 25,
+        frameRate: 7,
+        repeat: 0,
+      },
+    ],
+  },
 };
