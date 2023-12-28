@@ -306,7 +306,10 @@ export const npcBootcampData = {
       ],
     },
     updateDialogueNodeBasedOnHeroState: (scene: BootcampScene, npc) => {
-      if (scene.hero.booleanConditions.hasProgressedToNextPhase) {
+      if (
+        scene.hero.booleanConditions.isInSecondPhase ||
+        scene.hero.booleanConditions.isInThirdPhase
+      ) {
         npc.dialogueNodesObj = {
           nodes: [
             new DialogueNode('Hey there!'),
@@ -351,8 +354,11 @@ export const npcBootcampData = {
       return;
     },
     triggerEventWhenDialogueEnds: (scene: BootcampScene, npc) => {
-      handleFirstBootcampPhase(scene, npc);
-      handleSecondBootcampPhase(scene, npc);
+      if (scene.hero.booleanConditions.isInFirstPhase) {
+        handleFirstBootcampPhase(scene, npc);
+      } else if (scene.hero.booleanConditions.isInSecondPhase) {
+        handleSecondBootcampPhase(scene, npc);
+      }
       return;
     },
   },
@@ -402,8 +408,8 @@ export const npcBootcampData = {
     },
     updateDialogueNodeBasedOnHeroState: (scene: BootcampScene, npc) => {
       if (
-        scene.hero.booleanConditions.hasProgressedToNextPhase &&
-        !scene.hero.booleanConditions.isReadyForBattle
+        scene.hero.booleanConditions.isInSecondPhase &&
+        !scene.hero.booleanConditions.isInThirdPhase
       ) {
         npc.dialogueNodesObj = {
           nodes: [
@@ -447,33 +453,36 @@ export const npcBootcampData = {
             ),
           ],
         };
+
+        return;
       }
 
-      if (scene.hero.booleanConditions.isReadyForBattle) {
+      if (scene.hero.booleanConditions.isInThirdPhase) {
         npc.dialogueNodesObj = {
           nodes: [
             new DialogueNode('Start your final project amigo!'),
             new DialogueNode('Find your laptop and start coding!'),
           ],
         };
+        return;
       }
-      return;
     },
     triggerEventWhenDialogueEnds: (scene: BootcampScene, npc) => {
       scene.hero.booleanConditions.hasTalkedToJose = true;
 
-      if (!scene.hero.booleanConditions.hasProgressedToNextPhase) {
+      if (scene.hero.booleanConditions.isInFirstPhase) {
         scene.events.emit('addObjective', {
           textBesidesCheckbox: 'Talk to the other bootcamp participants',
           checkedCondition: 'hasTalkedToEveryone',
         });
         return;
+      } else if (scene.hero.booleanConditions.isInSecondPhase) {
+        scene.events.emit('addObjective', {
+          textBesidesCheckbox: 'Ask for tips from your colleagues',
+          checkedCondition: 'hasTalkedToEveryone',
+        });
+        return;
       }
-      scene.events.emit('addObjective', {
-        textBesidesCheckbox: 'Ask for tips from your colleagues',
-        checkedCondition: 'hasTalkedToEveryone',
-      });
-
       return;
     },
   },
@@ -517,7 +526,10 @@ export const npcBootcampData = {
       ],
     },
     updateDialogueNodeBasedOnHeroState: (scene: BootcampScene, npc) => {
-      if (scene.hero.booleanConditions.hasProgressedToNextPhase) {
+      if (
+        scene.hero.booleanConditions.isInSecondPhase ||
+        scene.hero.booleanConditions.isInThirdPhase
+      ) {
         npc.dialogueNodesObj = {
           nodes: [
             new DialogueNode('Hey there, you need anything?'),
@@ -555,8 +567,11 @@ export const npcBootcampData = {
       return;
     },
     triggerEventWhenDialogueEnds: (scene: BootcampScene, npc) => {
-      handleFirstBootcampPhase(scene, npc);
-      handleSecondBootcampPhase(scene, npc);
+      if (scene.hero.booleanConditions.isInFirstPhase) {
+        handleFirstBootcampPhase(scene, npc);
+      } else if (scene.hero.booleanConditions.isInSecondPhase) {
+        handleSecondBootcampPhase(scene, npc);
+      }
       return;
     },
   },
@@ -598,7 +613,10 @@ export const npcBootcampData = {
       ],
     },
     updateDialogueNodeBasedOnHeroState: (scene: BootcampScene, npc) => {
-      if (scene.hero.booleanConditions.hasProgressedToNextPhase) {
+      if (
+        scene.hero.booleanConditions.isInSecondPhase ||
+        scene.hero.booleanConditions.isInThirdPhase
+      ) {
         npc.dialogueNodesObj = {
           nodes: [
             new DialogueNode('Hi there!'),
@@ -643,8 +661,12 @@ export const npcBootcampData = {
       return;
     },
     triggerEventWhenDialogueEnds: (scene: BootcampScene, npc) => {
-      handleFirstBootcampPhase(scene, npc);
-      handleSecondBootcampPhase(scene, npc);
+      if (scene.hero.booleanConditions.isInFirstPhase) {
+        handleFirstBootcampPhase(scene, npc);
+      } else if (scene.hero.booleanConditions.isInSecondPhase) {
+        handleSecondBootcampPhase(scene, npc);
+      }
+
       return;
     },
   },
@@ -682,7 +704,10 @@ export const npcBootcampData = {
       ],
     },
     updateDialogueNodeBasedOnHeroState: (scene: BootcampScene, npc) => {
-      if (scene.hero.booleanConditions.hasProgressedToNextPhase) {
+      if (
+        scene.hero.booleanConditions.isInSecondPhase ||
+        scene.hero.booleanConditions.isInThirdPhase
+      ) {
         npc.dialogueNodesObj = {
           nodes: [
             new DialogueNode('Hi there!'),
@@ -720,8 +745,11 @@ export const npcBootcampData = {
       return;
     },
     triggerEventWhenDialogueEnds: (scene: BootcampScene, npc) => {
-      handleFirstBootcampPhase(scene, npc);
-      handleSecondBootcampPhase(scene, npc);
+      if (scene.hero.booleanConditions.isInFirstPhase) {
+        handleFirstBootcampPhase(scene, npc);
+      } else if (scene.hero.booleanConditions.isInSecondPhase) {
+        handleSecondBootcampPhase(scene, npc);
+      }
       return;
     },
   },

@@ -3,12 +3,15 @@ import Phaser from 'phaser';
 import { finalBattleSpriteInfos } from '../data/finalBattleSpriteInfos';
 import DialogueController from '../dialogue/DialogueController';
 import DialogueNode from '../dialogue/DialogueNode';
+import FinalBattleBoss from '../gameObjects/FinalBattleBoss';
 import FinalBattleHero from '../gameObjects/FinalBattleHero';
 import FinalBattleSceneStateMachine from '../statemachine/finalBattleScene/FinalBattleStateMachine';
+import { fadeCameraIn } from '../utils/sceneTransitions';
 
 export default class FinalBattleScene extends Phaser.Scene {
   keys: Phaser.Types.Input.Keyboard.CursorKeys;
   hero: FinalBattleHero;
+  finalBoss: Phaser.GameObjects.Sprite;
   dialogueController: DialogueController;
   stateMachine: FinalBattleSceneStateMachine;
   arrows: Phaser.GameObjects.Sprite;
@@ -26,13 +29,14 @@ export default class FinalBattleScene extends Phaser.Scene {
     super({ key: 'FinalBattleScene' });
 
     const dialogue = [
-      new DialogueNode('After a long day of work, you look out of the window.'),
-      new DialogueNode(
-        'All this battling with stress, all of those nightshifts and sleep deprivation is certainly taking a toll on you...',
-      ),
-      new DialogueNode(
-        'This was not how you imagined it to be when you were studying to become a scientist...',
-      ),
+      // new DialogueNode('You are almost a fullstack developer'),
+      // new DialogueNode(
+      //   'You can feel the power of the code flowing through your veins...',
+      // ),
+      // new DialogueNode(
+      //   'You just have to overcome this one final challenge.',
+      // ),
+      new DialogueNode("You're ready."),
     ];
     this.dialogueController = new DialogueController(this);
     this.dialogueController.initiateDialogue(dialogue, null, null);
@@ -44,6 +48,7 @@ export default class FinalBattleScene extends Phaser.Scene {
   }
 
   create() {
+    fadeCameraIn(this, 1000);
     this.arrows = this.add
       .sprite(335, 220, finalBattleSpriteInfos.arrows.texture)
       .setOrigin(0, 0)
@@ -63,8 +68,15 @@ export default class FinalBattleScene extends Phaser.Scene {
         name: 'intro',
         animationTarget: this.arrows,
         animation: finalBattleSpriteInfos.arrows.animations[0].name,
-        text: 'Your final project is going to throw bugs at you!\nEvade them by using the left and right arrow keys.',
-        nextPhase: 'MinionPhase',
+        text: 'Your final project is going to throw HTML, CSS and React bugs at you! Evade them by using the left and right arrow keys.',
+        nextPhase: 'minionPhase',
+      },
+      {
+        name: 'intro',
+        animationTarget: this.arrows,
+        animation: finalBattleSpriteInfos.arrows.animations[0].name,
+        text: 'Your final project is going to throw HTML, CSS and React bugs at you! Evade them by using the left and right arrow keys.',
+        nextPhase: 'minionPhase',
       },
     ];
     this.dialogueController.typeText();
@@ -79,8 +91,28 @@ export default class FinalBattleScene extends Phaser.Scene {
     });
 
     let graphics = this.add.graphics();
-    graphics.fillStyle(0x000000, 0.5); // Change 0.5 to whatever opacity you want
+    graphics.fillStyle(0x000000, 0.4);
     graphics.fillRect(0, 0, this.scale.width, this.scale.height);
+
+    const bgRect2 = this.add
+      .rectangle(
+        this.scale.width / 2 / 2 - 5,
+        +10,
+        this.scale.width / 2 + 10,
+        this.scale.height - 20,
+        0xffffff,
+      )
+      .setOrigin(0, 0);
+
+    const bgRect = this.add
+      .rectangle(
+        this.scale.width / 2 / 2,
+        +15,
+        this.scale.width / 2,
+        this.scale.height - 30,
+        0x000000,
+      )
+      .setOrigin(0, 0);
 
     this.keys = this.input.keyboard.createCursorKeys();
     this.hero = new FinalBattleHero(
@@ -96,6 +128,16 @@ export default class FinalBattleScene extends Phaser.Scene {
       // .play('final-idle-center')
       .setAlpha(0)
       .setDepth(10000);
+
+    this.finalBoss = new FinalBattleBoss(
+      this,
+      this.scale.width / 2,
+      0,
+      finalBattleSpriteInfos.finalBoss.texture,
+    )
+      .setScale(3)
+      .setDepth(10000)
+      .setAlpha(0);
   }
 
   update() {

@@ -1,3 +1,4 @@
+import { eventTriggerData } from '../data/eventTriggerData';
 import EventTrigger from '../gameObjects/EventTrigger';
 import InteractiveGameObject from '../gameObjects/InteractiveGameObject';
 import NPC from '../gameObjects/NPC';
@@ -6,7 +7,13 @@ import ObjectivesUIScene from '../scenes/ObjectivesUIScene';
 import { fadeCameraIn, fadeCameraOut } from './sceneTransitions';
 
 export function handleContextChange(scene: BootcampScene) {
+  scene.hero.booleanConditions.isInFirstPhase = false;
+  scene.hero.booleanConditions.isInSecondPhase = true;
+
   if (!scene.hero.booleanConditions.hasTalkedToJose) return;
+  scene.hero.booleanConditions.hasTalkedToEveryone = false;
+  scene.hero.booleanConditions.hasTalkedToJose = false;
+  scene.NPCsPlayerHasTalkedTo = [];
   const timeout = 1500;
   scene.hero.freeze = true;
   fadeCameraOut(scene, timeout);
@@ -16,14 +23,10 @@ export function handleContextChange(scene: BootcampScene) {
 
   setTimeout(() => {
     scene.playSceneOverlay('A few weeks later...', 'You learned a lot!');
-    scene.hero.x = 180;
+    scene.hero.x = 200;
     scene.hero.y = 100;
     scene.hero.freeze = false;
-    scene.hero.booleanConditions.hasProgressedToNextPhase = true;
-    scene.hero.booleanConditions.hasTalkedToEveryone = false;
-    scene.hero.booleanConditions.hasTalkedToJose = false;
     fadeCameraIn(scene, timeout);
-    scene.NPCsPlayerHasTalkedTo = [];
 
     setTimeout(() => {
       scene.events.emit('addObjective', {
@@ -39,41 +42,43 @@ export function handleContextChange(scene: BootcampScene) {
 }
 
 export function handleNPCInteraction(scene: BootcampScene, npc: NPC) {
-  if (scene.NPCsPlayerHasTalkedTo.includes(npc)) return;
-  scene.NPCsPlayerHasTalkedTo.push(npc);
-
+  if (scene.hero.booleanConditions.isInThirdPhase) return;
   if (scene.NPCsPlayerHasTalkedTo.length === 4) {
     scene.hero.booleanConditions.hasTalkedToEveryone = true;
     console.log('hasTalkedToEveryone');
+    return;
   }
+
+  if (scene.NPCsPlayerHasTalkedTo.includes(npc)) return;
+  scene.NPCsPlayerHasTalkedTo.push(npc);
+
   console.log(scene.NPCsPlayerHasTalkedTo);
 }
 
 export function handleFirstBootcampPhase(scene: BootcampScene, npc: NPC) {
-  if (!scene.hero.booleanConditions.hasProgressedToNextPhase) {
-    handleNPCInteraction(scene, npc);
-    if (!scene.hero.booleanConditions.hasTalkedToEveryone) return;
-    handleContextChange(scene);
-  }
+  handleNPCInteraction(scene, npc);
+  if (!scene.hero.booleanConditions.hasTalkedToEveryone) return;
+  handleContextChange(scene);
   return;
 }
 
 export function handleSecondBootcampPhase(scene: BootcampScene, npc: NPC) {
-  if (scene.hero.booleanConditions.isReadyForBattle) return;
-  if (scene.hero.booleanConditions.hasProgressedToNextPhase) {
-    handleNPCInteraction(scene, npc);
-    if (!scene.hero.booleanConditions.hasTalkedToEveryone) return;
-    handlePrepareNextScene(scene);
-  }
+  handleNPCInteraction(scene, npc);
+  if (!scene.hero.booleanConditions.hasTalkedToEveryone) return;
+  handlePrepareNextScene(scene);
   return;
 }
 
 export function handlePrepareNextScene(scene: BootcampScene) {
   const timeout = 1500;
   scene.hero.freeze = true;
-  scene.hero.booleanConditions.isReadyForBattle = true;
+  scene.hero.booleanConditions.isInSecondPhase = false;
+  scene.hero.booleanConditions.isInThirdPhase = true;
+  scene.hero.booleanConditions.hasTalkedToEveryone = false;
+
   const UI = scene.scene.get('ObjectivesUIScene') as ObjectivesUIScene;
   UI.removeAllObjectives();
+  UI.objectives.forEach((objective) => objective.setVisible(false));
   fadeCameraOut(scene, timeout);
   const interactive = new EventTrigger(
     scene,
@@ -82,8 +87,8 @@ export function handlePrepareNextScene(scene: BootcampScene) {
     'empty',
     'E',
     'Start the final project',
-    { nodes: [] },
-    () => {},
+    eventTriggerData.laptop.dialogueNodesObj,
+    eventTriggerData.laptop.triggerEventWhenDialogueEnds,
     () => {},
   ).setImmovable(true);
   interactive.setScale(0.5);
@@ -94,8 +99,9 @@ export function handlePrepareNextScene(scene: BootcampScene) {
       textBesidesCheckbox: 'Start the final project',
       checkedCondition: 'hasStartedFinalProject',
     });
+    UI.objectives.forEach((objective) => objective.setVisible(false));
     scene.hero.freeze = false;
-    scene.hero.x = 180;
+    scene.hero.x = 200;
     scene.hero.y = 100;
   }, timeout);
 

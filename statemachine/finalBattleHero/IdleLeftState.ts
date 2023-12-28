@@ -18,7 +18,7 @@ export default class IdleLeftState implements State {
         .add({
           targets: this.hero,
           x: this.hero.x + 100,
-          duration: 100,
+          duration: 50,
           ease: 'Linear',
           repeat: 0,
         })

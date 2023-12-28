@@ -335,6 +335,29 @@ export default class PreloadScene extends Phaser.Scene {
         frameHeight: finalBattleSpriteInfos.mouse.spriteHeight,
       },
     );
+    this.load.spritesheet(
+      finalBattleSpriteInfos.finalBoss.texture,
+      finalBattleSpriteInfos.finalBoss.src,
+      {
+        frameWidth: finalBattleSpriteInfos.finalBoss.spriteWidth,
+        frameHeight: finalBattleSpriteInfos.finalBoss.spriteHeight,
+      },
+    );
+
+    this.load.spritesheet('htmlbug', '../assets/htmlbug.png', {
+      frameWidth: 32,
+      frameHeight: 32,
+    });
+
+    this.load.spritesheet('cssbug', '../assets/cssbug.png', {
+      frameWidth: 32,
+      frameHeight: 32,
+    });
+
+    this.load.spritesheet('reactbug', '../assets/reactbug.png', {
+      frameWidth: 32,
+      frameHeight: 32,
+    });
   }
 
   createCutSceneAnimations() {

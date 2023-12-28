@@ -21,8 +21,9 @@ export default class BootcampScene extends Phaser.Scene {
   hero: Hero<{
     hasTalkedToJose: boolean;
     hasTalkedToEveryone: boolean;
-    hasProgressedToNextPhase: boolean;
-    isReadyForBattle: boolean;
+    isInFirstPhase: boolean;
+    isInSecondPhase: boolean;
+    isInThirdPhase: boolean;
   }>;
   NPCsPlayerHasTalkedTo: NPC[];
   isDialoguePlaying: boolean;
@@ -113,9 +114,7 @@ export default class BootcampScene extends Phaser.Scene {
         this.input.keyboard.addKey(child.dialogueIndicatorKey),
       )
     ) {
-      child.updateDialogueNodeBasedOnPlayerState ??
-        child.updateDialogueNodeBasedOnPlayerState(this, child);
-
+      child.updateDialogueNodeBasedOnPlayerState(this, child);
       this.activeInteractiveGameObject = child;
       this.hero.freeze = true;
       this.dialogueController.dialogueInProgress = true;
@@ -209,8 +208,9 @@ export default class BootcampScene extends Phaser.Scene {
       {
         hasTalkedToJose: false,
         hasTalkedToEveryone: false,
-        hasProgressedToNextPhase: false,
-        isReadyForBattle: false,
+        isInFirstPhase: true,
+        isInSecondPhase: false,
+        isInThirdPhase: false,
       },
       'bootcamp',
       { x: 11, y: 12 },

@@ -1,8 +1,14 @@
 import DialogueNode from '../dialogue/DialogueNode';
 import Hero from '../gameObjects/Hero';
+import BootcampScene from '../scenes/BootcampScene';
+import FinalBattleScene from '../scenes/FinalBattleScene';
 import LabScene from '../scenes/LabScene';
 import ObjectivesUIScene from '../scenes/ObjectivesUIScene';
-import { transitionToDNASceneAndBack } from '../utils/sceneTransitions';
+import {
+  fadeCameraIn,
+  fadeCameraOut,
+  transitionToDNASceneAndBack,
+} from '../utils/sceneTransitions';
 import { battleBackgroundSpriteNames } from './battleBackgroundSpriteNames';
 import { enemyAttacks } from './enemyAttacks';
 import { enemyBattleAnimationNames } from './enemyBattleAnimationNames';
@@ -436,6 +442,30 @@ export const eventTriggerData = {
           checkedCondition: 'hasMadeCoffee',
         });
       }
+    },
+  },
+  laptop: {
+    dialogueNodesObj: {
+      nodes: [new DialogueNode('Start the final project')],
+    },
+    updateDialogueNodeBasedOnPlayerState: (scene, eventtrigger) => {},
+    triggerEventWhenDialogueEnds: (scene: BootcampScene) => {
+      const UIScene = scene.scene.get('ObjectivesUIScene') as ObjectivesUIScene;
+      UIScene.hideUI();
+
+      const bootcampScene = scene.scene.get('BootcampScene') as BootcampScene;
+
+      const finalBattleScene = scene.scene.get(
+        'FinalBattleScene',
+      ) as FinalBattleScene;
+
+      // fadeCameraOut(scene, 1000);
+
+      setTimeout(() => {
+        finalBattleScene.scene.start('FinalBattleScene');
+        bootcampScene.activeInteractiveGameObject.hideSpeechIndication();
+        bootcampScene.scene.pause('BootcampScene');
+      }, 1000);
     },
   },
 };

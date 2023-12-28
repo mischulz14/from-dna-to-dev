@@ -20,7 +20,7 @@ export default class HealthBar extends Phaser.GameObjects.DOMElement {
     this.setOrigin(0);
     this.setClassName(className);
     this.setHTML(`
-      <div class="bg">
+      <div class="health-bar">
         <div class="bar"></div>
       </div>
       <div class="name">${name ? name : ''}</div>

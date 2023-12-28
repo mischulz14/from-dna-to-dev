@@ -1,5 +1,6 @@
 import * as Phaser from 'phaser';
 
+import HealthBar from '../battle/HealthBar';
 import FinalBattleHeroFiniteStateMachine from '../statemachine/finalBattleHero/FinalBattleHeroFiniteStateMachine';
 
 export default class FinalBattleHero extends Phaser.Physics.Arcade.Sprite {
@@ -8,6 +9,7 @@ export default class FinalBattleHero extends Phaser.Physics.Arcade.Sprite {
   heroBounds: Phaser.Geom.Rectangle;
   stateMachine: FinalBattleHeroFiniteStateMachine;
   animPrefix: string;
+  healthBar: HealthBar;
 
   constructor(
     scene: Phaser.Scene,
@@ -20,6 +22,7 @@ export default class FinalBattleHero extends Phaser.Physics.Arcade.Sprite {
   ) {
     super(scene, x, y, texture, frame);
     this.freeze = false;
+    this.healthBar = new HealthBar(scene, x, y, 100, 'hero-health-bar');
 
     this.stateMachine = new FinalBattleHeroFiniteStateMachine(this);
     this.animPrefix = animPrefix;
@@ -29,6 +32,10 @@ export default class FinalBattleHero extends Phaser.Physics.Arcade.Sprite {
     scene.add.existing(this);
     scene.physics.add.existing(this);
 
+    // Set the size of the physics body
+    this.body.setSize(26, 32);
+    this.body.setOffset(12, 16);
+
     // Initialize the cursors object and the lastDirection string
     this.cursors = cursors;
   }
@@ -36,5 +43,21 @@ export default class FinalBattleHero extends Phaser.Physics.Arcade.Sprite {
   update() {
     // Hero is frozen while talking or during a cuscene
     this.stateMachine.update();
+  }
+
+  takeDamage(damage: number) {
+    this.healthBar.decrease(damage);
+    console.log('taking damage', damage);
+    // make tint blink red
+    this.setTint(0xff0000);
+    setTimeout(() => {
+      this.clearTint();
+    }, 100);
+    setTimeout(() => {
+      this.setTint(0xff0000);
+    }, 200);
+    setTimeout(() => {
+      this.clearTint();
+    }, 300);
   }
 }

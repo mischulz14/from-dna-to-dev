@@ -34,7 +34,7 @@ export default class DialogueController {
       this.dialogueField.setText(currentText.slice(0, i));
       if (!this.isTextComplete) {
         await new Promise(
-          (resolve) => (this.typeTimeoutId = setTimeout(resolve, 100)),
+          (resolve) => (this.typeTimeoutId = setTimeout(resolve, 30)),
         );
       }
     }
