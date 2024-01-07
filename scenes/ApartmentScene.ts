@@ -327,5 +327,6 @@ export default class ApartmentScene extends Phaser.Scene {
       this.dialogueController.playerPressesEnterEventListener,
     );
     this.events.off('dialogueEnded');
+    this.events.off('addObjective');
   }
 }

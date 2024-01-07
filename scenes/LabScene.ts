@@ -469,5 +469,6 @@ export default class LabScene extends Phaser.Scene {
       this.dialogueController.playerPressesEnterEventListener,
     );
     this.events.off('dialogueEnded');
+    this.events.off('addObjective');
   }
 }

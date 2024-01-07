@@ -315,5 +315,6 @@ export default class BootcampScene extends Phaser.Scene {
       this.dialogueController.playerPressesEnterEventListener,
     );
     this.events.off('dialogueEnded');
+    this.events.off('addObjective');
   }
 }
