@@ -10,6 +10,7 @@ export default class ObjectivesUIScene extends Phaser.Scene {
   currentHero: Hero<any>;
   button: Phaser.GameObjects.DOMElement;
   areObjectivesVisible: boolean;
+  objectiveAddingInProgress: boolean;
 
   currentPosition: {
     x: number;
@@ -23,6 +24,7 @@ export default class ObjectivesUIScene extends Phaser.Scene {
       y: 100,
     };
     this.areObjectivesVisible = false;
+    this.objectiveAddingInProgress = false;
   }
 
   create() {
@@ -82,6 +84,8 @@ export default class ObjectivesUIScene extends Phaser.Scene {
 
   handleAddObjective(data) {
     console.log('objective added');
+    if (this.objectiveAddingInProgress) return;
+    this.objectiveAddingInProgress = true;
     // Add the objective to your UI
     let objectiveIndicator = new ObjectiveIndicator(
       this,
@@ -107,7 +111,8 @@ export default class ObjectivesUIScene extends Phaser.Scene {
     button.classList.add('objectives-animation');
     setTimeout(() => {
       button.classList.remove('objectives-animation');
-    }, 3000);
+      this.objectiveAddingInProgress = false;
+    }, 2000);
   }
 
   addInitialObjective(checkedCondition: string, textBesidesCheckbox: string) {

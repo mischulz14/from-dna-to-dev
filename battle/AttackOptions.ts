@@ -103,6 +103,8 @@ export default class AttackOptions {
       document.querySelectorAll('.attack-options__option'),
     ) as HTMLElement[];
 
+    if (!optionsHTML) return;
+
     optionsHTML[this.currentPosition].focus();
   }
 

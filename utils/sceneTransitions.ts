@@ -30,24 +30,28 @@ export function cutsceneTransitionReverse(
 
 export function fadeCameraIn(scene: Phaser.Scene, duration: number) {
   scene.cameras.main.fadeIn(duration);
+
+  return duration;
 }
 
 export function fadeCameraOut(scene: Phaser.Scene, duration: number) {
   scene.cameras.main.fadeOut(duration);
+
+  return duration;
 }
 
 export function transitionToDNASceneAndBack(
   scene: Phaser.Scene,
-  sceneNameToProgressTo: string,
+  sceneThatIsSentToBack: string,
   scenesToResume: string[],
   levelThatIsRevealed: number,
   levelRevealDelay: number,
+  startNextScene: boolean = false,
 ) {
-  scene.scene.sendToBack(sceneNameToProgressTo);
+  // scene.scene.sendToBack(sceneThatIsSentToBack);
   const DNAScene = scene.scene.get('DNAScene') as DNAScene;
-  DNAScene.startNextScene = false;
+  DNAScene.startNextScene = startNextScene ? startNextScene : false;
   scene.scene.resume('DNAScene');
-  // DNAScene.revealLevel(1);
   DNAScene.nextScenes = scenesToResume;
 
   setTimeout(() => {

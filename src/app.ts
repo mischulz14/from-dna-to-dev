@@ -4,9 +4,12 @@ import GlobalAudioManager from '../global/GlobalAudioManager';
 import ApartmentScene from '../scenes/ApartmentScene';
 import VirusBattleScene from '../scenes/BattleScene';
 import BootcampScene from '../scenes/BootcampScene';
+import CreditsScene from '../scenes/CreditsScene';
 import DNAScene from '../scenes/DNAScene';
+import EndGameScene from '../scenes/EndGameScene';
 import FinalBattleScene from '../scenes/FinalBattleScene';
 import FindErrorScene from '../scenes/FindErrorScene';
+import GameOverScene from '../scenes/GameOverScene';
 import LabCutscene from '../scenes/LabCutscene';
 import LabScene from '../scenes/LabScene';
 import ObjectivesUIScene from '../scenes/ObjectivesUIScene';
@@ -36,7 +39,7 @@ export const config: Phaser.Types.Core.GameConfig = {
     createContainer: true,
   },
   //  make background color transparent
-  backgroundColor: '#545454',
+  backgroundColor: '#000',
   scene: [
     PreloaderScene, // PreloaderScene loads assets and then starts
     StartScene,
@@ -50,6 +53,9 @@ export const config: Phaser.Types.Core.GameConfig = {
     WohnungsIntroScene,
     DNAScene,
     FinalBattleScene,
+    EndGameScene,
+    CreditsScene,
+    GameOverScene,
   ],
 };
 
@@ -73,3 +79,9 @@ document.addEventListener('DOMContentLoaded', () => {
 document.addEventListener('DOMContentLoaded', () => {
   globalAudioManager.audioContext = new AudioContext();
 });
+
+export let mostRecentScene = 'LabScene';
+
+export function setMostRecentScene(sceneName: string) {
+  mostRecentScene = sceneName;
+}

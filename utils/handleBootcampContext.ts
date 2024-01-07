@@ -43,7 +43,7 @@ export function handleContextChange(scene: BootcampScene) {
 
 export function handleNPCInteraction(scene: BootcampScene, npc: NPC) {
   if (scene.hero.booleanConditions.isInThirdPhase) return;
-  if (scene.NPCsPlayerHasTalkedTo.length === 4) {
+  if (scene.NPCsPlayerHasTalkedTo.length === 3) {
     scene.hero.booleanConditions.hasTalkedToEveryone = true;
     console.log('hasTalkedToEveryone');
     return;

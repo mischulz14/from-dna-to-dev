@@ -116,4 +116,19 @@ export const finalBattleSpriteInfos = {
       },
     ],
   },
+  postgresElephant: {
+    texture: 'postgresElephant',
+    spriteWidth: 32,
+    spriteHeight: 32,
+    src: '../assets/postgreselephant.png',
+    animations: [
+      {
+        name: 'postgres-run',
+        start: 0,
+        end: 5,
+        frameRate: 6,
+        repeat: -1,
+      },
+    ],
+  },
 };

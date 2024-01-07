@@ -69,9 +69,6 @@ export default class StartScene extends Phaser.Scene {
 
     // when the user presses start, start the first level
     this.input.keyboard.on('keydown', () => {
-      if (this.audioIsStillPlaying) return;
-      this.audioIsStillPlaying = true;
-      // this.introSceneSound.play();
       this.text.setVisible(false);
       dna.setVisible(false);
       codebrackets.setVisible(false);
@@ -82,7 +79,7 @@ export default class StartScene extends Phaser.Scene {
     });
 
     // on enter key, start the first level
-    this.input.keyboard.on('keydown-ENTER', () => {
+    this.input.keyboard.on('keydown-SPACE', () => {
       if (this.hasContinuedToBackstory && this.audioFinished) {
         this.scene.start('DNAScene');
       }
@@ -92,7 +89,7 @@ export default class StartScene extends Phaser.Scene {
   progressToNextSection() {
     this.audioFinished = true;
 
-    const text = this.add.text(300, 465, 'Press enter to continue', {
+    const text = this.add.text(300, 465, 'Press Space to continue', {
       fontSize: '1.3rem',
       fontFamily: 'Rainyhearts',
       color: '#fff',
@@ -109,50 +106,28 @@ export default class StartScene extends Phaser.Scene {
   }
 
   revealText() {
-    const { text1, text2, text3, text4, text5, text6 } = getBackgroundText();
+    const text = getBackgroundText();
 
-    textAppears(text1, '1.6rem', 'Rainyhearts', 1000, 10, 10, this);
+    textAppears(
+      text,
+      '1.6rem',
+      'Rainyhearts',
+      2000,
+      this.cameras.main.centerX / 2 + 20,
+      30,
+      this,
+      500,
+    );
 
-    // const delays = [2000, 9500, 18000, 24000, 31500];
-    const delays = [1000, 3000, 6000, 9000, 12000];
-
-    this.time.delayedCall(delays[0], () => {
-      textAppears(text2, '1.6rem', 'Rainyhearts', 1000, 10, 60, this);
-    });
-
-    this.time.delayedCall(delays[1], () => {
-      textAppears(text3, '1.6rem', 'Rainyhearts', 1000, 10, 120, this);
-    });
-
-    this.time.delayedCall(delays[2], () => {
-      textAppears(text4, '1.6rem', 'Rainyhearts', 1000, 10, 180, this);
-    });
-
-    this.time.delayedCall(delays[3], () => {
-      textAppears(text5, '1.6rem', 'Rainyhearts', 1000, 10, 220, this);
-    });
-
-    this.time.delayedCall(delays[4], () => {
-      textAppears(text6, '1.6rem', 'Rainyhearts', 1000, 10, 290, this);
-      this.time.delayedCall(2000, () => {
-        this.progressToNextSection();
-      });
-    });
+    setTimeout(() => {
+      this.progressToNextSection();
+    }, 3000);
   }
 }
 
 function getBackgroundText() {
-  const text1 = 'What happened so far...';
-  const text2 =
-    "You're in a lab, working as a molecular biologist after having spent \n years studying at university.";
-  const text3 =
-    'You notice that in stressfull situations you tend to fall into imaginary \n fight scenes as a fight or flight response.';
-  const text4 =
-    "This seems to help you overcome almost any obstacle you're facing.";
-  const text5 =
-    "After having worked professionally in the scientific field \n you're having doubts about your future, but you decide to push through.";
-  const text6 =
-    "Even though you're working in a lab, \n you feel your DNA changing and searching for \n SOMETHING ELSE";
+  const text =
+    "What happened so far...\nYou're in a lab, working as a molecular biologist after having spent years studying at university. You notice that in stressfull situations you tend to fall into imaginary fight scenes as a fight or flight response. This seems to help you overcome almost any obstacle you're facing. After having worked professionally in the scientific field you're having doubts about your future, but you decide to push through. Even though you're working in a lab, you feel your DNA changing and searching for SOMETHING ELSE";
 
-  return { text1, text2, text3, text4, text5, text6 };
+  return text;
 }

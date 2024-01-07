@@ -22,7 +22,15 @@ export default class FinalBattleHero extends Phaser.Physics.Arcade.Sprite {
   ) {
     super(scene, x, y, texture, frame);
     this.freeze = false;
-    this.healthBar = new HealthBar(scene, x, y, 100, 'hero-health-bar');
+    this.healthBar = new HealthBar(
+      scene,
+      x,
+      y,
+      100,
+      -375,
+      40,
+      'hero-health-bar',
+    );
 
     this.stateMachine = new FinalBattleHeroFiniteStateMachine(this);
     this.animPrefix = animPrefix;
@@ -31,6 +39,7 @@ export default class FinalBattleHero extends Phaser.Physics.Arcade.Sprite {
 
     scene.add.existing(this);
     scene.physics.add.existing(this);
+    this.setImmovable(true);
 
     // Set the size of the physics body
     this.body.setSize(26, 32);

@@ -32,8 +32,8 @@ export default class MinionPhaseState implements State {
     for (let i = this.currentMinions.length - 1; i >= 0; i--) {
       this.currentMinions[i].update();
       if (this.currentMinions[i].y > 440) {
+        console.log(`Destroying bug at y: ${this.currentMinions[i].y}`);
         this.currentMinions[i].destroy();
-        // Replace isDone with your condition
         this.currentMinions.splice(i, 1);
       }
     }
@@ -46,7 +46,53 @@ export default class MinionPhaseState implements State {
   }
 
   enter() {
-    console.log('entering minion phase state');
+    const timeInPhase =
+      this.scene.currentPhase === 0
+        ? 10000
+        : 5000 * (this.scene.currentPhase + 1);
+    this.continueBehavior = true;
+    setTimeout(() => {
+      this.continueBehavior = false;
+      this.currentMinions.forEach((minion) => {
+        if (minion.active) {
+          console.log('destroying minion');
+          minion.destroy();
+        }
+      });
+      this.currentMinions = [];
+      this.scene.children.each((child) => {
+        if (child instanceof Bug) {
+          child.destroy();
+        }
+      });
+      console.log(this.currentMinions, 'current minions');
+      console.log('switching to explanation');
+      this.scene.finalBoss.anims.play(
+        finalBattleSpriteInfos.finalBoss.animations[0].name,
+        true,
+      );
+
+      this.scene.tweens
+        .add({
+          targets: this.scene.finalBoss,
+          x: '-=10',
+          ease: 'Power1',
+          duration: 50,
+          yoyo: true,
+          repeat: 3,
+        })
+        .on('complete', () => {
+          setTimeout(() => {
+            this.scene.stateMachine.switchState('explanation');
+            this.scene.finalBoss.healthBar.decrease(
+              this.scene.finalBoss.healthBar.initialHealth /
+                this.scene.phases.length,
+            );
+          }, 2000);
+        });
+    }, timeInPhase);
+
+    // remove event listener
   }
 
   getRandomAnimation(): string {
@@ -73,8 +119,16 @@ export default class MinionPhaseState implements State {
       animationType = 'both';
     }
 
-    this.scene.finalBoss.play(animation).anims.msPerFrame =
-      this.scene.finalBoss.speed;
+    const baseFrameRate = 10; // 10 frames per second for phase 1
+    const additionalFrameRatePerPhase = 2; // Increase frame rate by 10 fps per phase
+    const frameRateForCurrentPhase =
+      baseFrameRate +
+      additionalFrameRatePerPhase * (this.scene.currentPhase - 1);
+
+    // Set the frame rate for the animation
+    this.scene.finalBoss.anims.play(animation, true);
+    this.scene.finalBoss.anims.msPerFrame = 1000 / frameRateForCurrentPhase;
+
     const animationCompleteListener = () => {
       // Remove the listener to prevent multiple triggers
       this.scene.finalBoss.off('animationcomplete', animationCompleteListener);

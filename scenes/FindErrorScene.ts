@@ -20,6 +20,7 @@ export default class FindErrorScene extends Phaser.Scene {
   initiatedFadeOut: boolean;
   heartContainer: Phaser.GameObjects.Container;
   isClickingEDisabled: boolean;
+  gameOver: boolean;
 
   constructor() {
     super({ key: 'FindErrorScene' });
@@ -29,6 +30,7 @@ export default class FindErrorScene extends Phaser.Scene {
     this.overlappingRect = null;
     this.initiatedFadeOut = false;
     this.isClickingEDisabled = true;
+    this.gameOver = false;
     const dialogue = [
       new DialogueNode(
         'Before you there are two pictures of a coffee machine.',
@@ -39,7 +41,9 @@ export default class FindErrorScene extends Phaser.Scene {
       new DialogueNode(
         'Find the errors by running over them and clicking E when standing on them.',
       ),
-      new DialogueNode('Keep in mind, you only have three lives!'),
+      new DialogueNode(
+        'Keep in mind, you only have three tries or this coffee machine breaks!',
+      ),
     ];
     this.dialogueController = new DialogueController(this);
     this.dialogueController.initiateDialogue(dialogue, null, null);
@@ -87,16 +91,23 @@ export default class FindErrorScene extends Phaser.Scene {
       this.events.emit('playerPressedE');
     });
 
-    this.events.on('gameOver', () => this.handleGameOver(this));
-
     this.events.on('playerPressedE', () => this.handlePlayerEPress(this));
 
     this.events.on('dialogueEnded', () => {
       // console.log('dialogue ended');
-      this.hero.freeze = false;
-      this.dialogueController.dialogueField.hide();
-      this.dialogueController.isDialogueInCutscene = false;
-      this.isClickingEDisabled = false;
+      if (!this.gameOver) {
+        this.hero.freeze = false;
+        this.dialogueController.dialogueField.hide();
+        this.dialogueController.isDialogueInCutscene = false;
+        this.isClickingEDisabled = false;
+        return;
+      }
+
+      fadeCameraOut(this, 2000);
+      setTimeout(() => {
+        this.scene.stop();
+        this.scene.start('GameOverScene');
+      }, 2000);
     });
 
     fadeCameraIn(this, 3000);
@@ -107,6 +118,7 @@ export default class FindErrorScene extends Phaser.Scene {
     if (this.initiatedFadeOut) {
       return;
     }
+
     const hasFoundAllErrors =
       this.foundErrorRectangles.length === this.errorRectangles.length;
 
@@ -131,24 +143,27 @@ export default class FindErrorScene extends Phaser.Scene {
 
   handlePlayerEPress(scene) {
     if (scene.isClickingEDisabled) return;
+
+    if (scene.heartContainer.list.length <= 0) {
+      this.handleGameOver();
+    }
+
     this.isClickingEDisabled = true;
     // console.log('player pressed E', this.isOverlappingWithError);
 
     if (!scene.isOverlappingWithError) {
       // destroy one heart
       console.log(scene.heartContainer);
-      console.log('hi');
       const heart = scene.heartContainer.first as Heart;
-      heart.anims.play(UISpritesData.heart.name).on('animationcomplete', () => {
-        setTimeout(() => {
-          scene.heartContainer.list.shift();
-          this.isClickingEDisabled = false;
-
-          if (scene.heartContainer.list.length <= 0) {
-            scene.events.emit('gameOver');
-          }
-        }, 1000);
-      });
+      heart &&
+        heart.anims
+          .play(UISpritesData.heart.name)
+          .on('animationcomplete', () => {
+            setTimeout(() => {
+              scene.heartContainer.list.shift();
+              this.isClickingEDisabled = false;
+            }, 1000);
+          });
     }
 
     if (!scene.overlappingRect) return;
@@ -165,17 +180,22 @@ export default class FindErrorScene extends Phaser.Scene {
     this.isClickingEDisabled = false;
   }
 
-  handleGameOver(scene: Phaser.Scene) {
-    fadeCameraOut(scene, 2000);
-    setTimeout(() => {
-      scene.game.scene.getScenes().forEach((scene: Phaser.Scene) => {
-        if (scene.scene.key === 'FindErrorScene') return;
-        scene.scene.stop();
-      });
-    }, 2000);
-    setTimeout(() => {
-      scene.scene.start('StartScene');
-    }, 2100);
+  handleGameOver() {
+    if (this.heartContainer.list.length <= 0) {
+      this.hero.freeze = true;
+      this.gameOver = true;
+      this.dialogueController.dialogueField.show();
+      this.dialogueController.isDialogueInCutscene = true;
+      this.dialogueController.initiateDialogue(
+        [
+          new DialogueNode('Oh no! You have broken the coffee machine!'),
+          new DialogueNode('Without coffee this is going nowhere...'),
+        ],
+        null,
+        null,
+      );
+      this.dialogueController.typeText();
+    }
   }
 
   progressDialogue() {

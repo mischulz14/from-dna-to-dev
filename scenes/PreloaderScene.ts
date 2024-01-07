@@ -40,7 +40,6 @@ export default class PreloadScene extends Phaser.Scene {
     this.preloadAudio();
     this.preloadApartmentSprites();
     this.preloadBootcampSprites();
-    // this.preloadEnemySprites();
     this.preloadTilesets();
     this.preloadFinalBattleSprites();
   }
@@ -53,7 +52,7 @@ export default class PreloadScene extends Phaser.Scene {
     this.createApartmentSceneAnimations();
     this.createBootcampAnimations();
     this.createFinalBattleAnimations();
-    this.scene.start('FinalBattleScene');
+    this.scene.start('StartScene');
   }
 
   preloadAudio() {
@@ -341,6 +340,15 @@ export default class PreloadScene extends Phaser.Scene {
       {
         frameWidth: finalBattleSpriteInfos.finalBoss.spriteWidth,
         frameHeight: finalBattleSpriteInfos.finalBoss.spriteHeight,
+      },
+    );
+
+    this.load.spritesheet(
+      finalBattleSpriteInfos.postgresElephant.texture,
+      finalBattleSpriteInfos.postgresElephant.src,
+      {
+        frameWidth: finalBattleSpriteInfos.postgresElephant.spriteWidth,
+        frameHeight: finalBattleSpriteInfos.postgresElephant.spriteHeight,
       },
     );
 

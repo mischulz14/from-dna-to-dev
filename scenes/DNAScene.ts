@@ -25,16 +25,22 @@ export default class DNAScene extends Phaser.Scene {
 
   constructor() {
     super({ key: 'DNAScene' });
-    setTimeout(() => {
-      this.canProgressToNextScene = true;
-    }, 3000);
+    this.canProgressToNextScene = false;
     this.nextScenes = ['LabScene'];
     this.level = 1;
     this.startNextScene = true;
   }
 
+  init() {
+    setTimeout(() => {
+      this.canProgressToNextScene = true;
+    }, 2000);
+  }
+
   create() {
-    this.add.rectangle(0, 0, 800, 512, 0x545454).setOrigin(0, 0);
+    let graphics = this.add.graphics();
+    graphics.fillStyle(0x000000, 0.7);
+    graphics.fillRect(0, 0, this.scale.width, this.scale.height);
     globalAudioManager.switchSoundTo(audioNames.lofiCutscene);
     this.sprite = this.add
       .sprite(0, 80, cutSceneSpriteNames.dna)
@@ -48,6 +54,7 @@ export default class DNAScene extends Phaser.Scene {
     });
 
     this.input.keyboard.on('keydown-SPACE', () => {
+      if (!this.canProgressToNextScene) return;
       this.handleContinueToNextScene();
     });
 
@@ -89,6 +96,7 @@ export default class DNAScene extends Phaser.Scene {
   }
 
   handleContinueToNextScene() {
+    console.log('continuing to next scene from dna scene');
     this.headerText.destroy();
     this.continueText.setAlpha(0);
     this.anim.stop();
@@ -96,7 +104,9 @@ export default class DNAScene extends Phaser.Scene {
     this.scene.pause('DNAScene');
     this.scene.setVisible(false);
     if (this.canProgressToNextScene) {
+      console.log('progressing from DNA Scene to next scene');
       this.nextScenes.forEach((scene) => {
+        console.log('scene', scene);
         if (scene.includes('UIScene')) {
           const UIScene = this.scene.get(scene) as ObjectivesUIScene;
           UIScene.showUI();
@@ -139,6 +149,8 @@ export default class DNAScene extends Phaser.Scene {
         repeat: -1,
         yoyo: true,
       });
+
+      this.canProgressToNextScene = true;
     }, 3000);
   }
 
@@ -167,20 +179,21 @@ export default class DNAScene extends Phaser.Scene {
     const text1 = 'Quick Stress Response';
     // 'This is your DNA right now. \n As you manage to beat the curveballs life throws at you, \n your DNA will change.';
 
-    const text2 = "Sleep deprivation,\n what's that?";
-    const text3 = 'Quarter Life Crisis\n drowned with Coffee\n and Love';
-    const text4 = '';
+    const text2 = "Sleep deprivation,\nwhat's that?";
+    const text3 = 'Quarter Life Crisis\ndrowned with Coffee\nand Love';
+    const text4 = 'You did it!\nYou are a Developer now!';
 
     return { text1, text2, text3, text4 };
   }
 
   getHeaderText() {
     const text1 =
-      'You have unlocked a new DNA strand! \n Keep up with the quick stress response!';
+      'You have unlocked a new DNA strand!\nKeep up with the quick stress response!';
     const text2 =
-      'New DNA strand unlocked! \n Sleep deprivation is your friend! \n Try getting enough sleep though...';
-    const text3 = 'You have unlocked the following DNA:';
-    const text4 = 'You have unlocked the following DNA:';
+      'New DNA strand unlocked!\nSleep deprivation is your friend!\nTry getting enough sleep though...';
+    const text3 = 'New DNA strand unlocked!\nCoffee and love is all you need!';
+    const text4 =
+      'The final DNA strand is unlocked!\nYour DNA found your new calling';
 
     return { text1, text2, text3, text4 };
   }

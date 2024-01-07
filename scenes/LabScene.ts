@@ -140,7 +140,7 @@ export default class LabScene extends Phaser.Scene {
     if (this.activeInteractiveGameObject instanceof NPC) {
       this.activeInteractiveGameObject.turnToHero(this.hero);
     }
-    this.cameras.main.zoomTo(2, 300);
+    // this.cameras.main.zoomTo(2, 300);
     this.activeInteractiveGameObject.hideSpeechIndication();
     this.dialogueController.dialogueField.show();
     this.dialogueController.initiateDialogue(
@@ -156,12 +156,13 @@ export default class LabScene extends Phaser.Scene {
   /////////////////////////
 
   setUpGameEvents() {
+    this.events.on('shutdown', this.shutdown, this);
     this.input.keyboard.on(
       'keydown-ENTER',
       this.dialogueController.playerPressesEnterEventListener,
     );
     this.events.on('dialogueEnded', () => {
-      this.cameras.main.zoomTo(1, 300);
+      // this.cameras.main.zoomTo(1, 300);
       this.activeInteractiveGameObject.triggerEventWhenDialogueEnds(
         this,
         this.activeInteractiveGameObject,
@@ -460,5 +461,13 @@ export default class LabScene extends Phaser.Scene {
     setTimeout(() => {
       this.hero.freeze = false;
     }, 3000);
+  }
+
+  shutdown() {
+    this.input.keyboard.off(
+      'keydown-ENTER',
+      this.dialogueController.playerPressesEnterEventListener,
+    );
+    this.events.off('dialogueEnded');
   }
 }

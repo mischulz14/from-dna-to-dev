@@ -315,13 +315,21 @@ export const eventTriggerData = {
         initialPlayerHealth: 90,
         initialEnemyHealth: 80,
         triggerEventsOnBattleEnd: (scene: any) => {
+          scene.scene.stop('ApartmentScene');
           scene.scene.stop('BattleScene');
           const objectivesUI = scene.scene.get(
             'ObjectivesUIScene',
           ) as ObjectivesUIScene;
           objectivesUI.hideUI();
 
-          transitionToDNASceneAndBack(scene, 'StartScene', [], 3, 2000);
+          transitionToDNASceneAndBack(
+            scene,
+            '',
+            ['BootcampScene'],
+            3,
+            2000,
+            true,
+          );
         },
       });
     },
@@ -354,7 +362,7 @@ export const eventTriggerData = {
       if (hero.booleanConditions.hasMadeCoffee) {
         eventtrigger.dialogueNodesObj = {
           nodes: [
-            new DialogueNode('You already made coffee.'),
+            new DialogueNode('You already fixed the machine and made coffee.'),
             new DialogueNode('You should bring it to your boyfriend.'),
           ],
         };
@@ -446,7 +454,11 @@ export const eventTriggerData = {
   },
   laptop: {
     dialogueNodesObj: {
-      nodes: [new DialogueNode('Start the final project')],
+      nodes: [
+        new DialogueNode('You start the final project'),
+        new DialogueNode('You feel your stress response kicking in again!'),
+        new DialogueNode('I am going to finish this.'),
+      ],
     },
     updateDialogueNodeBasedOnPlayerState: (scene, eventtrigger) => {},
     triggerEventWhenDialogueEnds: (scene: BootcampScene) => {

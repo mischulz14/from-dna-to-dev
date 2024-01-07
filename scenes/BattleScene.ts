@@ -9,6 +9,7 @@ import {
   cutsceneTransitionReverse,
   fadeCameraOut,
 } from '../utils/sceneTransitions';
+import ObjectivesUIScene from './ObjectivesUIScene';
 
 export type Attacks = { text: string; damage: number; damageText: string }[];
 
@@ -53,6 +54,7 @@ export default class VirusBattleScene extends Phaser.Scene {
   triggerEventsOnBattleEnd: Function;
   playerHealthNumber: Phaser.GameObjects.Text;
   enemyHealthBarNumber: Phaser.GameObjects.Text;
+  gameOver: boolean = false;
 
   constructor() {
     super({ key: 'BattleScene' });
@@ -63,6 +65,7 @@ export default class VirusBattleScene extends Phaser.Scene {
     // this.enemyHealth = this.initialEnemyHealth;
     this.gameEvents = new Events.EventEmitter();
     this.setUpGameEvents();
+    this.gameOver = false;
   }
 
   init(data: {
@@ -95,6 +98,7 @@ export default class VirusBattleScene extends Phaser.Scene {
     this.initialEnemyHealth = data.initialEnemyHealth;
     this.playerHealth = this.initialPlayerHealth;
     this.enemyHealth = this.initialEnemyHealth;
+    this.gameOver = false;
   }
 
   create() {
@@ -410,14 +414,39 @@ export default class VirusBattleScene extends Phaser.Scene {
   checkBattleEnd(emittedEventAfterCheck: string) {
     console.log('checkBattleEnd');
     if (this.enemyHealth <= 0) {
+      this.playerAttackOptions.removeHTMLOptionsFromDialogueField();
       this.typeWriterEffect(this.endDialogue);
       this.enemyDestroyedAnimation();
-      this.playerAttackOptions.removeHTMLOptionsFromDialogueField();
 
       this.waitForUserConfirmation().then(() => {
         fadeCameraOut(this, 2000);
         setTimeout(() => {
           this.triggerEventsOnBattleEnd(this);
+          this.dialogueField.hide();
+          this.player.destroy();
+          this.enemyHealthBar.destroy();
+          this.playerHealthBar.destroy();
+          this.playerHealthBarBackground.forEach((rect) => rect.destroy());
+          this.enemyHealthBarBackground.forEach((rect) => rect.destroy());
+          globalAudioManager.switchSoundTo(audioNames.lofi);
+        }, 2200);
+      });
+    } else if (this.playerHealth <= 0) {
+      this.typeWriterEffect('You lost the battle...');
+      this.playerDestroyedAnimation();
+
+      this.waitForUserConfirmation().then(() => {
+        fadeCameraOut(this, 2000);
+        setTimeout(() => {
+          const objectivesUI = this.scene.get(
+            'ObjectivesUIScene',
+          ) as ObjectivesUIScene;
+
+          objectivesUI && objectivesUI.hideUI();
+          this.resetEverything();
+          this.scene.stop('BattleScene');
+          this.scene.stop();
+          this.scene.start('GameOverScene');
           this.dialogueField.hide();
           this.player.destroy();
           this.enemyHealthBar.destroy();
@@ -452,6 +481,18 @@ export default class VirusBattleScene extends Phaser.Scene {
     });
   }
 
+  playerDestroyedAnimation() {
+    // player goes down and it's alpha goes to 0
+    this.tweens.add({
+      targets: this.player,
+      y: '+=100',
+      alpha: { from: 1, to: 0 },
+      ease: 'Linear',
+      duration: 1000,
+      repeat: 0,
+    });
+  }
+
   setUpGameEvents() {
     this.gameEvents.on('battleStart', this.startBattle, this);
     this.gameEvents.on('showAttackOptions', this.showAttackOptions, this);
@@ -476,5 +517,24 @@ export default class VirusBattleScene extends Phaser.Scene {
     this.gameEvents.on('enemyAttackChosen', this.enemyAttackChosen, this);
     this.gameEvents.on('reducePlayerHealth', this.reducePlayerHealth, this);
     this.gameEvents.on('checkBattleEnd', this.checkBattleEnd, this);
+  }
+
+  resetEverything() {
+    this.enemyAttacks = [];
+    this.playerAttacks = [];
+    this.backgroundImage = '';
+    this.battleHeroSpriteTexture = '';
+    this.enemyTexture = '';
+    this.enemyName = '';
+    this.initialDialogue = '';
+    this.endDialogue = '';
+    this.triggerEventsOnBattleEnd = null;
+    this.heroBattleAnimationName = '';
+    this.enemyBattleAnimationName = '';
+    this.initialPlayerHealth = 0;
+    this.initialEnemyHealth = 0;
+    this.playerHealth = this.initialPlayerHealth;
+    this.enemyHealth = this.initialEnemyHealth;
+    this.gameOver = false;
   }
 }

@@ -20,11 +20,15 @@ export function textAppears(
   x: number,
   y: number,
   scene: Phaser.Scene,
+  wordWrapWidth?: number,
 ) {
   const text = scene.add.text(x, y, textContent, {
     fontSize: fontSize,
     fontFamily: fontFamily,
     color: '#fff',
+    wordWrap: {
+      width: (wordWrapWidth ? wordWrapWidth : scene.cameras.main.width) - 100,
+    },
   });
 
   text.setAlpha(0);

@@ -19,12 +19,13 @@ export const cutSceneAnimsInfo = {
         name: 'layingAnScrollingAnim',
         start: 0,
         end: 11,
-        repeat: 2,
+        repeat: -1,
       },
       {
         name: 'phonePingAnim',
         start: 12,
         end: 20,
+        repeat: -1,
       },
       {
         name: 'lookingAtPhoneAnim',

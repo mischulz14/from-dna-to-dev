@@ -1,31 +1,30 @@
 import FinalBattleScene from '../../scenes/FinalBattleScene';
 import ExplanationState from './ExplanationState';
 import MinionPhaseState from './MinionPhaseState';
+import MinionPhaseState2 from './MinionPhaseState2';
 
 export default class FinalBattleSceneStateMachine {
   state: ExplanationState;
   // | MinionPhaseState | MinionPhaseState2 | ExplanationState;
   initialState: ExplanationState;
   states: {
-    intro: ExplanationState;
     minionPhase: MinionPhaseState;
-    // minionPhase2: MinionPhaseState2;
-    // explanation: ExplanationState;
+    minionPhase2: MinionPhaseState2;
+    explanation: ExplanationState;
   };
   constructor(scene: FinalBattleScene) {
     this.states = {
-      intro: new ExplanationState(scene),
       minionPhase: new MinionPhaseState(scene),
-      // minionPhase2: new MinionPhaseState2(scene),
-      // explanation: new ExplanationState(scene),
+      minionPhase2: new MinionPhaseState2(scene),
+      explanation: new ExplanationState(scene),
     };
 
-    this.state = this.states.intro; // Set the initial state
+    this.state = this.states.explanation; // Set the initial state
     this.start();
   }
 
   start() {
-    this.state = this.states.intro;
+    this.state = this.states.explanation;
   }
 
   update() {

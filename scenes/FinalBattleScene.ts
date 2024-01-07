@@ -1,19 +1,22 @@
 import Phaser from 'phaser';
 
+import { audioNames } from '../data/audioNames';
 import { finalBattleSpriteInfos } from '../data/finalBattleSpriteInfos';
 import DialogueController from '../dialogue/DialogueController';
 import DialogueNode from '../dialogue/DialogueNode';
 import FinalBattleBoss from '../gameObjects/FinalBattleBoss';
 import FinalBattleHero from '../gameObjects/FinalBattleHero';
+import { globalAudioManager } from '../src/app';
 import FinalBattleSceneStateMachine from '../statemachine/finalBattleScene/FinalBattleStateMachine';
-import { fadeCameraIn } from '../utils/sceneTransitions';
+import { fadeCameraIn, fadeCameraOut } from '../utils/sceneTransitions';
 
 export default class FinalBattleScene extends Phaser.Scene {
   keys: Phaser.Types.Input.Keyboard.CursorKeys;
   hero: FinalBattleHero;
-  finalBoss: Phaser.GameObjects.Sprite;
+  finalBoss: FinalBattleBoss;
   dialogueController: DialogueController;
   stateMachine: FinalBattleSceneStateMachine;
+  gameOver: boolean;
   arrows: Phaser.GameObjects.Sprite;
   mouse: Phaser.GameObjects.Sprite;
   phases: {
@@ -29,22 +32,22 @@ export default class FinalBattleScene extends Phaser.Scene {
     super({ key: 'FinalBattleScene' });
 
     const dialogue = [
-      // new DialogueNode('You are almost a fullstack developer'),
-      // new DialogueNode(
-      //   'You can feel the power of the code flowing through your veins...',
-      // ),
-      // new DialogueNode(
-      //   'You just have to overcome this one final challenge.',
-      // ),
+      new DialogueNode('You are almost a fullstack developer'),
+      new DialogueNode(
+        'You can feel the power of the code flowing through your veins...',
+      ),
+      new DialogueNode('You just have to overcome this one final challenge.'),
       new DialogueNode("You're ready."),
     ];
     this.dialogueController = new DialogueController(this);
     this.dialogueController.initiateDialogue(dialogue, null, null);
+    this.gameOver = false;
   }
 
   preload() {
     this.dialogueController.dialogueField.show();
     this.dialogueController.isDialogueInCutscene = true;
+    globalAudioManager.switchSoundTo(audioNames.battle);
   }
 
   create() {
@@ -63,6 +66,7 @@ export default class FinalBattleScene extends Phaser.Scene {
       .setDepth(10000)
       .play(finalBattleSpriteInfos.mouse.animations[0].name)
       .setAlpha(0);
+
     this.phases = [
       {
         name: 'intro',
@@ -72,10 +76,31 @@ export default class FinalBattleScene extends Phaser.Scene {
         nextPhase: 'minionPhase',
       },
       {
-        name: 'intro',
+        name: 'postgres',
+        animationTarget: this.mouse,
+        animation: finalBattleSpriteInfos.mouse.animations[0].name,
+        text: 'Now Postgres Bugs are trying to trample down your database! Click on them to destroy them.',
+        nextPhase: 'minionPhase2',
+      },
+      {
+        name: 'moreMinions',
         animationTarget: this.arrows,
         animation: finalBattleSpriteInfos.arrows.animations[0].name,
-        text: 'Your final project is going to throw HTML, CSS and React bugs at you! Evade them by using the left and right arrow keys.',
+        text: 'Your Computer is even angrier and is throwing more fast-pace bugs at you! Evade them by using the left and right arrow keys.',
+        nextPhase: 'minionPhase',
+      },
+      {
+        name: 'postgres',
+        animationTarget: this.mouse,
+        animation: finalBattleSpriteInfos.mouse.animations[0].name,
+        text: 'More Postgres Bugs are trying to trample down your database! Click on them to destroy them.',
+        nextPhase: 'minionPhase2',
+      },
+      {
+        name: 'moreMinions',
+        animationTarget: this.arrows,
+        animation: finalBattleSpriteInfos.arrows.animations[0].name,
+        text: 'In a last ditch effort, your computer is throwing even more bugs at you as fast as it can! Evade them by using the left and right arrow keys.',
         nextPhase: 'minionPhase',
       },
     ];
@@ -86,12 +111,18 @@ export default class FinalBattleScene extends Phaser.Scene {
     );
 
     this.events.on('dialogueEnded', () => {
+      if (this.gameOver) return;
       this.stateMachine = new FinalBattleSceneStateMachine(this);
-      this.stateMachine.switchState('intro');
+      this.stateMachine.switchState('explanation');
     });
 
+    const bgRect1 = this.add
+      .rectangle(this.scale.width, this.scale.height, 0, 0, 0x000000)
+      .setOrigin(0, 0)
+      .setAlpha(0.7);
+
     let graphics = this.add.graphics();
-    graphics.fillStyle(0x000000, 0.4);
+    graphics.fillStyle(0x000000, 0.7);
     graphics.fillRect(0, 0, this.scale.width, this.scale.height);
 
     const bgRect2 = this.add
@@ -141,10 +172,29 @@ export default class FinalBattleScene extends Phaser.Scene {
   }
 
   update() {
+    if (this.hero.healthBar.health <= 0) {
+      if (this.gameOver) return;
+      this.hero.stateMachine.switchState('idleCenter');
+      this.gameOver = true;
+      const fadeOut = fadeCameraOut(this, 3000);
+
+      this.dialogueController.initiateDialogue(
+        [new DialogueNode('The bugs defeated you, you give up...')],
+        null,
+        null,
+      );
+      this.dialogueController.dialogueField.show();
+      this.dialogueController.typeText();
+      setTimeout(() => {
+        this.scene.start('GameOverScene');
+        this.scene.stop();
+        this.dialogueController.dialogueField.hide();
+      }, fadeOut);
+
+      return;
+    }
     // Update game logic here
     this.stateMachine && this.stateMachine.update();
     this.hero.update();
   }
-
-  setUpGameEvents() {}
 }
