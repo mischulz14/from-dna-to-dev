@@ -419,7 +419,7 @@ export const npcBootcampData = {
             new DialogueNode(
               "Don't forget the good vibes, no matter how many bugs you encounter.",
             ),
-            new DialogueNode('What do you want to know', [
+            new DialogueNode('What do you want to know?', [
               {
                 text: 'What Technologies have we learned so far?',
                 nextNodeIndex: 3,
@@ -493,7 +493,7 @@ export const npcBootcampData = {
     dialogueNodesObj: {
       nodes: [
         new DialogueNode(
-          "Hey there, my name is Ute but some call me 'the machine'",
+          "Hey there, my name is Ute but some call me 'the machine'.",
         ),
         new DialogueNode(
           'What do you want to know about me? I am an open book.',
@@ -598,7 +598,7 @@ export const npcBootcampData = {
           "Yeah, don't worry, my husband just forgot to wash the dishes AGAIN.",
         ),
         new DialogueNode(
-          "But of course, I'm also nervous starting this bootcamp",
+          "But of course, I'm also nervous starting this bootcamp.",
           [
             {
               text: 'I get it. I am also nervous.',
@@ -622,13 +622,13 @@ export const npcBootcampData = {
             new DialogueNode('Hi there!'),
             new DialogueNode('Do you need anything?', [
               {
-                text: 'Can you motivate me?',
-                nextNodeIndex: 2,
+                text: 'Do you have any snacks?',
+                nextNodeIndex: 4,
                 endDialogue: false,
               },
               {
-                text: 'Do you have any snacks?',
-                nextNodeIndex: 4,
+                text: 'Can you motivate me?',
+                nextNodeIndex: 2,
                 endDialogue: false,
               },
             ]),
@@ -700,7 +700,7 @@ export const npcBootcampData = {
             },
           ],
         ),
-        new DialogueNode('Ask Judy, she can give you the details'),
+        new DialogueNode('Ask Judy, she can give you the details.'),
       ],
     },
     updateDialogueNodeBasedOnHeroState: (scene: BootcampScene, npc) => {

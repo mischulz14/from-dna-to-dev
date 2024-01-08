@@ -277,6 +277,7 @@ export const eventTriggerData = {
             new DialogueNode(
               'I will tell you what happened, but I still feel sooo desperate right now',
             ),
+            new DialogueNode('I just got fired from my job without warning...'),
             new DialogueNode("I don't know what to do with my life anymore..."),
           ],
         };

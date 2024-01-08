@@ -144,7 +144,7 @@ function getCutSceneText() {
   const text6 = "'What is it?' she asks, while entering the room.";
 
   const text7 =
-    "You just answer 'Can I tell you after I drank some coffee And I'll need a strong one for that explanation...'";
+    "You just answer 'Can I tell you after I drank some coffee? And I'll need a strong one for that explanation...'";
 
   return { text1, text2, text3, text4, text5, text6, text7 };
 }
