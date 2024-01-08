@@ -315,7 +315,6 @@ export const eventTriggerData = {
         initialPlayerHealth: 90,
         initialEnemyHealth: 80,
         triggerEventsOnBattleEnd: (scene: any) => {
-          scene.scene.stop('ApartmentScene');
           scene.scene.stop('BattleScene');
           const objectivesUI = scene.scene.get(
             'ObjectivesUIScene',
@@ -325,7 +324,7 @@ export const eventTriggerData = {
           transitionToDNASceneAndBack(
             scene,
             '',
-            ['BootcampScene'],
+            ['ProgressToBootcampScene'],
             3,
             2000,
             true,

@@ -14,6 +14,7 @@ import LabCutscene from '../scenes/LabCutscene';
 import LabScene from '../scenes/LabScene';
 import ObjectivesUIScene from '../scenes/ObjectivesUIScene';
 import PreloaderScene from '../scenes/PreloaderScene';
+import ProgressToBootcampScene from '../scenes/ProgressToBootcampScene';
 import StartScene from '../scenes/StartScene';
 import WohnungsIntroScene from '../scenes/WohnungsIntroScene';
 
@@ -56,6 +57,7 @@ export const config: Phaser.Types.Core.GameConfig = {
     EndGameScene,
     CreditsScene,
     GameOverScene,
+    ProgressToBootcampScene,
   ],
 };
 
