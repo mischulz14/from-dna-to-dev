@@ -68,7 +68,7 @@ export default class ExplanationState implements State {
       })
       .setAlpha(0);
 
-    this.text2 = this.scene.add.text(325, 330, 'Press Space to start!', {
+    this.text2 = this.scene.add.text(325, 330, 'Press Space to continue!', {
       fontSize: '18px',
       fontFamily: 'Rainyhearts',
       color: '#000000',
