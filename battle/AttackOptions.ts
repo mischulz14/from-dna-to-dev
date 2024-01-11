@@ -95,6 +95,16 @@ export default class AttackOptions {
     optionsContainer.innerHTML = '';
   }
 
+  destroy() {
+    const optionsHTML = Array.from(
+      document.querySelectorAll('.attack-options__option'),
+    );
+
+    if (!optionsHTML) return;
+    // remove all options from the dom
+    optionsHTML.forEach((option) => option.remove());
+  }
+
   showOptions() {
     document.querySelector('.attack-options').classList.add('show-grid');
 

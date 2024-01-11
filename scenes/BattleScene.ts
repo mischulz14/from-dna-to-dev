@@ -83,6 +83,8 @@ export default class VirusBattleScene extends Phaser.Scene {
     initialPlayerHealth: number;
     initialEnemyHealth: number;
   }) {
+    this.enemyAttacks = [];
+    this.playerAttacks = [];
     this.enemyAttacks = data.enemyAttacks;
     this.playerAttacks = data.playerAttacks;
     this.backgroundImage = data.backgroundImage;
@@ -102,13 +104,15 @@ export default class VirusBattleScene extends Phaser.Scene {
   }
 
   create() {
+    this.events.on('shutdown', this.shutdown, this);
     globalAudioManager.switchSoundTo(audioNames.battle);
+    this.add.image(0, 0, this.backgroundImage).setOrigin(0, 0);
+
     this.playerAttackOptions = new AttackOptions(
       this.playerAttacks,
       this,
       this.gameEvents,
     );
-    this.add.image(0, 0, this.backgroundImage).setOrigin(0, 0);
 
     this.player = this.add.sprite(100, 280, this.battleHeroSpriteTexture);
     this.enemy = this.add.sprite(400, 100, this.enemyTexture);
@@ -414,11 +418,12 @@ export default class VirusBattleScene extends Phaser.Scene {
   checkBattleEnd(emittedEventAfterCheck: string) {
     console.log('checkBattleEnd');
     if (this.enemyHealth <= 0) {
-      this.playerAttackOptions.removeHTMLOptionsFromDialogueField();
+      this.playerAttackOptions.destroy();
       this.typeWriterEffect(this.endDialogue);
       this.enemyDestroyedAnimation();
 
       this.waitForUserConfirmation().then(() => {
+        this.resetEverything();
         fadeCameraOut(this, 2000);
         setTimeout(() => {
           this.triggerEventsOnBattleEnd(this);
@@ -436,6 +441,8 @@ export default class VirusBattleScene extends Phaser.Scene {
       this.playerDestroyedAnimation();
 
       this.waitForUserConfirmation().then(() => {
+        this.playerAttackOptions.destroy();
+        this.resetEverything();
         fadeCameraOut(this, 2000);
         setTimeout(() => {
           const objectivesUI = this.scene.get(
@@ -536,5 +543,10 @@ export default class VirusBattleScene extends Phaser.Scene {
     this.playerHealth = this.initialPlayerHealth;
     this.enemyHealth = this.initialEnemyHealth;
     this.gameOver = false;
+  }
+
+  shutdown() {
+    this.gameEvents.removeAllListeners();
+    this.resetEverything();
   }
 }
