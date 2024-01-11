@@ -472,12 +472,12 @@ export const eventTriggerData = {
       ) as FinalBattleScene;
 
       // fadeCameraOut(scene, 1000);
+      bootcampScene.activeInteractiveGameObject.hideSpeechIndication();
+      bootcampScene.scene.pause('BootcampScene');
 
       setTimeout(() => {
         finalBattleScene.scene.start('FinalBattleScene');
-        bootcampScene.activeInteractiveGameObject.hideSpeechIndication();
-        bootcampScene.scene.pause('BootcampScene');
-      }, 1000);
+      }, 300);
     },
   },
 };

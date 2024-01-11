@@ -47,6 +47,13 @@ export default class BootcampScene extends Phaser.Scene {
     this.NPCsPlayerHasTalkedTo = [];
   }
 
+  init() {
+    this.activeInteractiveGameObject = null;
+    this.isEventTriggered = false;
+    this.isDialoguePlaying = false;
+    this.NPCsPlayerHasTalkedTo = [];
+  }
+
   preload() {
     this.setUpGameEvents();
     setMostRecentScene('BootcampScene');
@@ -73,7 +80,7 @@ export default class BootcampScene extends Phaser.Scene {
     this.scene.launch('ObjectivesUIScene');
 
     // this.scene.bringToTop('BootcampScene');
-    this.playSceneOverlay(3, 'The Bootcamp starts');
+    // this.playSceneOverlay(3, 'The Bootcamp starts');
   }
 
   /////////////////////////

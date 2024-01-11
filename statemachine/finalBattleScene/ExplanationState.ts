@@ -9,9 +9,6 @@ import { transitionToDNASceneAndBack } from '../../utils/sceneTransitions';
 export default class ExplanationState implements State {
   scene: FinalBattleScene;
   dialogue: DialogueNode[];
-  rectangle: Phaser.GameObjects.Rectangle;
-  text: Phaser.GameObjects.Text;
-  text2: Phaser.GameObjects.Text;
   target: Phaser.GameObjects.Sprite;
 
   constructor(scene: FinalBattleScene) {
@@ -37,9 +34,13 @@ export default class ExplanationState implements State {
   }
 
   enter() {
+    this.resetState();
+
     console.log(
       'entering explanation state',
       this.scene.phases[this.scene.currentPhase],
+      'scene.rectangle:',
+      this.scene.rectangle,
     );
     if (this.scene.phases[this.scene.currentPhase] === undefined) {
       this.endGame();
@@ -55,11 +56,11 @@ export default class ExplanationState implements State {
       }
     });
 
-    this.rectangle = this.scene.add
+    this.scene.rectangle = this.scene.add
       .rectangle(150, 170, 500, 200, 0xffffff)
       .setOrigin(0, 0)
       .setAlpha(0);
-    this.text = this.scene.add
+    this.scene.text = this.scene.add
       .text(170, 180, this.scene.phases[this.scene.currentPhase].text, {
         fontSize: '22px',
         fontFamily: 'Rainyhearts',
@@ -68,12 +69,17 @@ export default class ExplanationState implements State {
       })
       .setAlpha(0);
 
-    this.text2 = this.scene.add.text(325, 330, 'Press Space to continue!', {
-      fontSize: '18px',
-      fontFamily: 'Rainyhearts',
-      color: '#000000',
-      wordWrap: { width: 480 },
-    });
+    this.scene.text2 = this.scene.add.text(
+      325,
+      330,
+      'Press Space to continue!',
+      {
+        fontSize: '18px',
+        fontFamily: 'Rainyhearts',
+        color: '#000000',
+        wordWrap: { width: 480 },
+      },
+    );
 
     this.scene.finalBoss.play(
       finalBattleSpriteInfos.finalBoss.animations[0].name,
@@ -107,7 +113,7 @@ export default class ExplanationState implements State {
     console.log('reveal explanation');
 
     this.scene.tweens.add({
-      targets: this.rectangle,
+      targets: this.scene.rectangle,
       alpha: 1,
       ease: 'Linear',
       duration: 1000,
@@ -115,7 +121,7 @@ export default class ExplanationState implements State {
     });
 
     this.scene.tweens.add({
-      targets: this.text,
+      targets: this.scene.text,
       alpha: 1,
       ease: 'Linear',
       duration: 1000,
@@ -132,8 +138,12 @@ export default class ExplanationState implements State {
   }
 
   async exit() {
+    setTimeout(() => {
+      this.resetState();
+    }, 1000);
+
     this.scene.tweens.add({
-      targets: this.rectangle,
+      targets: this.scene.rectangle,
       alpha: 0,
       ease: 'Linear',
       duration: 1000,
@@ -141,25 +151,33 @@ export default class ExplanationState implements State {
     });
 
     this.scene.tweens.add({
-      targets: this.text,
+      targets: this.scene.text,
       alpha: 0,
       ease: 'Linear',
       duration: 1000,
       repeat: 0,
     });
 
-    this.scene.tweens.add({
-      targets: this.target,
-      alpha: 0,
-      ease: 'Linear',
-      duration: 1000,
-      repeat: 0,
-    });
+    this.scene.tweens
+      .add({
+        targets: this.target,
+        alpha: 0,
+        ease: 'Linear',
+        duration: 1000,
+        repeat: 0,
+      })
+      .on('animationcomplete', () => {
+        // destroy all
+        console.log(this.scene.text);
+      });
   }
 
   endGame() {
+    this.scene.scene.get('FinalBattleScene').children.each((child) => {
+      child.destroy();
+    });
     // stop current scene
-    this.scene.scene.stop();
+    this.scene.scene.stop('FinalBattleScene');
 
     transitionToDNASceneAndBack(
       this.scene,
@@ -169,5 +187,21 @@ export default class ExplanationState implements State {
       2000,
       true,
     );
+  }
+
+  resetState() {
+    // Destroy game objects if they exist
+    if (this.scene.rectangle) {
+      this.scene.rectangle.destroy();
+      this.scene.rectangle = null;
+    }
+    if (this.scene.text) {
+      this.scene.text.destroy();
+      this.scene.text = null;
+    }
+    if (this.scene.text2) {
+      this.scene.text2.destroy();
+      this.scene.text2 = null;
+    }
   }
 }

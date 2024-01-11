@@ -27,6 +27,9 @@ export default class FinalBattleScene extends Phaser.Scene {
     nextPhase: string;
   }[];
   currentPhase = 0;
+  rectangle: Phaser.GameObjects.Rectangle;
+  text: Phaser.GameObjects.Text;
+  text2: Phaser.GameObjects.Text;
 
   constructor() {
     super({ key: 'FinalBattleScene' });
@@ -42,6 +45,21 @@ export default class FinalBattleScene extends Phaser.Scene {
     this.dialogueController = new DialogueController(this);
     this.dialogueController.initiateDialogue(dialogue, null, null);
     this.gameOver = false;
+  }
+
+  init() {
+    const dialogue = [
+      new DialogueNode('You are almost a fullstack developer'),
+      new DialogueNode(
+        'You can feel the power of the code flowing through your veins...',
+      ),
+      new DialogueNode('You just have to overcome this one final challenge.'),
+      new DialogueNode("You're ready."),
+    ];
+    this.dialogueController = new DialogueController(this);
+    this.dialogueController.initiateDialogue(dialogue, null, null);
+    this.gameOver = false;
+    this.currentPhase = 0;
   }
 
   preload() {
@@ -186,14 +204,16 @@ export default class FinalBattleScene extends Phaser.Scene {
       this.dialogueController.dialogueField.show();
       this.dialogueController.typeText();
       setTimeout(() => {
+        this.stateMachine.destroy();
         this.scene.start('GameOverScene');
-        this.scene.stop();
+        this.scene.stop('FinalBattleScene');
+
         this.dialogueController.dialogueField.hide();
       }, fadeOut);
 
       return;
     }
-    // Update game logic here
+
     this.stateMachine && this.stateMachine.update();
     this.hero.update();
   }

@@ -39,4 +39,10 @@ export default class FinalBattleSceneStateMachine {
   getState() {
     return this.state;
   }
+
+  destroy() {
+    // Reset the states and current state reference
+    this.states = null;
+    this.state = null;
+  }
 }
