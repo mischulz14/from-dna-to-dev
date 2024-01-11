@@ -423,7 +423,6 @@ export default class VirusBattleScene extends Phaser.Scene {
       this.enemyDestroyedAnimation();
 
       this.waitForUserConfirmation().then(() => {
-        this.resetEverything();
         fadeCameraOut(this, 2000);
         setTimeout(() => {
           this.triggerEventsOnBattleEnd(this);
@@ -442,7 +441,7 @@ export default class VirusBattleScene extends Phaser.Scene {
 
       this.waitForUserConfirmation().then(() => {
         this.playerAttackOptions.destroy();
-        this.resetEverything();
+
         fadeCameraOut(this, 2000);
         setTimeout(() => {
           const objectivesUI = this.scene.get(
