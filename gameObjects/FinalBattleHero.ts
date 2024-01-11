@@ -26,7 +26,7 @@ export default class FinalBattleHero extends Phaser.Physics.Arcade.Sprite {
       scene,
       x,
       y,
-      100,
+      300,
       -375,
       40,
       'hero-health-bar',
