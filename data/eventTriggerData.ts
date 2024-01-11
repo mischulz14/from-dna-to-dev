@@ -91,7 +91,7 @@ export const eventTriggerData = {
         endDialogue:
           'You defeat Mr.Virus and snap out of your stress response. You caught the probe!',
         enemyName: 'Mr. Virus',
-        initialPlayerHealth: 100,
+        initialPlayerHealth: 130,
         initialEnemyHealth: 80,
         triggerEventsOnBattleEnd: (scene: any) => {
           const labScene = scene.scene.get('LabScene') as LabScene;
@@ -226,7 +226,7 @@ export const eventTriggerData = {
         battleHeroSpriteTexture: heroBattleSpriteNames.lab,
         enemyTexture: enemySpriteNames.sleepDeprivation,
         enemyName: 'Mr. Sleepyhead',
-        initialPlayerHealth: 120,
+        initialPlayerHealth: 140,
         initialEnemyHealth: 100,
         triggerEventsOnBattleEnd: (scene: any) => {
           scene.scene.stop('BattleScene');
@@ -313,7 +313,7 @@ export const eventTriggerData = {
         battleHeroSpriteTexture: heroBattleSpriteNames.apartment,
         enemyTexture: enemySpriteNames.apartment,
         enemyName: 'Sad Boyfriend',
-        initialPlayerHealth: 90,
+        initialPlayerHealth: 120,
         initialEnemyHealth: 80,
         triggerEventsOnBattleEnd: (scene: any) => {
           scene.scene.stop('BattleScene');
