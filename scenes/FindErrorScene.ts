@@ -41,12 +41,19 @@ export default class FindErrorScene extends Phaser.Scene {
       new DialogueNode(
         'Find the errors by running over them and clicking E when standing on them.',
       ),
-      new DialogueNode(
-        'Keep in mind, you only have three tries or this coffee machine breaks!',
-      ),
     ];
     this.dialogueController = new DialogueController(this);
     this.dialogueController.initiateDialogue(dialogue, null, null);
+  }
+
+  init() {
+    this.errorRectangles = [];
+    this.foundErrorRectangles = [];
+    this.isOverlappingWithError = false;
+    this.overlappingRect = null;
+    this.initiatedFadeOut = false;
+    this.isClickingEDisabled = true;
+    this.gameOver = false;
   }
 
   preload() {
@@ -59,19 +66,20 @@ export default class FindErrorScene extends Phaser.Scene {
   }
 
   create() {
-    this.heartContainer = this.add
-      .container(650, 50, [
-        new Heart(this, 0, 0, UISpritesData.heart.name, 0)
-          .setScrollFactor(0)
-          .setScale(2),
-        new Heart(this, 40, 0, UISpritesData.heart.name, 0)
-          .setScrollFactor(0)
-          .setScale(2),
-        new Heart(this, 80, 0, UISpritesData.heart.name, 0)
-          .setScrollFactor(0)
-          .setScale(2),
-      ])
-      .setDepth(999);
+    this.events.on('shutdown', this.shutdown);
+    // this.heartContainer = this.add
+    //   .container(650, 50, [
+    //     new Heart(this, 0, 0, UISpritesData.heart.name, 0)
+    //       .setScrollFactor(0)
+    //       .setScale(2),
+    //     new Heart(this, 40, 0, UISpritesData.heart.name, 0)
+    //       .setScrollFactor(0)
+    //       .setScale(2),
+    //     new Heart(this, 80, 0, UISpritesData.heart.name, 0)
+    //       .setScrollFactor(0)
+    //       .setScale(2),
+    //   ])
+    //   .setDepth(999);
 
     this.addCoffeeMachines();
     this.createHero();
@@ -103,11 +111,11 @@ export default class FindErrorScene extends Phaser.Scene {
         return;
       }
 
-      fadeCameraOut(this, 2000);
-      setTimeout(() => {
-        this.scene.stop();
-        this.scene.start('GameOverScene');
-      }, 2000);
+      // fadeCameraOut(this, 2000);
+      // setTimeout(() => {
+      //   this.scene.stop();
+      //   this.scene.start('GameOverScene');
+      // }, 2000);
     });
 
     fadeCameraIn(this, 3000);
@@ -144,34 +152,41 @@ export default class FindErrorScene extends Phaser.Scene {
   handlePlayerEPress(scene) {
     if (scene.isClickingEDisabled) return;
 
-    if (scene.heartContainer.list.length <= 0) {
-      this.handleGameOver();
-    }
+    // if (scene.heartContainer.list.length <= 0) {
+    //   this.handleGameOver();
+    // }
 
     this.isClickingEDisabled = true;
     // console.log('player pressed E', this.isOverlappingWithError);
 
-    if (!scene.isOverlappingWithError) {
-      // destroy one heart
-      console.log(scene.heartContainer);
-      const heart = scene.heartContainer.first as Heart;
-      heart &&
-        heart.anims
-          .play(UISpritesData.heart.name)
-          .on('animationcomplete', () => {
-            setTimeout(() => {
-              scene.heartContainer.list.shift();
-              this.isClickingEDisabled = false;
-            }, 1000);
-          });
+    // if (!scene.isOverlappingWithError) {
+    //   // destroy one heart
+    //   console.log(scene.heartContainer);
+    //   const heart = scene.heartContainer.first as Heart;
+    //   heart &&
+    //     heart.anims
+    //       .play(UISpritesData.heart.name)
+    //       .on('animationcomplete', () => {
+    //         setTimeout(() => {
+    //           scene.heartContainer.list.shift();
+    //           this.isClickingEDisabled = false;
+    //         }, 1000);
+    //       });
+    // }
+
+    if (!scene.overlappingRect) {
+      console.log('not overlapping');
+      this.isClickingEDisabled = false;
+      return;
     }
 
-    if (!scene.overlappingRect) return;
     const hasErrorAlreadyBeenFound = scene.foundErrorRectangles.includes(
       scene.overlappingRect.id,
     );
 
     if (!this.isOverlappingWithError || hasErrorAlreadyBeenFound) {
+      console.log('already found');
+      this.isClickingEDisabled = false;
       return;
     }
     this.overlappingRect.revealRectangle();
@@ -295,5 +310,13 @@ export default class FindErrorScene extends Phaser.Scene {
         this.scene.resume('ApartmentScene');
       }, 3000);
     });
+  }
+
+  shutdown() {
+    // reset
+    this.gameOver = false;
+    this.errorRectangles = [];
+    this.foundErrorRectangles = [];
+    this.heartContainer = null;
   }
 }
