@@ -7,6 +7,6 @@ This is a small game I made (but it took a long time!) to show some of my past a
 I wrote this game with Typescript and the Phaser 3 framework for Javascript Gamedevelopment. 
 If you have any question about the code or want tipps on how to handle some weird Phaser behaviors, you can reach out to me [here](michaelschulz.tech).
 
-### OOOH and btw - All of the art assets are drawn and animated by myself so please ask if you want to use them! Thanks (: 
+### OOOH and btw - All of the art assets are drawn and animated by me so please ask if you want to use them! Thanks (: 
 
 
