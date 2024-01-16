@@ -87,3 +87,12 @@ export let mostRecentScene = 'LabScene';
 export function setMostRecentScene(sceneName: string) {
   mostRecentScene = sceneName;
 }
+
+const isMobileScreen = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+const mobileWarningScreen = document.querySelector('.mobile-warning');
+console.log(mobileWarningScreen);
+
+if (isMobileScreen && mobileWarningScreen) {
+  mobileWarningScreen.classList.remove('hidden');
+}
