@@ -1,3 +1,5 @@
+import { isMobileScreen } from '../src/app';
+
 export const finalBattleSpriteInfos = {
   michi: {
     texture: 'final',
@@ -63,7 +65,9 @@ export const finalBattleSpriteInfos = {
     texture: 'finalBoss',
     spriteWidth: 64,
     spriteHeight: 64,
-    src: '../assets/finalBoss.png',
+    src: isMobileScreen
+      ? '../assets/finalBossCompressed.png'
+      : '../assets/finalBoss.png',
     animations: [
       {
         name: 'finalBoss-idle',
