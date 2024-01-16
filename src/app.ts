@@ -94,12 +94,10 @@ export function setMostRecentScene(sceneName: string) {
 export const mobileArrows = new InitMobileArrows();
 export const mobileButtons = new InitMobileButtons();
 
-export let isMobileScreen = document.documentElement.clientWidth < 500;
-
-console.log(document.documentElement.clientWidth < 500);
+export let isMobileScreen = document.body.clientWidth < 500;
 
 window.addEventListener('resize', () => {
-  isMobileScreen = document.documentElement.clientWidth < 500;
+  isMobileScreen = document.body.clientWidth < 500;
 });
 
 function checkWidthAndThrow() {
