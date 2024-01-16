@@ -117,4 +117,4 @@ function checkWidthAndThrow() {
   document.body.appendChild(warningElement);
 }
 
-// checkWidthAndThrow();
+checkWidthAndThrow();
