@@ -113,7 +113,9 @@ function checkWidthAndThrow() {
   warningElement.style.fontSize = '2rem';
   warningElement.style.textAlign = 'center';
   warningElement.style.paddingTop = '2rem';
-  warningElement.textContent = `Window too narrow: ${document.body.clientWidth}px`;
+  warningElement.textContent = `Window too narrow: ${
+    document.body.clientWidth
+  }px ${document.body.clientWidth < 500}}`;
   document.body.appendChild(warningElement);
 }
 
