@@ -23,6 +23,10 @@ export default class AttackOptions {
       'keydown',
       this.handlePickOptionWithArrowKeysAndEnter.bind(this),
     );
+    window.addEventListener(
+      'pointerdown',
+      this.handlePickOptionWithArrowKeysAndEnter.bind(this),
+    );
 
     this.hasPlayerChosenAttack = false;
     this.addHTMLOptionsToDialogueField();

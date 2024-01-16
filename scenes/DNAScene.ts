@@ -4,7 +4,7 @@ import {
   cutSceneAudioNames,
   cutSceneSpriteNames,
 } from '../data/cutSceneSprites';
-import { globalAudioManager } from '../src/app';
+import { globalAudioManager, isMobileScreen } from '../src/app';
 import {
   cutsceneTransitionReverse,
   fadeCameraIn,
@@ -54,6 +54,12 @@ export default class DNAScene extends Phaser.Scene {
     });
 
     this.input.keyboard.on('keydown-SPACE', () => {
+      if (!this.canProgressToNextScene) return;
+      this.handleContinueToNextScene();
+    });
+
+    this.input.on('pointerdown', () => {
+      if (!isMobileScreen) return;
       if (!this.canProgressToNextScene) return;
       this.handleContinueToNextScene();
     });
@@ -133,11 +139,16 @@ export default class DNAScene extends Phaser.Scene {
     );
 
     setTimeout(() => {
-      this.continueText = this.add.text(300, 400, 'Press Space to continue', {
-        fontSize: '1.2rem',
-        fontFamily: 'Rainyhearts',
-        color: '#fff',
-      });
+      this.continueText = this.add.text(
+        300,
+        400,
+        isMobileScreen ? 'Tap to continue' : 'Press Space to continue',
+        {
+          fontSize: '1.2rem',
+          fontFamily: 'Rainyhearts',
+          color: '#fff',
+        },
+      );
 
       this.continueText.setAlpha(1);
 

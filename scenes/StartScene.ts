@@ -1,6 +1,6 @@
 import { audioNames } from '../data/audioNames';
 import { cutSceneAudioNames } from '../data/cutSceneSprites';
-import { globalAudioManager } from '../src/app';
+import { globalAudioManager, isMobileScreen } from '../src/app';
 import { textAppears } from '../utils/textEffects';
 
 export default class StartScene extends Phaser.Scene {
@@ -59,11 +59,17 @@ export default class StartScene extends Phaser.Scene {
       repeat: -1,
     });
 
-    this.text = this.add.text(230, 400, 'Press any key to continue', {
-      fontSize: '2rem',
-      fontFamily: 'Rainyhearts',
-      color: '#fff',
-    });
+    this.text = this.add.text(
+      230,
+      400,
+      isMobileScreen ? 'Tap to continue' : 'Press any key to continue',
+      {
+        fontSize: '2rem',
+        fontFamily: 'Rainyhearts',
+        fontStyle: 'bold',
+        color: '#fff',
+      },
+    );
 
     const codebrackets = this.add
       .sprite(280, 300, 'codebrackets')
@@ -72,6 +78,22 @@ export default class StartScene extends Phaser.Scene {
 
     // when the user presses start, start the first level
     this.input.keyboard.on('keydown', () => {
+      this.text.setVisible(false);
+      dna.setVisible(false);
+      codebrackets.setVisible(false);
+      background.setVisible(false);
+      this.hasContinuedToBackstory = true;
+
+      this.revealText();
+    });
+
+    // mobile controls
+    this.input.on('pointerdown', () => {
+      if (!isMobileScreen) return;
+      if (this.hasContinuedToBackstory && this.canContinueToNextScene) {
+        this.scene.start('DNAScene');
+        return;
+      }
       this.text.setVisible(false);
       dna.setVisible(false);
       codebrackets.setVisible(false);
@@ -92,11 +114,17 @@ export default class StartScene extends Phaser.Scene {
   progressToNextSection() {
     this.audioFinished = true;
 
-    const text = this.add.text(300, 465, 'Press Space to continue', {
-      fontSize: '1.3rem',
-      fontFamily: 'Rainyhearts',
-      color: '#fff',
-    });
+    const text = this.add.text(
+      300,
+      465,
+      isMobileScreen ? 'Press Space to continue' : 'Tap to continue',
+      {
+        fontSize: '1.3rem',
+        fontFamily: 'Rainyhearts',
+        fontStyle: 'bold',
+        color: '#fff',
+      },
+    );
 
     this.tweens.add({
       targets: text,

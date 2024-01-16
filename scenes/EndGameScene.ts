@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 
 import { audioNames } from '../data/audioNames';
-import { globalAudioManager } from '../src/app';
+import { globalAudioManager, isMobileScreen } from '../src/app';
 import { textAppears } from '../utils/textEffects';
 
 export default class EndGameScene extends Phaser.Scene {
@@ -28,6 +28,11 @@ export default class EndGameScene extends Phaser.Scene {
 
     setTimeout(() => {
       this.input.keyboard.on('keydown-SPACE', () => {
+        this.scene.start('CreditsScene');
+      });
+
+      this.input.on('pointerdown', () => {
+        if (!isMobileScreen) return;
         this.scene.start('CreditsScene');
       });
     }, 1000);
@@ -91,7 +96,7 @@ export default class EndGameScene extends Phaser.Scene {
 
     this.time.delayedCall(delays[3], () => {
       const space = textAppears(
-        'Press Space to see the credits',
+        isMobileScreen ? 'Tap to continue' : 'Press Space to continue',
         '1.6rem',
         'Rainyhearts',
         1000,

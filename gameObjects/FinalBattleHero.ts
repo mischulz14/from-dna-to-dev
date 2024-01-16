@@ -1,6 +1,7 @@
 import * as Phaser from 'phaser';
 
 import HealthBar from '../battle/HealthBar';
+import { mobileArrows } from '../src/app';
 import FinalBattleHeroFiniteStateMachine from '../statemachine/finalBattleHero/FinalBattleHeroFiniteStateMachine';
 
 export default class FinalBattleHero extends Phaser.Physics.Arcade.Sprite {
@@ -10,6 +11,7 @@ export default class FinalBattleHero extends Phaser.Physics.Arcade.Sprite {
   stateMachine: FinalBattleHeroFiniteStateMachine;
   animPrefix: string;
   healthBar: HealthBar;
+  mobileCursors: any;
 
   constructor(
     scene: Phaser.Scene,
@@ -34,6 +36,7 @@ export default class FinalBattleHero extends Phaser.Physics.Arcade.Sprite {
 
     this.stateMachine = new FinalBattleHeroFiniteStateMachine(this);
     this.animPrefix = animPrefix;
+    this.mobileCursors = mobileArrows.getButtons();
 
     // Add this instance to the scene's display list and update list
 
@@ -50,7 +53,7 @@ export default class FinalBattleHero extends Phaser.Physics.Arcade.Sprite {
   }
 
   update() {
-    // Hero is frozen while talking or during a cuscene
+    this.mobileCursors = mobileArrows.getButtons();
     this.stateMachine.update();
   }
 

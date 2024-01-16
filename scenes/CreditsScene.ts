@@ -1,5 +1,7 @@
 import Phaser from 'phaser';
 
+import { isMobileScreen } from '../src/app';
+
 export default class CreditsScene extends Phaser.Scene {
   constructor() {
     super('CreditsScene');
@@ -49,11 +51,16 @@ export default class CreditsScene extends Phaser.Scene {
       duration: 10000,
       onComplete: () => {
         const text = this.add
-          .text(330, 460, 'Press Space to restart', {
-            fontSize: '1.3rem',
-            fontFamily: 'Rainyhearts',
-            color: '#fff',
-          })
+          .text(
+            330,
+            460,
+            isMobileScreen ? 'Tap to restart' : 'Press Space to restart',
+            {
+              fontSize: '1.3rem',
+              fontFamily: 'Rainyhearts',
+              color: '#fff',
+            },
+          )
           .setAlpha(0);
 
         this.tweens.add({
@@ -66,6 +73,11 @@ export default class CreditsScene extends Phaser.Scene {
         });
 
         this.input.keyboard.on('keydown-SPACE', () => {
+          window.location.reload();
+        });
+
+        this.input.on('pointerdown', () => {
+          if (!isMobileScreen) return;
           window.location.reload();
         });
       },

@@ -1,10 +1,13 @@
 import * as Phaser from 'phaser';
 
+import { isMobileScreen, mobileArrows } from '../src/app';
 import PlayerFiniteStateMachine from '../statemachine/overworldHero/PlayerFiniteStateMachine';
+import MobileCursor from '../utils/InitMobileArrows';
 
 export default class Hero<TBooleanConditions> extends Phaser.Physics.Arcade
   .Sprite {
   cursors: Phaser.Types.Input.Keyboard.CursorKeys;
+  mobileCursors: any;
   lastDirection: string;
   speed: number;
   freeze: boolean;
@@ -29,6 +32,9 @@ export default class Hero<TBooleanConditions> extends Phaser.Physics.Arcade
     this.heroBounds = this.getBounds();
     this.booleanConditions = booleanConditions;
 
+    this.mobileCursors = mobileArrows.getButtons();
+    console.log(this.mobileCursors);
+
     this.stateMachine = new PlayerFiniteStateMachine(this);
     this.animPrefix = animPrefix;
 
@@ -47,6 +53,7 @@ export default class Hero<TBooleanConditions> extends Phaser.Physics.Arcade
   }
 
   update() {
+    this.mobileCursors = mobileArrows.getButtons();
     // Hero is frozen while talking or during a cuscene
     if (this.freeze) {
       this.body.enable = false; // disable collision response
@@ -62,14 +69,26 @@ export default class Hero<TBooleanConditions> extends Phaser.Physics.Arcade
   }
 
   updateLastDirection() {
-    if (this.cursors.left.isDown) {
-      this.lastDirection = 'left';
-    } else if (this.cursors.right.isDown) {
-      this.lastDirection = 'right';
-    } else if (this.cursors.up.isDown) {
-      this.lastDirection = 'up';
-    } else if (this.cursors.down.isDown) {
-      this.lastDirection = 'down';
+    if (isMobileScreen) {
+      if (this.mobileCursors.left.isDown) {
+        this.lastDirection = 'left';
+      } else if (this.mobileCursors.right.isDown) {
+        this.lastDirection = 'right';
+      } else if (this.mobileCursors.up.isDown) {
+        this.lastDirection = 'up';
+      } else if (this.mobileCursors.down.isDown) {
+        this.lastDirection = 'down';
+      }
+    } else {
+      if (this.cursors.left.isDown) {
+        this.lastDirection = 'left';
+      } else if (this.cursors.right.isDown) {
+        this.lastDirection = 'right';
+      } else if (this.cursors.up.isDown) {
+        this.lastDirection = 'up';
+      } else if (this.cursors.down.isDown) {
+        this.lastDirection = 'down';
+      }
     }
   }
 }

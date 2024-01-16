@@ -36,6 +36,11 @@ export default class LabCutscene extends Phaser.Scene {
       'keydown-ENTER',
       this.dialogueController.playerPressesEnterEventListener,
     );
+
+    const enterMobileButton = document.querySelector('.mobile__button--enter');
+    enterMobileButton.addEventListener('click', () => {
+      this.dialogueController.playerPressesEnterEventListener();
+    });
   }
 
   create() {

@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 
 import { audioNames } from '../data/audioNames';
-import { globalAudioManager } from '../src/app';
+import { globalAudioManager, isMobileScreen } from '../src/app';
 import { textAppears } from '../utils/textEffects';
 
 export default class ProgressToBootcampScene extends Phaser.Scene {
@@ -23,6 +23,12 @@ export default class ProgressToBootcampScene extends Phaser.Scene {
 
     setTimeout(() => {
       this.input.keyboard.on('keydown-SPACE', () => {
+        this.scene.stop('ApartmentScene');
+        this.scene.start('BootcampScene');
+      });
+
+      this.input.on('pointerdown', () => {
+        if (!isMobileScreen) return;
         this.scene.stop('ApartmentScene');
         this.scene.start('BootcampScene');
       });
@@ -88,7 +94,7 @@ export default class ProgressToBootcampScene extends Phaser.Scene {
 
     this.time.delayedCall(delays[3], () => {
       const space = textAppears(
-        'Press Space to continue',
+        isMobileScreen ? 'Tap to continue' : 'Press Space to continue',
         '1.6rem',
         'Rainyhearts',
         1000,

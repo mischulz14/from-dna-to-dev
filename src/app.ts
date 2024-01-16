@@ -17,6 +17,8 @@ import PreloaderScene from '../scenes/PreloaderScene';
 import ProgressToBootcampScene from '../scenes/ProgressToBootcampScene';
 import StartScene from '../scenes/StartScene';
 import WohnungsIntroScene from '../scenes/WohnungsIntroScene';
+import InitMobileArrows from '../utils/InitMobileArrows';
+import InitMobileButtons from '../utils/InitMobileButtons';
 
 export const config: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
@@ -87,3 +89,34 @@ export let mostRecentScene = 'LabScene';
 export function setMostRecentScene(sceneName: string) {
   mostRecentScene = sceneName;
 }
+
+// create mobile arrows
+export const mobileArrows = new InitMobileArrows();
+export const mobileButtons = new InitMobileButtons();
+
+export let isMobileScreen = document.documentElement.clientWidth < 500;
+
+console.log(document.documentElement.clientWidth < 500);
+
+window.addEventListener('resize', () => {
+  isMobileScreen = document.documentElement.clientWidth < 500;
+});
+
+function checkWidthAndThrow() {
+  // make it visbile as a warning
+  const warningElement = document.createElement('div');
+  warningElement.style.position = 'absolute';
+  warningElement.style.top = '0';
+  warningElement.style.left = '0';
+  warningElement.style.width = '100%';
+  warningElement.style.height = '100px';
+  warningElement.style.backgroundColor = 'red';
+  warningElement.style.color = 'white';
+  warningElement.style.fontSize = '2rem';
+  warningElement.style.textAlign = 'center';
+  warningElement.style.paddingTop = '2rem';
+  warningElement.textContent = `Window too narrow: ${document.documentElement.clientWidth}px`;
+  document.body.appendChild(warningElement);
+}
+
+// checkWidthAndThrow();

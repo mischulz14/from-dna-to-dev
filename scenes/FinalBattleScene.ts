@@ -6,7 +6,7 @@ import DialogueController from '../dialogue/DialogueController';
 import DialogueNode from '../dialogue/DialogueNode';
 import FinalBattleBoss from '../gameObjects/FinalBattleBoss';
 import FinalBattleHero from '../gameObjects/FinalBattleHero';
-import { globalAudioManager } from '../src/app';
+import { globalAudioManager, isMobileScreen } from '../src/app';
 import FinalBattleSceneStateMachine from '../statemachine/finalBattleScene/FinalBattleStateMachine';
 import { fadeCameraIn, fadeCameraOut } from '../utils/sceneTransitions';
 
@@ -30,6 +30,9 @@ export default class FinalBattleScene extends Phaser.Scene {
   rectangle: Phaser.GameObjects.Rectangle;
   text: Phaser.GameObjects.Text;
   text2: Phaser.GameObjects.Text;
+  enterMobileButton: HTMLDivElement;
+  enterMobileFunction: () => void;
+  canProgress: boolean;
 
   constructor() {
     super({ key: 'FinalBattleScene' });
@@ -45,6 +48,11 @@ export default class FinalBattleScene extends Phaser.Scene {
     this.dialogueController = new DialogueController(this);
     this.dialogueController.initiateDialogue(dialogue, null, null);
     this.gameOver = false;
+    this.enterMobileButton = document.querySelector('.mobile__button--enter');
+    this.enterMobileFunction = () => {
+      this.dialogueController.playerPressesEnterEventListener();
+    };
+    this.canProgress = false;
   }
 
   init() {
@@ -127,12 +135,28 @@ export default class FinalBattleScene extends Phaser.Scene {
       'keydown-ENTER',
       this.dialogueController.playerPressesEnterEventListener,
     );
+    if (isMobileScreen) {
+      this.enterMobileButton.addEventListener(
+        'pointerdown',
+        this.enterMobileFunction,
+      );
+    }
 
     this.events.on('dialogueEnded', () => {
       if (this.gameOver) return;
       this.stateMachine = new FinalBattleSceneStateMachine(this);
       this.stateMachine.switchState('explanation');
     });
+
+    this.input.on('pointerdown', () => {
+      if (!isMobileScreen) return;
+      this.canProgress = true;
+      setTimeout(() => {
+        this.canProgress = false;
+      }, 200);
+    });
+
+    this.events.on('shutdown', this.shutdown);
 
     const bgRect1 = this.add
       .rectangle(this.scale.width, this.scale.height, 0, 0, 0x000000)
@@ -216,5 +240,13 @@ export default class FinalBattleScene extends Phaser.Scene {
 
     this.stateMachine && this.stateMachine.update();
     this.hero.update();
+  }
+
+  shutdown() {
+    this.enterMobileButton &&
+      this.enterMobileButton.removeEventListener(
+        'pointerdown',
+        this.enterMobileFunction,
+      );
   }
 }
