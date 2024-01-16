@@ -84,11 +84,18 @@ document.addEventListener('DOMContentLoaded', () => {
   globalAudioManager.audioContext = new AudioContext();
 });
 
+// initialize most recent scene
 export let mostRecentScene = 'LabScene';
 
+// set most recent scene to the scene that is currently active
 export function setMostRecentScene(sceneName: string) {
   mostRecentScene = sceneName;
 }
+
+// disable double click zoom
+document.addEventListener('dblclick', function (event) {
+  event.preventDefault();
+});
 
 // create mobile arrows
 export const mobileArrows = new InitMobileArrows();
