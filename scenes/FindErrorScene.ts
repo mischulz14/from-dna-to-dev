@@ -21,6 +21,10 @@ export default class FindErrorScene extends Phaser.Scene {
   heartContainer: Phaser.GameObjects.Container;
   isClickingEDisabled: boolean;
   gameOver: boolean;
+  mobileEButton: HTMLDivElement;
+  mobileEFunction: () => void;
+  mobileEnterButton: HTMLDivElement;
+  mobileEnterFunction: () => void;
 
   constructor() {
     super({ key: 'FindErrorScene' });
@@ -44,6 +48,14 @@ export default class FindErrorScene extends Phaser.Scene {
     ];
     this.dialogueController = new DialogueController(this);
     this.dialogueController.initiateDialogue(dialogue, null, null);
+    this.mobileEButton = document.querySelector('.mobile__button--e');
+    this.mobileEFunction = () => {
+      this.events.emit('playerPressedE');
+    };
+    this.mobileEnterButton = document.querySelector('.mobile__button--enter');
+    this.mobileEnterFunction = () => {
+      this.dialogueController.playerPressesEnterEventListener();
+    };
   }
 
   init() {
@@ -98,6 +110,11 @@ export default class FindErrorScene extends Phaser.Scene {
     this.input?.keyboard?.on('keydown-E', () => {
       this.events.emit('playerPressedE');
     });
+    this.mobileEButton.addEventListener('pointerdown', this.mobileEFunction);
+    this.mobileEnterButton.addEventListener(
+      'pointerdown',
+      this.mobileEnterFunction,
+    );
 
     this.events.on('playerPressedE', () => this.handlePlayerEPress(this));
 
@@ -318,5 +335,15 @@ export default class FindErrorScene extends Phaser.Scene {
     this.errorRectangles = [];
     this.foundErrorRectangles = [];
     this.heartContainer = null;
+    this.mobileEButton &&
+      this.mobileEButton.removeEventListener(
+        'pointerdown',
+        this.mobileEFunction,
+      );
+    this.mobileEnterButton &&
+      this.mobileEnterButton.removeEventListener(
+        'pointerdown',
+        this.mobileEnterFunction,
+      );
   }
 }

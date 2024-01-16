@@ -12,8 +12,13 @@ import InteractiveGameObject from '../gameObjects/InteractiveGameObject';
 import NPC from '../gameObjects/NPC';
 import ObjectiveIndicator from '../gameObjects/ObjectiveIndicator';
 import LevelIntro from '../sceneoverlay/SceneOverlay';
-import { globalAudioManager, setMostRecentScene } from '../src/app';
+import {
+  globalAudioManager,
+  mobileButtons,
+  setMostRecentScene,
+} from '../src/app';
 import areCollisionBoxesColliding from '../utils/collisonBoxCollison';
+import InitMobileButtons from '../utils/InitMobileButtons';
 import { placeGameObjectBasedOnLayer } from '../utils/placeGameObjectsBasedOnLayer';
 import ObjectivesUIScene from './ObjectivesUIScene';
 
@@ -37,6 +42,9 @@ export default class BootcampScene extends Phaser.Scene {
   transitionRect: any | object[];
   collisionLayer: Phaser.Tilemaps.TilemapLayer;
   interactiveGameObjects: InteractiveGameObject[];
+  mobileButtons: InitMobileButtons;
+  enterMobileButton: HTMLDivElement;
+  enterMobileFunction: () => void;
 
   constructor() {
     super({ key: 'BootcampScene' });
@@ -45,6 +53,10 @@ export default class BootcampScene extends Phaser.Scene {
     this.isDialoguePlaying = false;
     this.dialogueController = new DialogueController(this);
     this.NPCsPlayerHasTalkedTo = [];
+    this.enterMobileButton = document.querySelector('.mobile__button--enter');
+    this.enterMobileFunction = () => {
+      this.dialogueController.playerPressesEnterEventListener();
+    };
   }
 
   init() {
@@ -87,6 +99,7 @@ export default class BootcampScene extends Phaser.Scene {
   // UPDATE //
   /////////////////////////
   update(time: number, delta: number) {
+    this.mobileButtons = mobileButtons;
     if (this.dialogueController.dialogueInProgress) {
       this.hero.freeze = true;
     }
@@ -120,7 +133,8 @@ export default class BootcampScene extends Phaser.Scene {
     if (
       Phaser.Input.Keyboard.JustDown(
         this.input.keyboard.addKey(child.dialogueIndicatorKey),
-      )
+      ) ||
+      this.mobileButtons.getButtons().e.isDown
     ) {
       child.updateDialogueNodeBasedOnPlayerState(this, child);
       this.activeInteractiveGameObject = child;
@@ -174,6 +188,10 @@ export default class BootcampScene extends Phaser.Scene {
 
   setUpGameEvents() {
     this.events.on('shutdown', this.shutdown, this);
+    this.enterMobileButton.addEventListener(
+      'pointerdown',
+      this.enterMobileFunction,
+    );
     this.input.keyboard.on(
       'keydown-ENTER',
       this.dialogueController.playerPressesEnterEventListener,
@@ -320,6 +338,10 @@ export default class BootcampScene extends Phaser.Scene {
     this.input.keyboard.off(
       'keydown-ENTER',
       this.dialogueController.playerPressesEnterEventListener,
+    );
+    this.enterMobileButton.removeEventListener(
+      'pointerdown',
+      this.enterMobileFunction,
     );
     this.events.off('dialogueEnded');
     this.events.off('addObjective');

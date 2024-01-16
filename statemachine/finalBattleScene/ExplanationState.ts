@@ -4,6 +4,7 @@ import DialogueNode from '../../dialogue/DialogueNode';
 import Bug from '../../gameObjects/Bug';
 import PostgresElephant from '../../gameObjects/PostgresElephant';
 import FinalBattleScene from '../../scenes/FinalBattleScene';
+import { isMobileScreen } from '../../src/app';
 import { transitionToDNASceneAndBack } from '../../utils/sceneTransitions';
 
 export default class ExplanationState implements State {
@@ -72,7 +73,7 @@ export default class ExplanationState implements State {
     this.scene.text2 = this.scene.add.text(
       325,
       330,
-      'Press Space to continue!',
+      isMobileScreen ? 'Tap to continue' : 'Press space to continue',
       {
         fontSize: '18px',
         fontFamily: 'Rainyhearts',
@@ -96,7 +97,10 @@ export default class ExplanationState implements State {
       }
     });
     // if player presses one of the right or left arrow keys twice or click with the mouse twice, switch to next phase
-    if (this.scene.keys.space.isDown) {
+    if (
+      this.scene.keys.space.isDown ||
+      (isMobileScreen && this.scene.canProgress)
+    ) {
       await this.exit();
       console.log(
         'switching to:',

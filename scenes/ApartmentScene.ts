@@ -14,10 +14,12 @@ import ObjectiveIndicator from '../gameObjects/ObjectiveIndicator';
 import LevelIntro from '../sceneoverlay/SceneOverlay';
 import {
   globalAudioManager,
+  mobileButtons,
   mostRecentScene,
   setMostRecentScene,
 } from '../src/app';
 import areCollisionBoxesColliding from '../utils/collisonBoxCollison';
+import InitMobileButtons from '../utils/InitMobileButtons';
 import { placeGameObjectBasedOnLayer } from '../utils/placeGameObjectsBasedOnLayer';
 import ObjectivesUIScene from './ObjectivesUIScene';
 
@@ -38,6 +40,9 @@ export default class ApartmentScene extends Phaser.Scene {
   transitionRect: any | object[];
   collisionLayer: Phaser.Tilemaps.TilemapLayer;
   interactiveGameObjects: InteractiveGameObject[];
+  enterMobileButton: HTMLDivElement;
+  enterMobileFunction: () => void;
+  mobileButtons: InitMobileButtons;
 
   constructor() {
     super({ key: 'ApartmentScene' });
@@ -45,6 +50,11 @@ export default class ApartmentScene extends Phaser.Scene {
     this.isEventTriggered = false;
     this.isDialoguePlaying = false;
     this.dialogueController = new DialogueController(this);
+    this.enterMobileButton = document.querySelector('.mobile__button--enter');
+    this.enterMobileFunction = () => {
+      this.dialogueController.playerPressesEnterEventListener();
+    };
+    this.mobileButtons = mobileButtons;
   }
 
   preload() {
@@ -80,6 +90,7 @@ export default class ApartmentScene extends Phaser.Scene {
   // UPDATE //
   /////////////////////////
   update(time: number, delta: number) {
+    this.mobileButtons = mobileButtons;
     if (this.dialogueController.dialogueInProgress) {
       this.hero.freeze = true;
     }
@@ -113,7 +124,8 @@ export default class ApartmentScene extends Phaser.Scene {
     if (
       Phaser.Input.Keyboard.JustDown(
         this.input.keyboard.addKey(child.dialogueIndicatorKey),
-      )
+      ) ||
+      this.mobileButtons.getButtons().e.isDown
     ) {
       child.updateDialogueNodeBasedOnPlayerState(this, child);
 
@@ -168,6 +180,11 @@ export default class ApartmentScene extends Phaser.Scene {
 
   setUpGameEvents() {
     this.events.on('shutdown', this.shutdown, this);
+    this.events.on('stop', this.stop, this);
+    this.enterMobileButton.addEventListener(
+      'pointerdown',
+      this.enterMobileFunction,
+    );
     this.input.keyboard.on(
       'keydown-ENTER',
       this.dialogueController.playerPressesEnterEventListener,
@@ -328,5 +345,18 @@ export default class ApartmentScene extends Phaser.Scene {
     );
     this.events.off('dialogueEnded');
     this.events.off('addObjective');
+    this.enterMobileButton &&
+      this.enterMobileButton.removeEventListener(
+        'pointerdown',
+        this.enterMobileFunction,
+      );
+  }
+
+  stop() {
+    this.enterMobileButton &&
+      this.enterMobileButton.removeEventListener(
+        'pointerdown',
+        this.enterMobileFunction,
+      );
   }
 }

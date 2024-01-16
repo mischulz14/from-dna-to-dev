@@ -127,6 +127,10 @@ export default class DialogueController {
     this.scene.events.emit('dialogueProgressed');
   }
 
+  triggerProgressOnMobile() {
+    this.scene.events.emit('dialogueProgressed');
+  }
+
   resetDialogueAfterDialogueEnds(currentNode?: DialogueNode) {
     this.dialogueField.hide();
     this.dialogueInProgress = false;

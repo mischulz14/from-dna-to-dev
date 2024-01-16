@@ -20,6 +20,7 @@ import { heroBattleSpriteNames } from '../data/heroBattleSpriteNames';
 import { interactiveGameObjectAnimInfo } from '../data/interactiveGameObjectAnimInfo';
 import { NPCAnimInfo } from '../data/npcAnimInfo';
 import { UISpritesData } from '../data/UISpritesData';
+import { isMobileScreen } from '../src/app';
 import { addProgressBar } from '../utils/progressBar';
 
 export default class PreloadScene extends Phaser.Scene {
@@ -81,7 +82,9 @@ export default class PreloadScene extends Phaser.Scene {
     );
     this.load.spritesheet(
       cutSceneSpriteNames.dna,
-      '../assets/DNAFillAnim.png',
+      isMobileScreen
+        ? '../assets/DNAFillAnimCompressed.png'
+        : '../assets/DNAFillAnim.png',
       {
         frameWidth: 128,
         frameHeight: 48,

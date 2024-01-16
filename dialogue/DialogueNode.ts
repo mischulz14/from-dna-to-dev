@@ -7,8 +7,13 @@
   - endDialogue: a boolean that indicates whether the dialogue ends after the player chooses this option
   */
 
+import { isMobileScreen } from '../src/app';
+import DialogueController from './DialogueController';
+
 export default class DialogueNode {
+  dialogueController?: DialogueController;
   text: string;
+
   options: {
     text: string;
     nextNodeIndex?: number | null;
@@ -28,6 +33,7 @@ export default class DialogueNode {
       nextNodeIndex?: number | null;
       endDialogue?: boolean;
     }[],
+    dialogueController?: DialogueController,
   ) {
     this.text = text;
     this.options = options || [];
@@ -47,8 +53,11 @@ export default class DialogueNode {
       const firstOption = document.querySelector(
         '.dialogue-field__option',
       ) as HTMLInputElement;
-
       firstOption.focus();
+      // select the first option on mobile screens
+      if (isMobileScreen) {
+        this.currentlySelectedOption = this.options[0];
+      }
 
       this.alreadyShownOptions = true;
     }
@@ -115,5 +124,14 @@ export default class DialogueNode {
         this.currentlySelectedOption = optionCopy;
       }
     });
+
+    if (isMobileScreen) {
+      option.addEventListener('click', () => {
+        this.currentlySelectedOption = optionCopy;
+
+        this.dialogueController &&
+          this.dialogueController.playerPressesEnterEventListener();
+      });
+    }
   }
 }

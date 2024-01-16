@@ -22,6 +22,8 @@
 body {
   height: 100vh;
   display: flex;
+  flex-direction: column;
+  gap: 1rem;
   justify-content: center;
   align-items: center;
   background: #f5f5f5;
@@ -464,4 +466,100 @@ button {
   height: 100%;
   background-color: black;
   z-index: -1;
+}
+
+/* MOBILE BUTTONS */
+
+.mobile {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4rem;
+  padding-top: 1rem;
+  overflow-wrap: normal;
+}
+
+.mobile__button--arrow-container {
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  padding: 0.5rem;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  width: 500px;
+  height: 500px;
+  box-shadow: -10px -10px black;
+  border: 1px solid black;
+}
+
+.mobile__button--arrow {
+  width: 100%;
+  height: 100%;
+  border: 1px solid black;
+  border-radius: 50%;
+}
+
+.mobile__button--up {
+  grid-column-start: 2;
+  grid-row-start: 1;
+}
+
+.mobile__button--left {
+  grid-column-start: 1;
+  grid-row-start: 2;
+}
+
+.mobile__button--right {
+  grid-column-start: 3;
+  grid-row-start: 2;
+}
+
+.mobile__button--down {
+  grid-column-start: 2;
+  grid-row-start: 3;
+}
+
+.mobile__button--space {
+  flex-shrink: 0;
+  flex-basis: 90%; /* or some percentage */
+  height: 100px;
+  box-shadow: -10px -10px black;
+  border: 1px solid black;
+}
+
+.mobile__button--rest-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.mobile__button--e {
+  width: 220px;
+  height: 220px;
+  box-shadow: -10px -10px black;
+  border: 1px solid black;
+}
+
+.mobile__button--e:focus {
+  box-shadow: -5px -5px black;
+  translate: -10px;
+}
+
+.mobile__button--enter {
+  width: 220px;
+  height: 220px;
+  box-shadow: -10px -10px black;
+  border: 1px solid black;
+}
+
+.mobile__button--enter:focus {
+  box-shadow: -5px -5px black;
+  translate: -10px;
+}
+
+/* if screen width is smaller then 500px hide the mobile container */
+
+@media (max-width: 500px) {
+  .mobile {
+    display: none;
+  }
 }

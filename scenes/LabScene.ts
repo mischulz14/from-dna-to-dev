@@ -10,8 +10,9 @@ import InteractiveGameObject from '../gameObjects/InteractiveGameObject';
 import NonInteractiveGameObject from '../gameObjects/NonInteractiveGameObject';
 import NPC from '../gameObjects/NPC';
 import LevelIntro from '../sceneoverlay/SceneOverlay';
-import { globalAudioManager } from '../src/app';
+import { globalAudioManager, isMobileScreen, mobileButtons } from '../src/app';
 import areCollisionBoxesColliding from '../utils/collisonBoxCollison';
+import InitMobileButtons from '../utils/InitMobileButtons';
 import ObjectivesUIScene from './ObjectivesUIScene';
 
 export default class LabScene extends Phaser.Scene {
@@ -32,6 +33,9 @@ export default class LabScene extends Phaser.Scene {
   wallLayer: Phaser.Tilemaps.TilemapLayer;
   transitionRect: any | object[];
   collisionLayer: Phaser.Tilemaps.TilemapLayer;
+  mobileButtons: InitMobileButtons;
+  enterMobileButton: HTMLDivElement;
+  enterMobileFunction: () => void;
 
   constructor() {
     super({ key: 'LabScene' });
@@ -39,6 +43,11 @@ export default class LabScene extends Phaser.Scene {
     this.isEventTriggered = false;
     this.isDialoguePlaying = false;
     this.dialogueController = new DialogueController(this);
+    this.mobileButtons = mobileButtons;
+    this.enterMobileButton = document.querySelector('.mobile__button--enter');
+    this.enterMobileFunction = () => {
+      this.dialogueController.playerPressesEnterEventListener();
+    };
   }
 
   preload() {
@@ -68,6 +77,10 @@ export default class LabScene extends Phaser.Scene {
   // UPDATE //
   /////////////////////////
   update(time: number, delta: number) {
+    this.mobileButtons = mobileButtons;
+    // if (this.mobileButtons.getButtons().enter.isDown) {
+    //   this.dialogueController.playerPressesEnterEventListener();
+    // }
     if (this.dialogueController.dialogueInProgress) {
       this.hero.freeze = true;
     }
@@ -101,8 +114,10 @@ export default class LabScene extends Phaser.Scene {
     if (
       Phaser.Input.Keyboard.JustDown(
         this.input.keyboard.addKey(child.dialogueIndicatorKey),
-      )
+      ) ||
+      this.mobileButtons.getButtons().e.isDown
     ) {
+      if (this.dialogueController.isActiveNPCTalking) return;
       console.log(child);
       child.updateDialogueNodeBasedOnPlayerState(this, child);
 
@@ -161,6 +176,12 @@ export default class LabScene extends Phaser.Scene {
       'keydown-ENTER',
       this.dialogueController.playerPressesEnterEventListener,
     );
+
+    this.enterMobileButton.addEventListener(
+      'pointerdown',
+      this.enterMobileFunction,
+    );
+
     this.events.on('dialogueEnded', () => {
       // this.cameras.main.zoomTo(1, 300);
       this.activeInteractiveGameObject.triggerEventWhenDialogueEnds(
@@ -470,5 +491,9 @@ export default class LabScene extends Phaser.Scene {
     );
     this.events.off('dialogueEnded');
     this.events.off('addObjective');
+    this.enterMobileButton.removeEventListener(
+      'pointerdown',
+      this.enterMobileFunction,
+    );
   }
 }

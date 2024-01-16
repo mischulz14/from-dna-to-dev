@@ -55,6 +55,8 @@ export default class VirusBattleScene extends Phaser.Scene {
   playerHealthNumber: Phaser.GameObjects.Text;
   enemyHealthBarNumber: Phaser.GameObjects.Text;
   gameOver: boolean = false;
+  enterMobileButton: HTMLDivElement;
+  enterMobileFunction: () => void;
 
   constructor() {
     super({ key: 'BattleScene' });
@@ -66,6 +68,20 @@ export default class VirusBattleScene extends Phaser.Scene {
     this.gameEvents = new Events.EventEmitter();
     this.setUpGameEvents();
     this.gameOver = false;
+
+    this.enterMobileFunction = () => {
+      console.log('progressOnMobile');
+      if (this.resolveInput && this.isTextFullyRevealed) {
+        // If there's a resolver function, call it and clear it
+        const resolve = this.resolveInput;
+        this.resolveInput = null;
+        resolve();
+      } else {
+        // reveal the full text
+        this.dialogueText = this.fullText;
+        this.dialogueField.setText(this.dialogueText);
+      }
+    };
   }
 
   init(data: {
@@ -101,6 +117,11 @@ export default class VirusBattleScene extends Phaser.Scene {
     this.playerHealth = this.initialPlayerHealth;
     this.enemyHealth = this.initialEnemyHealth;
     this.gameOver = false;
+    this.enterMobileButton = document.querySelector('.mobile__button--enter');
+    this.enterMobileButton.addEventListener(
+      'pointerdown',
+      this.enterMobileFunction,
+    );
   }
 
   create() {
@@ -542,10 +563,20 @@ export default class VirusBattleScene extends Phaser.Scene {
     this.playerHealth = this.initialPlayerHealth;
     this.enemyHealth = this.initialEnemyHealth;
     this.gameOver = false;
+    this.enterMobileButton.removeEventListener(
+      'pointerdown',
+      this.enterMobileFunction,
+    );
   }
 
   shutdown() {
     this.gameEvents.removeAllListeners();
+    // this.enterMobileButton = this.enterMobileButton
+    //   .cloneNode(true)
+    //   .parentNode.replaceChild(
+    //     this.enterMobileButton.cloneNode(true),
+    //     this.enterMobileButton,
+    //   );
     this.resetEverything();
   }
 }

@@ -17,6 +17,8 @@ import PreloaderScene from '../scenes/PreloaderScene';
 import ProgressToBootcampScene from '../scenes/ProgressToBootcampScene';
 import StartScene from '../scenes/StartScene';
 import WohnungsIntroScene from '../scenes/WohnungsIntroScene';
+import InitMobileArrows from '../utils/InitMobileArrows';
+import InitMobileButtons from '../utils/InitMobileButtons';
 
 export const config: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
@@ -82,8 +84,44 @@ document.addEventListener('DOMContentLoaded', () => {
   globalAudioManager.audioContext = new AudioContext();
 });
 
+// initialize most recent scene
 export let mostRecentScene = 'LabScene';
 
+// set most recent scene to the scene that is currently active
 export function setMostRecentScene(sceneName: string) {
   mostRecentScene = sceneName;
 }
+
+// disable double click zoom
+document.addEventListener('dblclick', function (event) {
+  event.preventDefault();
+});
+
+// create mobile arrows
+export const mobileArrows = new InitMobileArrows();
+export const mobileButtons = new InitMobileButtons();
+
+export const isMobileScreen =
+  'ontouchstart' in window || navigator.maxTouchPoints > 0;
+console.log(`Is this a touch device? ${isMobileScreen ? 'Totally!' : 'Nope!'}`);
+
+// function checkWidthAndThrow() {
+//   // make it visbile as a warning
+//   const warningElement = document.createElement('div');
+//   warningElement.style.position = 'absolute';
+//   warningElement.style.top = '0';
+//   warningElement.style.left = '0';
+//   warningElement.style.width = '100%';
+//   warningElement.style.height = '100px';
+//   warningElement.style.backgroundColor = 'red';
+//   warningElement.style.color = 'white';
+//   warningElement.style.fontSize = '2rem';
+//   warningElement.style.textAlign = 'center';
+//   warningElement.style.paddingTop = '2rem';
+//   warningElement.textContent = `Window too narrow: ${
+//     document.body.clientWidth
+//   }px ${document.body.clientWidth < 500}}`;
+//   document.body.appendChild(warningElement);
+// }
+
+// checkWidthAndThrow();

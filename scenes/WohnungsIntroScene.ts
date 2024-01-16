@@ -19,6 +19,8 @@ export default class WohnungsIntroScene extends Phaser.Scene {
   sprite: Phaser.GameObjects.Sprite;
   progressCounter = 0;
   dialogueController: DialogueController;
+  enterMobileButton: HTMLDivElement;
+  enterMobileFunction: () => void;
 
   constructor() {
     super({ key: 'WohnungsIntroScene' });
@@ -36,6 +38,10 @@ export default class WohnungsIntroScene extends Phaser.Scene {
     ];
     this.dialogueController = new DialogueController(this);
     this.dialogueController.initiateDialogue(dialogue, null, null);
+    this.enterMobileButton = document.querySelector('.mobile__button--enter');
+    this.enterMobileFunction = () => {
+      this.dialogueController.playerPressesEnterEventListener();
+    };
   }
 
   preload() {
@@ -48,6 +54,10 @@ export default class WohnungsIntroScene extends Phaser.Scene {
   }
 
   create() {
+    this.enterMobileButton.addEventListener(
+      'pointerdown',
+      this.enterMobileFunction,
+    );
     globalAudioManager.switchSoundTo(audioNames.lofiCutscene);
     this.sprite = this.add
       .sprite(20, 0, cutSceneSpriteNames.wohnung)
@@ -71,6 +81,10 @@ export default class WohnungsIntroScene extends Phaser.Scene {
     this.events.on('dialogueEnded', () => {
       fadeCameraOut(this, 2200);
       this.time.delayedCall(3000, () => {
+        this.enterMobileButton.removeEventListener(
+          'pointerdown',
+          this.enterMobileFunction,
+        );
         this.scene.start('ApartmentScene');
       });
     });
@@ -123,6 +137,13 @@ export default class WohnungsIntroScene extends Phaser.Scene {
       yoyo: true,
       repeat: 3,
     });
+  }
+
+  shutdown() {
+    this.enterMobileButton.removeEventListener(
+      'pointerdown',
+      this.enterMobileFunction,
+    );
   }
 }
 
