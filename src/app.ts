@@ -94,11 +94,9 @@ export function setMostRecentScene(sceneName: string) {
 export const mobileArrows = new InitMobileArrows();
 export const mobileButtons = new InitMobileButtons();
 
-export let isMobileScreen = document.body.clientWidth < 500;
-
-window.addEventListener('resize', () => {
-  isMobileScreen = document.body.clientWidth < 500;
-});
+export const isMobileScreen =
+  'ontouchstart' in window || navigator.maxTouchPoints > 0;
+console.log(`Is this a touch device? ${isMobileScreen ? 'Totally!' : 'Nope!'}`);
 
 // function checkWidthAndThrow() {
 //   // make it visbile as a warning
