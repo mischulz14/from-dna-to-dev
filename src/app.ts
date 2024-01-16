@@ -100,23 +100,23 @@ window.addEventListener('resize', () => {
   isMobileScreen = document.body.clientWidth < 500;
 });
 
-function checkWidthAndThrow() {
-  // make it visbile as a warning
-  const warningElement = document.createElement('div');
-  warningElement.style.position = 'absolute';
-  warningElement.style.top = '0';
-  warningElement.style.left = '0';
-  warningElement.style.width = '100%';
-  warningElement.style.height = '100px';
-  warningElement.style.backgroundColor = 'red';
-  warningElement.style.color = 'white';
-  warningElement.style.fontSize = '2rem';
-  warningElement.style.textAlign = 'center';
-  warningElement.style.paddingTop = '2rem';
-  warningElement.textContent = `Window too narrow: ${
-    document.body.clientWidth
-  }px ${document.body.clientWidth < 500}}`;
-  document.body.appendChild(warningElement);
-}
+// function checkWidthAndThrow() {
+//   // make it visbile as a warning
+//   const warningElement = document.createElement('div');
+//   warningElement.style.position = 'absolute';
+//   warningElement.style.top = '0';
+//   warningElement.style.left = '0';
+//   warningElement.style.width = '100%';
+//   warningElement.style.height = '100px';
+//   warningElement.style.backgroundColor = 'red';
+//   warningElement.style.color = 'white';
+//   warningElement.style.fontSize = '2rem';
+//   warningElement.style.textAlign = 'center';
+//   warningElement.style.paddingTop = '2rem';
+//   warningElement.textContent = `Window too narrow: ${
+//     document.body.clientWidth
+//   }px ${document.body.clientWidth < 500}}`;
+//   document.body.appendChild(warningElement);
+// }
 
-checkWidthAndThrow();
+// checkWidthAndThrow();
