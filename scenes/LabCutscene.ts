@@ -51,12 +51,12 @@ export default class LabCutscene extends Phaser.Scene {
         start: 0,
         end: 7,
       }),
-      frameRate: 4,
+      frameRate: 6,
       repeat: -1,
     });
 
     const sprite = this.add.sprite(0, 0, 'LabCutsceneSprite').setOrigin(0, 0);
-    sprite.setScale(8.2);
+    sprite.setScale(8);
 
     // Start the animation
     sprite.play('labCutsceneSprite');
