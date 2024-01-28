@@ -93,6 +93,7 @@ export default class ObjectivesUIScene extends Phaser.Scene {
       this.currentPosition.y,
       data.checkedCondition,
       data.textBesidesCheckbox,
+      this.objectives.length,
     );
 
     if (this.objectives[0] && !this.objectives[0].visible) {
@@ -122,6 +123,7 @@ export default class ObjectivesUIScene extends Phaser.Scene {
       this.currentPosition.y,
       checkedCondition,
       textBesidesCheckbox,
+      this.objectives.length,
     );
 
     this.currentPosition.y += 60;

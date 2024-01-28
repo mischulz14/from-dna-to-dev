@@ -128,7 +128,7 @@ export default class WohnungsIntroScene extends Phaser.Scene {
 
 function getCutSceneText() {
   const text1 =
-    "You decided visit your girlfriend to relax. You're sitting in bed, scrolling on your phone.";
+    "You decided to visit your girlfriend to relax. You're sitting in bed, scrolling on your phone.";
 
   const text2 = 'But wait! What is that? An email pops up ... Hmmm... ';
 

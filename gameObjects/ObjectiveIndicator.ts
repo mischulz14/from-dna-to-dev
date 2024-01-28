@@ -7,6 +7,7 @@ export default class ObjectiveIndicator extends Phaser.GameObjects.Container {
   checkboxCheckedCircle: any;
   textBesidesCheckbox: Phaser.GameObjects.DOMElement;
   checkedCondition: string;
+  checkboxId: number;
 
   constructor(
     scene: Phaser.Scene,
@@ -14,13 +15,14 @@ export default class ObjectiveIndicator extends Phaser.GameObjects.Container {
     y: number,
     checkedCondition: string,
     textBesidesCheckbox: string,
+    checkboxId: number,
   ) {
     super(scene, x, y);
     scene.add.existing(this);
 
     this.checkedCondition = checkedCondition;
 
-    // add rectangles to make it more readable
+    this.checkboxId = checkboxId;
 
     // Add text besides checkbox as dom element
     this.textBesidesCheckbox = this.scene.add
@@ -31,27 +33,22 @@ export default class ObjectiveIndicator extends Phaser.GameObjects.Container {
         `color: #000; background-color: #fff; padding:6px; box-shadow: -6px -6px 0px rgba(0, 0, 0); border:1px solid black; font-size: 20px; font-family: Rainyhearts;`,
         textBesidesCheckbox,
       )
-      .setOrigin(0, 0);
+      .setOrigin(0, 0)
+      .setClassName(`checkbox-text-${this.checkboxId}`);
 
     // Add checkbox images
-    this.checkboxEmptyCircle = this.scene.add.circle(0, 0, 10, 0x000000);
-    this.checkboxCheckedCircle = this.scene.add.circle(0, 0, 10, 0xffffff);
-    this.checkboxCheckedCircle.setVisible(false);
+    this.checkboxEmptyCircle = this.scene.add.circle(0, 0, 10, 0xffffff);
+    // this.checkboxCheckedCircle = this.scene.add.circle(0, 0, 10, 0xffffff);
+    // this.checkboxCheckedCircle.setVisible(false);
 
-    this.add([
-      this.checkboxEmptyCircle,
-      this.checkboxCheckedCircle,
-      this.textBesidesCheckbox,
-    ]);
+    this.add([this.checkboxEmptyCircle, this.textBesidesCheckbox]);
   }
 
   update(hero: Hero) {
     if (hero.booleanConditions[this.checkedCondition]) {
-      this.checkboxEmptyCircle.setVisible(false);
-      this.checkboxCheckedCircle.setVisible(true);
-    } else {
-      this.checkboxEmptyCircle.setVisible(true);
-      this.checkboxCheckedCircle.setVisible(false);
+      document
+        .querySelector(`.checkbox-text-${this.checkboxId}`)
+        .classList.add('line-through');
     }
   }
 }

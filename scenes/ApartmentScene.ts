@@ -10,13 +10,8 @@ import EventTrigger from '../gameObjects/EventTrigger';
 import Hero from '../gameObjects/Hero';
 import InteractiveGameObject from '../gameObjects/InteractiveGameObject';
 import NPC from '../gameObjects/NPC';
-import ObjectiveIndicator from '../gameObjects/ObjectiveIndicator';
 import LevelIntro from '../sceneoverlay/SceneOverlay';
-import {
-  globalAudioManager,
-  mostRecentScene,
-  setMostRecentScene,
-} from '../src/app';
+import { globalAudioManager, setMostRecentScene } from '../src/app';
 import areCollisionBoxesColliding from '../utils/collisonBoxCollison';
 import { placeGameObjectBasedOnLayer } from '../utils/placeGameObjectsBasedOnLayer';
 import ObjectivesUIScene from './ObjectivesUIScene';

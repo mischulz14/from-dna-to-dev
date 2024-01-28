@@ -186,7 +186,10 @@ export const eventTriggerData = {
       ],
     },
     updateDialogueNodeBasedOnPlayerState: (scene, eventtrigger) => {
-      if (scene.hero.booleanConditions.hasDeliveredProbe) {
+      if (
+        scene.hero.booleanConditions.hasDeliveredProbe &&
+        !scene.hero.booleanConditions.hasBattledSleepDeprivation
+      ) {
         eventtrigger.dialogueNodesObj = {
           nodes: [
             new DialogueNode('You take a look at the DNA test.'),
@@ -199,12 +202,20 @@ export const eventTriggerData = {
           ],
         };
       }
+      if (scene.hero.booleanConditions.hasBattledSleepDeprivation) {
+        eventtrigger.dialogueNodesObj = {
+          nodes: [new DialogueNode("You're wide awake and ready to work!")],
+        };
+      }
     },
     triggerEventWhenDialogueEnds: (scene: any) => {
       const objectivesUI = scene.scene.get(
         'ObjectivesUIScene',
       ) as ObjectivesUIScene;
-      if (!scene.hero.booleanConditions.hasDeliveredProbe) {
+      if (
+        !scene.hero.booleanConditions.hasDeliveredProbe &&
+        scene.hero.booleanConditions.hasBattledSleepDeprivation
+      ) {
         return;
       }
 
