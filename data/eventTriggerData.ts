@@ -213,7 +213,7 @@ export const eventTriggerData = {
         'ObjectivesUIScene',
       ) as ObjectivesUIScene;
       if (
-        !scene.hero.booleanConditions.hasDeliveredProbe &&
+        !scene.hero.booleanConditions.hasDeliveredProbe ||
         scene.hero.booleanConditions.hasBattledSleepDeprivation
       ) {
         return;
