@@ -46,9 +46,13 @@ export default class ObjectiveIndicator extends Phaser.GameObjects.Container {
 
   update(hero: Hero) {
     if (hero.booleanConditions[this.checkedCondition]) {
-      document
-        .querySelector(`.checkbox-text-${this.checkboxId}`)
-        .classList.add('line-through');
+      const checkboxText = document.querySelector(
+        `.checkbox-text-${this.checkboxId}`,
+      );
+
+      if (checkboxText) {
+        checkboxText.classList.add('line-through');
+      }
     }
   }
 }

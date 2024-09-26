@@ -136,7 +136,7 @@ export default class DialogueController {
       this.interactiveGameObject.turnBackToOriginalPosition(this.hero);
     this.resetAlreadyShownOptions();
     this.triggerEventAfterDialogueEnds();
-    currentNode.hideOptions();
+    currentNode && currentNode.hideOptions();
     console.log('dialogue ended in dialogueController');
   }
 }
